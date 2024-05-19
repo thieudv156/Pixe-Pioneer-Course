@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentId;
+    private int id;
 
     @OneToOne
     @JoinColumn(name = "enrollment_id", nullable = false)
@@ -29,6 +29,6 @@ public class Payment {
     private LocalDateTime paymentDate;
 
     @Enumerated(EnumType.STRING)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 }
 
