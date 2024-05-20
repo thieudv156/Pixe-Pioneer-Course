@@ -5,34 +5,31 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
-@Table(name = "reviews")
-public class Review {
+@Table(name = "course_content")
+public class CourseContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(nullable = false)
+    private String title;
+
+    @Enumerated(EnumType.STRING)
+    private CourseContentType contentType;
 
     @Column(nullable = false)
-    private int rating;
+    private String contentUrl;
 
-    @Column(columnDefinition = "TEXT")
-    private String comment;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+
+    // Getters and setters
 }
-

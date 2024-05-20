@@ -6,16 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
-@Table(name = "reviews")
-public class Review {
+@Table(name = "comments")
+public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
@@ -26,13 +27,16 @@ public class Review {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
-    private int rating;
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
 
-    @Column(columnDefinition = "TEXT")
-    private String comment;
+    @Column(name="content", columnDefinition = "TEXT")
+    private String content;
 
-    @Column(nullable = false)
+    @Column(name="created_at")
     private LocalDateTime createdAt;
-}
 
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> children;
+}

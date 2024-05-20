@@ -18,8 +18,12 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name= "payment_method", nullable = false, columnDefinition = "ENUM('CREDIT_CARD', 'PAYPAL')")
+    private PaymentMethod paymentMethod;
+
     @OneToOne
-    @JoinColumn(name = "enrollment_id", nullable = false)
+    @JoinColumn(name = "enrollment_id",referencedColumnName = "id", nullable = false)
     private Enrollment enrollment;
 
     @Column(nullable = false)
@@ -28,7 +32,5 @@ public class Payment {
     @Column(nullable = false)
     private LocalDateTime paymentDate;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
 }
 

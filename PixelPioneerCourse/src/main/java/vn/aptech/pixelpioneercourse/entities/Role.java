@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String roleName; //ROLE_STUDENT, ROLE_ADMIN, ROLE_INSTRUCTOR
 
-    @Column(nullable = false, unique = true)
-    private String shortName;
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<User> users;
 }
     

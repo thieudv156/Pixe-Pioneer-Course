@@ -18,12 +18,16 @@ public class Enrollment {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "sourse_id", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne
+    @JoinColumn(name = "payment_id", referencedColumnName = "id", nullable = false, unique = true)
+    private Payment payment;
 
     @Column(nullable = false)
     private LocalDateTime enrolledAt;
