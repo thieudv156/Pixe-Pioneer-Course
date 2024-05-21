@@ -23,7 +23,7 @@ public class PaymentDetail {
     private Billing billing;
 
     @OneToOne
-    @JoinColumn(name ="courese_id", referencedColumnName = "id", nullable = false, unique = true)
+    @JoinColumn(name ="course_id", referencedColumnName = "id", nullable = false, unique = true)
     private Course course;
 
     @Column(name = "price", nullable = false)
