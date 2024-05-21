@@ -23,7 +23,6 @@ public class Billing {
     @Column(name= "payment_method", nullable = false, columnDefinition = "ENUM('CREDIT_CARD', 'PAYPAL')")
     private PaymentMethod paymentMethod;
 
-
     @Column(nullable = false)
     private LocalDateTime billDate;
 

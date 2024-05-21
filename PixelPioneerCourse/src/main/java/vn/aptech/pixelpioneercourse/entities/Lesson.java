@@ -1,37 +1,41 @@
 package vn.aptech.pixelpioneercourse.entities;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
-@Table(name = "enrollments")
-public class Enrollment {
+@Table(name = "lessons")
+public class Lesson {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
+    @Column(nullable = false)
+    private String title;
+
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column
+    private int duration;
 
-    @OneToOne
-    @JoinColumn(name = "billing_id", referencedColumnName = "id", nullable = false, unique = true)
-    private Billing payment;
+    @Column
+    private LocalDateTime createdAt;
 
-    @Column(name="progress")
-    private int progress = 0;
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    private List<Content> contents;
 
-    @Column(nullable = false)
-    private LocalDateTime enrolledAt;
+
+
 }

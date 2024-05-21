@@ -1,5 +1,5 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-public enum CourseContentType {
+public enum ContentType {
     VIDEO,ARTICLE,IMAGE,FILE
 }

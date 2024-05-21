@@ -52,9 +52,12 @@ public class Course {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CourseContent> contents;
+    private List<Content> contents;
 
     @OneToOne(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private PaymentDetail paymentDetails;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartDetail> cartDetails;
 }
 
