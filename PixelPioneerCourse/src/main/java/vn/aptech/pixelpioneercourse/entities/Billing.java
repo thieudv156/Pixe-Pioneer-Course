@@ -6,14 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
-@Table(name = "payments")
-public class Payment {
+@Table(name = "billings")
+public class Billing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -22,15 +23,18 @@ public class Payment {
     @Column(name= "payment_method", nullable = false, columnDefinition = "ENUM('CREDIT_CARD', 'PAYPAL')")
     private PaymentMethod paymentMethod;
 
-    @OneToOne
-    @JoinColumn(name = "enrollment_id",referencedColumnName = "id", nullable = false)
-    private Enrollment enrollment;
 
     @Column(nullable = false)
-    private double amount;
+    private LocalDateTime billDate;
 
     @Column(nullable = false)
-    private LocalDateTime paymentDate;
+    private double total;
+
+    @OneToMany(mappedBy = "billing", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PaymentDetail> paymentDetails;
+
+    @Column(name = "payment_status", nullable = false)
+    private boolean paymentStatus;
 
 }
 
