@@ -7,8 +7,8 @@ import vn.aptech.pixelpioneercourse.dto.ReviewCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Review;
 import vn.aptech.pixelpioneercourse.entities.User;
-import vn.aptech.pixelpioneercourse.repositories.CourseRepository;
-import vn.aptech.pixelpioneercourse.repositories.UserRepository;
+import vn.aptech.pixelpioneercourse.repository.CourseRepository;
+import vn.aptech.pixelpioneercourse.repository.UserRepository;
 import vn.aptech.pixelpioneercourse.repository.ReviewRepository;
 
 import java.time.LocalDateTime;

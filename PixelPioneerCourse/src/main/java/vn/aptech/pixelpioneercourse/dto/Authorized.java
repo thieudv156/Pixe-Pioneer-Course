@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -34,19 +35,16 @@ public class Authorized extends User {
                 .anyMatch(r->r.getAuthority().equals("ROLE_ADMIN"));
     }
 
-    public Boolean isInstructor(){
-        return getAuthorities()
-                .stream()
-                .anyMatch(r->r.getAuthority().equals("ROLE_INSTRUCTOR"));
+    public Boolean isInstructor() {
+        return getAuthorities().stream().anyMatch(r->r.getAuthority().equals("ROLE_INSTRUCTOR"));
     }
 
-    public String meOrAdminOrInstructor(int id) {
-        Boolean admin = isAdmin();
-        Boolean instructor = isInstructor();
-        Boolean itsMe = getId() == id;
-        if (admin) {
+    public String checkRole(int id) {
+        Boolean isAdmin = isAdmin();
+        Boolean isInstructor = isInstructor();
+        if (isAdmin) {
             return "ADMIN";
-        } else if (instructor) {
+        } else if (isInstructor) {
             return "INSTRUCTOR";
         }
         return "STUDENT";
@@ -69,3 +67,4 @@ public class Authorized extends User {
     }
 
 }
+

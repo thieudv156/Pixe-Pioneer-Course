@@ -2,58 +2,55 @@ package vn.aptech.pixelpioneercourse.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.aptech.pixelpioneercourse.dto.UserDto;
-import vn.aptech.pixelpioneercourse.entities.User;
-import vn.aptech.pixelpioneercourse.repository.UserRepository;
+import vn.aptech.pixelpioneercourse.dto.AccountDto;
+import vn.aptech.pixelpioneercourse.entities.Account;
+import vn.aptech.pixelpioneercourse.repository.AccountRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class AccountServiceImpl implements AccountService{
     @Autowired
-    private UserRepository accountRepository;
-
-    private UserDto toDto(User account){
-        return new UserDto(
+    private AccountRepository accountRepository;
+    
+    private AccountDto toDto(Account account){
+        return new AccountDto(
                 account.getId(),
-                account.getRole(),
-                account.getUsername(),
-                account.getPassword(),
-                account.getFullName(),
                 account.getEmail(),
+                account.getPassword(),
+                account.getFullname(),
                 account.getPhone()
         );
     }
-
-    private User fromDto(UserDto accountDto){
-        return new User(
+    
+    private Account fromDto(AccountDto accountDto){
+        return new Account(
                 accountDto.getId(),
-                accountDto.getRole(),
-                accountDto.getUsername(),
-                accountDto.getPassword(),
-                accountDto.getFullName(),
                 accountDto.getEmail(),
+                accountDto.getPassword(),
+                accountDto.getFullname(),
                 accountDto.getPhone()
         );
     }
-
-    public List<UserDto> findAll(){
+    
+    public List<AccountDto> findAll(){
         return accountRepository.findAll()
                 .stream()
                 .map(this::toDto)
                 .toList();
     }
-
+    
     public Optional<AccountDto> findById(int id){
         //Optional<Account> result = accountRepository.findById(id);
         return accountRepository.findById(id).map(this::toDto);
     }
-
+    
     public void create(AccountDto accountDto){
         Account account = fromDto(accountDto);
         accountRepository.save(account);
     }
-
+    
     public void update(AccountDto accountDto){
         Account existedAccount = accountRepository.findById(accountDto.getId()).orElseThrow(() -> new RuntimeException("Account not found!"));
         existedAccount.setId(accountDto.getId());
@@ -63,8 +60,9 @@ public class UserServiceImpl implements UserService{
         existedAccount.setPhone(accountDto.getPhone());
         accountRepository.save(existedAccount);
     }
-
+    
     public void delete(AccountDto accountDto){
         accountRepository.deleteById(accountDto.getId());
     }
+    
 }

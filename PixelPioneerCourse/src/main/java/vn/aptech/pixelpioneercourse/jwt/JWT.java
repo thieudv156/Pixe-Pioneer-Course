@@ -9,4 +9,6 @@ public interface JWT {
     String encode(int id, List<String> roles, LocalDateTime expiredAt, String secret);
     
     Authorized decode(String token, String secret);
+    
+    
 }

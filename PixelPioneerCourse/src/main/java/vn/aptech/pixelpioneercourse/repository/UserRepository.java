@@ -6,5 +6,7 @@ import vn.aptech.pixelpioneercourse.entities.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    Optional<User> findById(int id);
+    //@Query("SELECT object FROM from User WHERE o.email=:email")
+    //Spring tu sinh ma
+    Optional<User> findByEmail(String email);
 }

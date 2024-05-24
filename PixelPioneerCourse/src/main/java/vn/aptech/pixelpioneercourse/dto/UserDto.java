@@ -1,8 +1,10 @@
 package vn.aptech.pixelpioneercourse.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import vn.aptech.pixelpioneercourse.entities.Role;
 
+@AllArgsConstructor
 public class UserDto {
 
     @Getter
@@ -19,14 +21,4 @@ public class UserDto {
     private String fullName;
     @Getter
     private String phone;
-
-    public UserDto(int id, Role role, String username, String password, String email, String fullName, String phone) {
-        this.id = id;
-        this.role = role;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.fullName = fullName;
-        this.phone = phone;
-    }
 }
