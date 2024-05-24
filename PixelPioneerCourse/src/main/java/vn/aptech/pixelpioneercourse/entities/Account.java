@@ -27,4 +27,8 @@ public class Account {
 
     @Column(name = "phone")
     private String phone;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role role;
 }
