@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class CourseCreateDto {
+
+    private Integer id;
 
     @NotBlank(message = "Title is mandatory")
     @Size(max = 255, message = "Title must be less than 255 characters")
