@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.AccountDto;
@@ -14,40 +15,24 @@ public class AccountServiceImpl implements AccountService{
     @Autowired
     private AccountRepository accountRepository;
     
-    private AccountDto toDto(Account account){
-        return new AccountDto(
-                account.getId(),
-                account.getEmail(),
-                account.getPassword(),
-                account.getFullname(),
-                account.getPhone()
-        );
-    }
-    
-    private Account fromDto(AccountDto accountDto){
-        return new Account(
-                accountDto.getId(),
-                accountDto.getEmail(),
-                accountDto.getPassword(),
-                accountDto.getFullname(),
-                accountDto.getPhone()
-        );
-    }
+    @Autowired
+    private ModelMapper mapper;
     
     public List<AccountDto> findAll(){
-        return accountRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .toList();
+        List<AccountDto> accounts = accountRepository.findAll().stream().map(account -> {
+            return mapper.map(account, AccountDto.class);
+        }).toList();
+        return accounts;
     }
     
     public Optional<AccountDto> findById(int id){
-        //Optional<Account> result = accountRepository.findById(id);
-        return accountRepository.findById(id).map(this::toDto);
+        return accountRepository.findById(id).map(account -> {
+            return mapper.map(account, AccountDto.class);
+        });
     }
     
     public void create(AccountDto accountDto){
-        Account account = fromDto(accountDto);
+        Account account = mapper.map(accountDto, Account.class);
         accountRepository.save(account);
     }
     
