@@ -30,6 +30,17 @@ public class AccountServiceImpl implements AccountService{
             return mapper.map(account, AccountDto.class);
         });
     }
+
+    public Optional<AccountDto> findByEmail(String email) {
+        return accountRepository.findByEmail(email).map(account -> {
+            return mapper.map(account, AccountDto.class);
+        });
+    }
+
+    public boolean checkLogin(String email, String password) {
+        Optional<AccountDto> acc = findByEmail(email);
+        return (acc.isPresent() && acc.get().getEmail().equals(email) && acc.get().getPassword().equals(password));
+    }
     
     public void create(AccountDto accountDto){
         Account account = mapper.map(accountDto, Account.class);

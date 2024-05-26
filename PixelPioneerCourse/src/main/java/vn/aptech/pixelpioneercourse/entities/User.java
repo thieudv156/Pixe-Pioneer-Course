@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -61,12 +60,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts;
-
-    public List<String> getAuthorities() {
-        return Collections.singletonList(role.getRoleName());
-    }
-
-    public List<SimpleGrantedAuthority> getGrantedAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(role.getRoleName()));
-    }
 }
