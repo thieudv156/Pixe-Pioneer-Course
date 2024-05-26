@@ -1,9 +1,11 @@
 package vn.aptech.pixelpioneercourse.controller.instructor;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import vn.aptech.pixelpioneercourse.dto.InstructorCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Instructor;
 import vn.aptech.pixelpioneercourse.service.InstructorService;
 
@@ -15,10 +17,13 @@ import java.util.Optional;
 public class InstructorController {
     @Autowired
     private InstructorService instructorService;
+    
+    @Autowired
+    private ModelMapper mapper;
 
     @PostMapping
-    public ResponseEntity<Instructor> createInstructor(@RequestBody Instructor instructor) {
-        Instructor createdInstructor = instructorService.createInstructor(instructor);
+    public ResponseEntity<Instructor> createInstructor(@RequestBody InstructorCreateDto instructorCreateDto) {
+        Instructor createdInstructor = instructorService.createInstructor(mapper.map(instructorCreateDto, Instructor.class));
         return new ResponseEntity<>(createdInstructor, HttpStatus.CREATED);
     }
 
@@ -35,8 +40,8 @@ public class InstructorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Instructor> updateInstructor(@PathVariable int id, @RequestBody Instructor instructor) {
-        Instructor updatedInstructor = instructorService.updateInstructor(id, instructor);
+    public ResponseEntity<Instructor> updateInstructor(@PathVariable int id, @RequestBody InstructorCreateDto instructorCreateDto) {
+        Instructor updatedInstructor = instructorService.updateInstructor(id, instructorCreateDto);
         return new ResponseEntity<>(updatedInstructor, HttpStatus.OK);
     }
 

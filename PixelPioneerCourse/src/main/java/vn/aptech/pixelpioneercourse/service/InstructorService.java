@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.service;
 
+import vn.aptech.pixelpioneercourse.dto.InstructorCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Instructor;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface InstructorService {
 
     List<Instructor> getAllInstructors();
 
-    Instructor updateInstructor(int id, Instructor instructor);
+    Instructor updateInstructor(int id, InstructorCreateDto instructorCreateDto);
 
     void deleteInstructor(int id);
 }

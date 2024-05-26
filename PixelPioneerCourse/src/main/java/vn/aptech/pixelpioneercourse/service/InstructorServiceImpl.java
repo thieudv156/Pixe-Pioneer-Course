@@ -3,6 +3,7 @@ package vn.aptech.pixelpioneercourse.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vn.aptech.pixelpioneercourse.dto.InstructorCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Instructor;
 import vn.aptech.pixelpioneercourse.repository.InstructorRepository;
 
@@ -18,10 +19,10 @@ public class InstructorServiceImpl implements InstructorService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private InstructorServiceImpl(InstructorRepository repository, ModelMapper modelMapper) {
-        this.instructorRepository = repository;
-        this.modelMapper = modelMapper;
-    }
+//    private InstructorServiceImpl(InstructorRepository repository, ModelMapper modelMapper) {
+//        this.instructorRepository = repository;
+//        this.modelMapper = modelMapper;
+//    }
 
     public List<Instructor> findAll() {
         try {
@@ -52,18 +53,18 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Override
     public List<Instructor> getAllInstructors() {
-        return instructorRepository.findAll();
+        return instructorRepository.findAll().stream().toList();
     }
 
-    @Override
-    public Instructor updateInstructor(int id, Instructor instructor) {
-        Instructor existingInstructor = instructorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
 
-        existingInstructor.setId(instructor.getId());
-        existingInstructor.setUser(instructor.getUser());
-        existingInstructor.setCourses(instructor.getCourses());
-        existingInstructor.setInformation(instructor.getInformation());
+    @Override
+    public Instructor updateInstructor(int id, InstructorCreateDto instructorCreateDto) {
+        Instructor existingInstructor = instructorRepository.findById(id).orElseThrow(() -> new RuntimeException("Instructor not found"));
+
+        existingInstructor.setId(modelMapper.map(instructorCreateDto, Instructor.class).getId());
+        existingInstructor.setCourses(modelMapper.map(instructorCreateDto, Instructor.class).getCourses());
+        existingInstructor.setUser(modelMapper.map(instructorCreateDto, Instructor.class).getUser());
+        existingInstructor.setInformation(modelMapper.map(instructorCreateDto, Instructor.class).getInformation());
         return instructorRepository.save(existingInstructor);
     }
 
