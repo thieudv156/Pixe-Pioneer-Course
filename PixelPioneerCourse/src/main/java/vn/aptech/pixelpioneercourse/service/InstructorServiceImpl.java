@@ -1,34 +1,31 @@
 package vn.aptech.pixelpioneercourse.service;
 
-<<<<<<< Updated upstream
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-=======
->>>>>>> Stashed changes
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.entities.Instructor;
 import vn.aptech.pixelpioneercourse.repository.InstructorRepository;
 
+
 import java.util.List;
 
 @Service
-<<<<<<< Updated upstream
 public class InstructorServiceImpl implements InstructorService {
 
     @Autowired
-    private InstructorRepository repository;
+    private InstructorRepository instructorRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
     private InstructorServiceImpl(InstructorRepository repository, ModelMapper modelMapper) {
-        this.repository = repository;
+        this.instructorRepository = repository;
         this.modelMapper = modelMapper;
     }
 
     public List<Instructor> findAll() {
         try {
-            return repository.findAll();
+            return instructorRepository.findAll();
         } catch (Exception e) {
             throw new RuntimeException("List of Instructor is null");
         }
@@ -36,14 +33,11 @@ public class InstructorServiceImpl implements InstructorService {
 
     public Instructor findById(int id) {
         try {
-            return repository.findById(id).orElseThrow(() -> new RuntimeException("Instructor not found!"));
+            return instructorRepository.findById(id).orElseThrow(() -> new RuntimeException("Instructor not found!"));
         } catch (Exception e) {
             throw new RuntimeException("Instructor is null");
         }
-=======
-public class InstructorServiceImpl implements InstructorService{
-    private InstructorRepository instructorRepository;
-
+    }
 
     @Override
     public Instructor createInstructor(Instructor instructor) {
@@ -78,6 +72,5 @@ public class InstructorServiceImpl implements InstructorService{
         Instructor instructor = instructorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Instructor not found"));
         instructorRepository.delete(instructor);
->>>>>>> Stashed changes
     }
 }
