@@ -65,7 +65,6 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new RuntimeException("Course not found"));
         User user = userRepository.findById(reviewCreateDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         review.setCourse(course);
         review.setUser(user);
         review.setRating(reviewCreateDto.getRating());

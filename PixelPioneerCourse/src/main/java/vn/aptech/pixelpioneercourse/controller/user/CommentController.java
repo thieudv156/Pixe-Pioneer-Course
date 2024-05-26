@@ -42,7 +42,7 @@ public class CommentController {
         model.addAttribute("comments", comments);
         return "course/comments_list";
     }
-
+    
     @GetMapping("/comment/{id}")
     public String getCommentById(@PathVariable int id, Model model) {
         Optional<Review> comment = commentService.getCommentById(id);
