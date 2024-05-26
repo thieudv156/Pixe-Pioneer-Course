@@ -13,9 +13,5 @@ public interface AccountService {
 
     Optional<AccountDto> findById(int id);
 
-    Optional<AccountDto> findByEmail(String email);
-
-    boolean checkLogin(String email, String password);
-
     void delete(AccountDto accountDto);
 }
