@@ -14,28 +14,39 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService{
     @Autowired
     private AccountRepository accountRepository;
-    
+
     @Autowired
     private ModelMapper mapper;
-    
+
     public List<AccountDto> findAll(){
         List<AccountDto> accounts = accountRepository.findAll().stream().map(account -> {
             return mapper.map(account, AccountDto.class);
         }).toList();
         return accounts;
     }
-    
+
     public Optional<AccountDto> findById(int id){
         return accountRepository.findById(id).map(account -> {
             return mapper.map(account, AccountDto.class);
         });
     }
-    
+
+    public Optional<AccountDto> findByEmail(String email) {
+        return accountRepository.findByEmail(email).map(account -> {
+            return mapper.map(account, AccountDto.class);
+        });
+    }
+
+    public boolean checkLogin(String email, String password) {
+        Optional<AccountDto> acc = findByEmail(email);
+        return (acc.isPresent() && acc.get().getEmail().equals(email) && acc.get().getPassword().equals(password));
+    }
+
     public void create(AccountDto accountDto){
         Account account = mapper.map(accountDto, Account.class);
         accountRepository.save(account);
     }
-    
+
     public void update(AccountDto accountDto){
         Account existedAccount = accountRepository.findById(accountDto.getId()).orElseThrow(() -> new RuntimeException("Account not found!"));
         existedAccount.setId(accountDto.getId());
@@ -45,9 +56,9 @@ public class AccountServiceImpl implements AccountService{
         existedAccount.setPhone(accountDto.getPhone());
         accountRepository.save(existedAccount);
     }
-    
+
     public void delete(AccountDto accountDto){
         accountRepository.deleteById(accountDto.getId());
     }
-    
+
 }
