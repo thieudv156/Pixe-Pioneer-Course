@@ -1,32 +1,31 @@
 package vn.aptech.pixelpioneercourse.controller.user;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import vn.aptech.pixelpioneercourse.service.AccountService;
 
-@Controller
-@RequestMapping("")
+@RestController
 public class LoginController {
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public LoginController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
-    @GetMapping("")
-    public String index() {return "/login";}
-
-    @PostMapping("/logintoaccount")
-    public String checkLogin(String email, String password) {
-        if (accountService.checkLogin(email,password)) {
-            return "redirect:/course";
+    @PostMapping(value = "login")
+    public ResponseEntity<String> checkLogin(@RequestParam String email, @RequestParam String password) {
+        if (accountService.checkLogin(email, password)) {
+            System.out.println("LOGIN SUCCESSFUL FOR " + email);
+            return ResponseEntity.ok().body("Login successful");
         } else {
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Login failed");
         }
     }
 }

@@ -2,11 +2,20 @@ package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import vn.aptech.pixelpioneercourse.dto.AccountDto;
 import vn.aptech.pixelpioneercourse.entities.Account;
 import vn.aptech.pixelpioneercourse.repository.AccountRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +23,13 @@ import java.util.Optional;
 public class AccountServiceImpl implements AccountService{
     @Autowired
     private AccountRepository accountRepository;
+
+    private final PasswordEncoder encoder;
+
+    public AccountServiceImpl(AccountRepository acct, PasswordEncoder ed) {
+        this.accountRepository = acct;
+        this.encoder = ed;
+    }
 
     @Autowired
     private ModelMapper mapper;
@@ -39,8 +55,20 @@ public class AccountServiceImpl implements AccountService{
 
     public boolean checkLogin(String email, String password) {
         Optional<AccountDto> acc = findByEmail(email);
-        return (acc.isPresent() && acc.get().getEmail().equals(email) && acc.get().getPassword().equals(password));
+        if (acc.isPresent()) {
+            AccountDto accountDto = acc.get();
+            String hashedPassword = accountDto.getPassword();
+            return encoder.matches(password, hashedPassword);
+        }
+        return false;
     }
+
+
+    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+        Account tbAccount = accountRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Invalid email or password."));
+        return new User(tbAccount.getEmail(), tbAccount.getPassword(), true, true, true, true, Collections.emptyList());
+    }
+
 
     public void create(AccountDto accountDto){
         Account account = mapper.map(accountDto, Account.class);

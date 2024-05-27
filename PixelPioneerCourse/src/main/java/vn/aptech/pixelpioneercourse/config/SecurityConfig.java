@@ -41,21 +41,14 @@ public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFil
     }
 
     @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http
-        .authorizeRequests(authorize -> authorize
-            .requestMatchers("/login", "/logout", "/api/**").permitAll()
-            .anyRequest().authenticated()
-        )
-        .formLogin(formLogin -> formLogin
-            .loginPage("/login")
-            .defaultSuccessUrl("/course")
-            .failureUrl("/login?error=true")
-        )
-        .logout(logout -> logout
-            .logoutUrl("/logout")
-            .logoutSuccessUrl("/login")
-        )
-        .build();
-}
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher("/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .build();
+    }
 }
