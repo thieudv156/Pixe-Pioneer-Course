@@ -1,6 +1,5 @@
 package vn.aptech.pixelpioneercourse.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -17,8 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import vn.aptech.pixelpioneercourse.until.PublicRoutes;
+
+import vn.aptech.pixelpioneercourse.until.*;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +30,12 @@ public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFil
 //    @Autowired
 //    public SecurityConfig(UserDetailsService userDetailsService) {
 //        this.userDetailsService = userDetailsService;
+//    }
+    
+//	@Override
+//	@Order(1)
+//	public void configure(HttpSecurity http) throws Exception {
+//		http.csrf(AbstractHttpConfigurer::disable);
 //    }
 
     @Bean
@@ -41,14 +48,33 @@ public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFil
     }
 
     @Bean
+    @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .securityMatcher("/**")
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
+                        .requestMatchers(HttpMethod.GET, "/","/api/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/loginAccess").permitAll()
+                        .anyRequest().permitAll()
                 )
                 .build();
+    }
+    
+    @Bean
+    @Order(2) //thu tu chay
+    SecurityFilterChain api(HttpSecurity http) throws Exception{
+        PublicRoutes.PublicRoutesManager.publicRoutes()
+                .add(HttpMethod.POST, "/loginAccess")
+                .add(HttpMethod.GET, "/api/products")
+                .injectOn(http);
+        http.csrf(AbstractHttpConfigurer::disable)
+                .securityMatcher("/**")
+                .authorizeHttpRequests(request-> request.anyRequest().authenticated())
+                .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(authenticationMiddleware, UsernamePasswordAuthenticationFilter.class)
+//                .exceptionHandling(hdl->hdl.authenticationEntryPoint(
+//                        (req, res, ex) -> ResponseEntity.status(403).build()))
+                .cors(configurer-> new CorsConfiguration().applyPermitDefaultValues());
+        return http.build();
     }
 }
