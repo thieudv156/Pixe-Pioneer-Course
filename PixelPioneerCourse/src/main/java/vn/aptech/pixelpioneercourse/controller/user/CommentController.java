@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 //@RequestMapping("/app/course") //co the them id cua tung course
 public class CommentController {
 

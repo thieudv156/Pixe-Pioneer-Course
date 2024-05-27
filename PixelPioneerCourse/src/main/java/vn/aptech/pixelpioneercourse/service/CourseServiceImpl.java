@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
+import vn.aptech.pixelpioneercourse.entities.Instructor;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 
 import java.util.List;
@@ -25,20 +26,13 @@ public class CourseServiceImpl implements CourseService{
     @Autowired
     private InstructorService InstructorService;
 
-    private CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService CategoryService, InstructorService InstructorService){
-        this.courseRepository = courseRepository;
-        this.mapper = mapper;
-        this.CategoryService = CategoryService;
-        this.InstructorService = InstructorService;
-    }
-
     //from CourseCreateDto to Course
     private Course toCourse(CourseCreateDto dto){
         return mapper.map(dto, Course.class);
     }
 
     //Find all courses
-   public List<Course> findAll(){
+    public List<Course> findAll(){
         try{
             return courseRepository.findAll();
         }
@@ -59,15 +53,14 @@ public class CourseServiceImpl implements CourseService{
 
     //Save course
     public Course save(CourseCreateDto dto){
-        if(dto == null){
+        if (dto == null) {
             throw new RuntimeException("Course is null");
         }
-        try{
+        try {
             Course course = toCourse(dto);
             return courseRepository.save(course);
-        }
-        catch (Exception e){
-            throw new RuntimeException("Course is null");
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving course: " + e.getMessage());
         }
     }
 
@@ -88,8 +81,52 @@ public class CourseServiceImpl implements CourseService{
         catch (Exception e){
             throw new RuntimeException("Course is null");
         }
-        
+
     }
+
+    //Delete course
+    public boolean delete(int id){
+        try{
+            courseRepository.deleteById(id);
+            return true;
+        }
+        catch (Exception e){
+            throw new RuntimeException("Course is null");
+        }
+    }
+
+    //Find course by categoryId
+    public List<Course> findByCategoryId(int categoryId){
+        try{
+            Category category = CategoryService.findById(categoryId);
+            return courseRepository.findByCategory(category);
+        }
+        catch (Exception e){
+            throw new RuntimeException("Course is null");
+        }
+    }
+
+    //Find course by instructorId
+    public List<Course> findByInstructorId(int instructorId){
+        try{
+            Instructor instructor = InstructorService.findById(instructorId);
+            return courseRepository.findByInstructor(instructor);
+        }
+        catch (Exception e){
+            throw new RuntimeException("Course is null");
+        }
+    }
+
+    //Find course by title
+    public List<Course> findByTitle(String title){
+        try{
+            return courseRepository.findByTitleContainingIgnoreCase(title);
+        }
+        catch (Exception e){
+            throw new RuntimeException("Course name not found!");
+        }
+    }
+
 
 
 }
