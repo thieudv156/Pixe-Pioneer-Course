@@ -28,5 +28,12 @@ public class CourseCreateDto {
     @NotNull(message = "Instructor ID is mandatory")
     private int instructorId;
 
+    @NotNull(message = "Creation date is mandatory")
+    private LocalDateTime createdAt;
+
+    @NotNull(message = "Update date is mandatory")
+    private LocalDateTime updatedAt;
+
+    @NotBlank(message = "Image URL is mandatory")
     private String image;
 }
