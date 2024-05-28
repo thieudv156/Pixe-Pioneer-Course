@@ -1,8 +1,6 @@
 package vn.aptech.pixelpioneercourse.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,15 +12,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class LessonCreateDto {
 
-    @NotBlank(message = "Title is mandatory")
+    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotNull(message = "Course ID is mandatory")
+    @NotNull(message = "Course ID is required")
     private Integer courseId;
 
-    @Positive(message = "Duration must be positive")
-    private int duration;
+    @NotBlank(message = "Image is required")
+    private String image;
 
-    @NotNull(message = "Created at date is mandatory")
+    @NotNull(message = "Created at date is required")
     private LocalDateTime createdAt;
 }
