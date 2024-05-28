@@ -2,7 +2,10 @@ package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< Updated upstream
 import org.springframework.beans.factory.annotation.Value;
+=======
+>>>>>>> Stashed changes
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +21,6 @@ import vn.aptech.pixelpioneercourse.jwt.JWT;
 import vn.aptech.pixelpioneercourse.repository.RefreshTokenRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
 import vn.aptech.pixelpioneercourse.dto.AccountDto;
-import vn.aptech.pixelpioneercourse.entities.Account;
 import vn.aptech.pixelpioneercourse.repository.AccountRepository;
 
 import java.time.LocalDateTime;

@@ -25,17 +25,16 @@ public class Enrollment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-
     @Column(name="progress")
     private int progress = 0;
 
     @Column(nullable = false)
     private LocalDateTime enrolledAt;
 
-    @Column
+    @Column(name="payment_date")
     private LocalDateTime paymentDate;
 
+    @Column(name="payment_method")
     @Enumerated(EnumType.STRING)
-    @Column
     private PaymentMethod paymentMethod;
 }

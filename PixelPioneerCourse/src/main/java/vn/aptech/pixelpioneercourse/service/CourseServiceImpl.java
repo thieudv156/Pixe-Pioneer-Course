@@ -1,11 +1,11 @@
 package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
-import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 
 import java.util.List;
@@ -13,18 +13,15 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService{
 
-    final private CourseRepository courseRepository;
-    final private ModelMapper mapper;
-    final private CategoryService categoryService;
-    final private UserService userService;
+    @Autowired
+    private CourseRepository courseRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService) {
-        this.courseRepository = courseRepository;
-        this.mapper = mapper;
-        this.categoryService = categoryService;
-        this.userService = userService;
+    @Autowired
+    private ModelMapper mapper;
 
-    }
+    @Autowired
+    private CategoryService CategoryService;
+
 
 
     //from CourseCreateDto to Course
@@ -53,20 +50,15 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Save course
-    public boolean save(CourseCreateDto dto){
+    public Course save(CourseCreateDto dto){
         if (dto == null) {
             throw new RuntimeException("Course is null");
         }
         try {
             Course course = toCourse(dto);
-            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0) {
-                course.setCategory(categoryService.findById(dto.getCategoryId()));
-                course.setInstructor(userService.findById(dto.getInstructorId()));
-            }
-            courseRepository.save(course);
-            return true;
+            return courseRepository.save(course);
         } catch (Exception e) {
-            throw new RuntimeException("Cannot save course!");
+            throw new RuntimeException("Error saving course: " + e.getMessage());
         }
     }
 
@@ -79,9 +71,8 @@ public class CourseServiceImpl implements CourseService{
             Course existedCourse = courseRepository.findById(id).orElseThrow(()-> new RuntimeException("Course not found!"));
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
-            existedCourse.setCategory(categoryService.findById(dto.getCategoryId()));
-            existedCourse.setInstructor(userService.findById(dto.getInstructorId()));
-            existedCourse.setUpdatedAt(java.time.LocalDateTime.now());
+            existedCourse.setCategory(CategoryService.findById(dto.getCategoryId()));
+            existedCourse.setUser(.findById(dto.getInstructorId()));
             courseRepository.save(existedCourse);
             return true;
         }
@@ -105,7 +96,8 @@ public class CourseServiceImpl implements CourseService{
     //Find course by categoryId
     public List<Course> findByCategoryId(int categoryId){
         try{
-            return courseRepository.findByCategoryId(categoryId);
+            Category category = CategoryService.findById(categoryId);
+            return courseRepository.findByCategory(category);
         }
         catch (Exception e){
             throw new RuntimeException("Course is null");
@@ -115,7 +107,8 @@ public class CourseServiceImpl implements CourseService{
     //Find course by instructorId
     public List<Course> findByInstructorId(int instructorId){
         try{
-            return courseRepository.findByInstructorId(instructorId);
+            User instructor = InstructorService.findById(instructorId);
+            return courseRepository.findByInstructor(instructor);
         }
         catch (Exception e){
             throw new RuntimeException("Course is null");
@@ -131,8 +124,6 @@ public class CourseServiceImpl implements CourseService{
             throw new RuntimeException("Course name not found!");
         }
     }
-
-
 
 
 

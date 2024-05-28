@@ -1,7 +1,5 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +24,6 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    @JsonBackReference
     private Category category;
 
     @Column(columnDefinition = "TEXT")
@@ -37,28 +34,28 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
-    @JsonBackReference
-    private  User instructor;
+    private User user;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private boolean isPublished = false;
-
-    @Column(name = "image")
     private String image;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<Enrollment> enrollments;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<Review> reviews;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Discussion> discussions;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lesson> lessons;
 
 
 }

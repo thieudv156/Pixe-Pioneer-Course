@@ -26,20 +26,18 @@ public class SubLesson {
     @JoinColumn(name = "lesson_id", nullable = false)
     private Lesson lesson;
 
-    @Column
+    @Column(name = "content" , columnDefinition = "TEXT")
     private String content;
 
-    @Column
-    private boolean completeStatus=false;
-
-    @Column
+    @Column(name = "image")
     private String image;
+
+    @Column(name="completed_status")
+    private boolean completedStatus = false;
 
     @Column
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL)
     private List<Discussion> discussions;
-
-
 }
