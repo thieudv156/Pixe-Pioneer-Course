@@ -12,6 +12,6 @@ public interface CourseService {
     Course save(CourseCreateDto dto);
     boolean delete(int id);
     List<Course> findByCategoryId(int categoryId);
-    List<Course> findByInstructorId(int instructorId);
+    List<Course> findByUserInstructorId(int instructorId);
     List<Course> findByTitle(String title);
 }

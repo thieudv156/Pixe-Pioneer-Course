@@ -58,9 +58,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Discussion> discussions;
 
-<<<<<<< Updated upstream
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Cart> carts;
+    private List<Test> tests;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Course> courses;
     
     public List<String> getAuthorities() {
         return Collections.singletonList(role.getRoleName());
@@ -69,6 +71,5 @@ public class User {
     public SimpleGrantedAuthority getGrantedAuthorities(){
         return new SimpleGrantedAuthority(role.getRoleName());
     }
-=======
->>>>>>> Stashed changes
+
 }

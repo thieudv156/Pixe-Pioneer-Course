@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
 
         Course course = courseRepository.findById(reviewCreateDto.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Course not found"));
-        User user = userRepository.findById(reviewCreateDto.getUserId())
+        User user = userRepository.findById(reviewCreateDto.getStudentId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         review.setCourse(course);
@@ -63,12 +63,12 @@ public class CommentServiceImpl implements CommentService {
 
         Course course = courseRepository.findById(reviewCreateDto.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Course not found"));
-        User user = userRepository.findById(reviewCreateDto.getUserId())
+        User user = userRepository.findById(reviewCreateDto.getStudentId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         review.setCourse(course);
         review.setUser(user);
         review.setRating(reviewCreateDto.getRating());
-        review.setComment(reviewCreateDto.getComment());
+        review.setContent(reviewCreateDto.getContent());
         review.setCreatedAt(LocalDateTime.now());
 
         return reviewRepository.save(review);

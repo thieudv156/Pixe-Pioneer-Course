@@ -18,7 +18,7 @@ public class Test {
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", name = "student_id")
-    private User student;
+    private User user;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", name = "lesson_id")

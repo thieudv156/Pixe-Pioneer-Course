@@ -2,20 +2,17 @@ package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< Updated upstream
 import org.springframework.beans.factory.annotation.Value;
-=======
->>>>>>> Stashed changes
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import lombok.extern.slf4j.Slf4j;
 import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.UserInformation;
+import vn.aptech.pixelpioneercourse.entities.Account;
 import vn.aptech.pixelpioneercourse.entities.RefreshToken;
 import vn.aptech.pixelpioneercourse.jwt.JWT;
 import vn.aptech.pixelpioneercourse.repository.RefreshTokenRepository;
