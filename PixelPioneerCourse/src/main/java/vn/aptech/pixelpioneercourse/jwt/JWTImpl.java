@@ -1,10 +1,14 @@
 package vn.aptech.pixelpioneercourse.jwt;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.lang.Strings;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.WeakKeyException;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import vn.aptech.pixelpioneercourse.dto.Authorized;
 
@@ -14,6 +18,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class JWTImpl implements JWT{
@@ -24,7 +29,7 @@ public class JWTImpl implements JWT{
         try{
             return Keys.hmacShaKeyFor(bytes);
         } catch (WeakKeyException e){
-            log.info("Creating jwt key with weakkey");
+            log.info("Creating jwt key with weak key");
             return Keys.hmacShaKeyFor(Arrays.copyOf(bytes,64));
         }
     }
@@ -44,24 +49,23 @@ public class JWTImpl implements JWT{
     @Override
     public Authorized decode(String token, String secret) {
         log.info("Decode jwt");
-        var decode = Jwts.parser()
+        Jws<Claims> decodedToken = Jwts.parserBuilder()
                 .setSigningKey(secretToKey(secret))
                 .build()
                 .parseClaimsJws(token);
 
-        var id = decode
+        String id = decodedToken
                 .getBody()
                 .getSubject();
 
-        var rolesString = decode
+        String rolesString = decodedToken
                 .getBody()
-                .get("roles")
-                .toString();
+                .get("roles", String.class); // Ensure you get the roles as a String
 
-        var roles = rolesString.split(",");
-        var authorities = Arrays.stream(roles)
-                .map(r-> new SimpleGrantedAuthority(r))
-                .toList();
+        List<SimpleGrantedAuthority> authorities = Arrays.stream(rolesString.split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
         return new Authorized(Integer.parseInt(id), authorities);
     }
 }

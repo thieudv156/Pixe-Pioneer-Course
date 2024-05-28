@@ -2,33 +2,41 @@ package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+import vn.aptech.pixelpioneercourse.dto.Authentication;
+import vn.aptech.pixelpioneercourse.dto.LoginDto;
+import vn.aptech.pixelpioneercourse.dto.UserInformation;
+import vn.aptech.pixelpioneercourse.entities.RefreshToken;
+import vn.aptech.pixelpioneercourse.jwt.JWT;
+import vn.aptech.pixelpioneercourse.repository.RefreshTokenRepository;
+import vn.aptech.pixelpioneercourse.repository.UserRepository;
 import vn.aptech.pixelpioneercourse.dto.AccountDto;
 import vn.aptech.pixelpioneercourse.entities.Account;
 import vn.aptech.pixelpioneercourse.repository.AccountRepository;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class AccountServiceImpl implements AccountService{
     @Autowired
     private AccountRepository accountRepository;
 
-    private final PasswordEncoder encoder;
+    private final PasswordEncoder encoderr;
 
     public AccountServiceImpl(AccountRepository acct, PasswordEncoder ed) {
-        this.accountRepository = acct;
-        this.encoder = ed;
+        accountRepository = acct;
+        encoderr = ed;
     }
 
     @Autowired
@@ -89,4 +97,76 @@ public class AccountServiceImpl implements AccountService{
         accountRepository.deleteById(accountDto.getId());
     }
 
+    
+    // =========================================================================================================
+    /*
+     * API SECTION
+     */
+    
+    @Value("jwt.secret")
+    public String TOKEN_SECRET;
+    
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private JWT jwt;
+    
+    @Autowired
+    private PasswordEncoder encoder;
+    
+    public Authentication processLogin(LoginDto body){
+        String email = body.getEmail();
+        String password = body.getPassword();
+
+        vn.aptech.pixelpioneercourse.entities.User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email or password is invalid!\n"));
+        
+        //so sanh password
+        if(!encoder.matches(password, user.getPassword())){
+            throw new UsernameNotFoundException("Email or password is invalid!");
+        }
+         
+        var expiredAt = LocalDateTime.now().plusDays(1);
+        var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
+
+        
+        //Tao refreshToken
+        refreshTokenRepository.disableRefreshTokenFromUser(user.getId());
+        RefreshToken refreshToken = new RefreshToken(user, 7);
+        refreshTokenRepository.save(refreshToken);
+        
+        Authentication authentication = new Authentication(new UserInformation(user), accessToken, refreshToken.getCode(), expiredAt);
+        
+        return authentication;
+    }
+    
+    public Authentication processLogin(String email, String password){
+        
+        if (!checkLogin(email, password)) {
+        	throw new UsernameNotFoundException("Email or password is invalid!");
+        }
+
+        vn.aptech.pixelpioneercourse.entities.User user = userRepository.findByEmail(email).orElseThrow();
+        
+//        //so sanh password
+//        if(!encoder.matches(password, user.getPassword())){
+//            throw new UsernameNotFoundException("Email or password is invalid!");
+//        }
+         
+        var expiredAt = LocalDateTime.now().plusDays(1);
+        var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
+
+        
+        //Tao refreshToken
+        refreshTokenRepository.disableRefreshTokenFromUser(user.getId());
+        RefreshToken refreshToken = new RefreshToken(user, 7);
+        refreshTokenRepository.save(refreshToken);
+        
+        Authentication authentication = new Authentication(new UserInformation(user), accessToken, refreshToken.getCode(), expiredAt);
+        
+        return authentication;
+    }
 }

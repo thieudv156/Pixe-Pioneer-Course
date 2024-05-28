@@ -73,6 +73,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/app/login")
 public class LoginController {
 
     private final AccountService accountService;
@@ -82,7 +83,7 @@ public class LoginController {
         this.accountService = accountService;
     }
 
-    @PostMapping("/loginAccess")
+    @PostMapping()
     public ResponseEntity<String> checkLogin(@RequestParam String email, @RequestParam String password) {
         if (accountService.checkLogin(email, password)) {
             System.out.println("LOGIN SUCCESSFUL FOR " + email);
