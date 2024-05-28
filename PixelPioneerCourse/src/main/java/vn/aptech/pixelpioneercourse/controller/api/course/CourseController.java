@@ -1,11 +1,8 @@
 package vn.aptech.pixelpioneercourse.controller.api.course;
 
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +10,6 @@ import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.service.CategoryService;
 import vn.aptech.pixelpioneercourse.service.CourseService;
-
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,47 +18,66 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/course")
 public class CourseController {
+    final private CourseService courseService;
+    final private CategoryService categoryService;
 
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public CourseController(CourseService courseService, CategoryService categoryService) {
+        this.courseService = courseService;
+        this.categoryService = categoryService;
+    }
 
     @GetMapping("")
-    public ResponseEntity<List<Course>> index(){
-        return ResponseEntity.ok(courseService.findAll());
+    public ResponseEntity<?> index(){
+        try {
+            return ResponseEntity.ok(courseService.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> findById(@PathVariable("id") int id){
-        Optional<Course> result = Optional.ofNullable(courseService.findById(id));
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> findById(@PathVariable("id") int id){
+        try {
+            Optional<Course> result = Optional.ofNullable(courseService.findById(id));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<Course>> findCourseByCategoryId(@PathVariable("categoryId") int categoryId){
-        Optional<List<Course>> result = Optional.ofNullable(courseService.findByCategoryId(categoryId));
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> findCourseByCategoryId(@PathVariable("categoryId") int categoryId){
+        try {
+            Optional<List<Course>> result = Optional.ofNullable(courseService.findByCategoryId(categoryId));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/instructors/{instructorId}")
-    public ResponseEntity<List<Course>> findCourseByInstructorId(@PathVariable("instructorId") int instructorId){
-        Optional<List<Course>> result = Optional.ofNullable(courseService.findByInstructorId(instructorId));
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> findCourseByInstructorId(@PathVariable("instructorId") int instructorId){
+        try {
+            Optional<List<Course>> result = Optional.ofNullable(courseService.findByUserInstructorId(instructorId));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/search/{title}")
-    public ResponseEntity<List<Course>> findByTitle(@PathVariable("title") String keyword){
-        Optional<List<Course>> result = Optional.ofNullable(courseService.findByTitle(keyword));
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> findByTitle(@PathVariable("title") String keyword){
+        try {
+            Optional<List<Course>> result = Optional.ofNullable(courseService.findByTitle(keyword));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/create")
-    public ResponseEntity<Map<String, Object>> create() {
+public ResponseEntity<?> create() {
+    try {
         Map<Integer, String> categories = new HashMap<>();
         categoryService.findAll().forEach(c -> categories.put(c.getId(), c.getName()));
 
@@ -72,10 +86,13 @@ public class CourseController {
         response.put("course", new CourseCreateDto());
 
         return ResponseEntity.ok(response);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
     }
+}
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody CourseCreateDto courseCreateDto) throws URISyntaxException {
+    public ResponseEntity<?> create(@Valid @RequestBody CourseCreateDto courseCreateDto) {
         try {
             Course result = courseService.save(courseCreateDto);
             return ResponseEntity.ok(result);

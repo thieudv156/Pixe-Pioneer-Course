@@ -9,4 +9,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     //@Query("SELECT object FROM from User WHERE o.email=:email")
     //Spring tu sinh ma
     Optional<User> findByEmail(String email);
+
+    Optional<User> findById(int id);
 }

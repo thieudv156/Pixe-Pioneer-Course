@@ -1,27 +1,36 @@
 package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
+
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
-    final private UserRepository userRepository;
-    final private ModelMapper mapper;
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper mapper) {
-        this.userRepository = userRepository;
-        this.mapper = mapper;
-    }
+    @Autowired
+    private ModelMapper modelMapper;
 
-    public User findById(int id){
-        try {
-            return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found!"));
+    public List<User> findAll(){
+        try{
+            return userRepository.findAll();
         }
         catch (Exception e){
-            throw new RuntimeException("Category is null");
+            throw new RuntimeException("List of User is null");
+        }
+    }
+
+    public User findById(int id) {
+        try {
+            return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found!"));
+        } catch (Exception e) {
+            throw new RuntimeException("User is null");
         }
     }
 }
