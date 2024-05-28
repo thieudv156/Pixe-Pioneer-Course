@@ -6,11 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.aptech.pixelpioneercourse.dto.InstructorCreateDto;
-import vn.aptech.pixelpioneercourse.entities.Instructor;
-import vn.aptech.pixelpioneercourse.service.InstructorService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/instructor")

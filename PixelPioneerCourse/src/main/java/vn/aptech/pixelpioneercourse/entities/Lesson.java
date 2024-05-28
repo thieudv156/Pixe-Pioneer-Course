@@ -27,14 +27,15 @@ public class Lesson {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @Column
-    private int duration;
+    @Column(name="completed_status")
+    private boolean completedStatus = false;
+
+    @Column(nullable = false)
+    private String image;
 
     @Column
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
-    private List<Content> contents;
 
 
 

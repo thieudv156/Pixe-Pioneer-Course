@@ -23,14 +23,14 @@ public class Review {
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "student_id")
     private User user;
 
     @Column(nullable = false)
     private int rating;
 
     @Column(columnDefinition = "TEXT")
-    private String comment;
+    private String content;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

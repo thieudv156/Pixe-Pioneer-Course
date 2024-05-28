@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
-import vn.aptech.pixelpioneercourse.entities.Instructor;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 
 import java.util.List;
@@ -23,8 +22,7 @@ public class CourseServiceImpl implements CourseService{
     @Autowired
     private CategoryService CategoryService;
 
-    @Autowired
-    private InstructorService InstructorService;
+
 
     //from CourseCreateDto to Course
     private Course toCourse(CourseCreateDto dto){
@@ -74,7 +72,7 @@ public class CourseServiceImpl implements CourseService{
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
             existedCourse.setCategory(CategoryService.findById(dto.getCategoryId()));
-            existedCourse.setInstructor(InstructorService.findById(dto.getInstructorId()));
+            existedCourse.setUser(.findById(dto.getInstructorId()));
             courseRepository.save(existedCourse);
             return true;
         }
@@ -109,7 +107,7 @@ public class CourseServiceImpl implements CourseService{
     //Find course by instructorId
     public List<Course> findByInstructorId(int instructorId){
         try{
-            Instructor instructor = InstructorService.findById(instructorId);
+            User instructor = InstructorService.findById(instructorId);
             return courseRepository.findByInstructor(instructor);
         }
         catch (Exception e){

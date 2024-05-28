@@ -49,9 +49,6 @@ public class User {
     @Column(nullable = false, name = "created_at")
     private LocalDate createdAt;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
-    private Instructor instructor;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments;
 
@@ -59,8 +56,9 @@ public class User {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Discussion> discussions;
 
+<<<<<<< Updated upstream
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts;
     
@@ -71,4 +69,6 @@ public class User {
     public SimpleGrantedAuthority getGrantedAuthorities(){
         return new SimpleGrantedAuthority(role.getRoleName());
     }
+=======
+>>>>>>> Stashed changes
 }

@@ -25,13 +25,16 @@ public class Enrollment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "billing_id", referencedColumnName = "id", nullable = false, unique = true)
-    private Billing payment;
-
     @Column(name="progress")
     private int progress = 0;
 
     @Column(nullable = false)
     private LocalDateTime enrolledAt;
+
+    @Column(name="payment_date")
+    private LocalDateTime paymentDate;
+
+    @Column(name="payment_method")
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 }

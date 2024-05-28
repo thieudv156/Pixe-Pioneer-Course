@@ -98,6 +98,20 @@ public class CourseController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") int id) {
+        try {
+            boolean deleted = courseService.delete(id);
+            if (deleted) {
+                return ResponseEntity.ok("Course delete successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -108,6 +122,7 @@ public class CourseController {
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
 
 
 }

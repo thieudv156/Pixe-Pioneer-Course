@@ -13,15 +13,15 @@ import java.util.List;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "comments")
-public class Comment {
+@Table(name = "discussions")
+public class Discussion {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JoinColumn(name = "sub_lesson_id")
+    private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -29,7 +29,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    private Comment parent;
+    private Discussion parent;
 
     @Column(name="content", columnDefinition = "TEXT")
     private String content;
@@ -38,5 +38,5 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> children;
+    private List<Discussion> children;
 }
