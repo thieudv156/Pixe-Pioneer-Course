@@ -33,8 +33,8 @@ public class Course {
     private double price;
 
     @ManyToOne
-    @JoinColumn(name = "instructor_id", nullable = false)
-    private Instructor instructor;
+    @JoinColumn(name = "instructor_id", referencedColumnName = "id")
+    private  User instructor;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -54,10 +54,5 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Content> contents;
 
-    @OneToOne(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PaymentDetail paymentDetails;
-
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartDetail> cartDetails;
 }
 

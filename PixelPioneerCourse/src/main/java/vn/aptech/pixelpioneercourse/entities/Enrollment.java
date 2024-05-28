@@ -25,9 +25,7 @@ public class Enrollment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "billing_id", referencedColumnName = "id", nullable = false, unique = true)
-    private Billing payment;
+
 
     @Column(name="progress")
     private int progress = 0;
