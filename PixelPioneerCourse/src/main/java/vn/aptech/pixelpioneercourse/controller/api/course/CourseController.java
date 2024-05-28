@@ -62,28 +62,40 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/instructors/{instructorId}")
-    public ResponseEntity<List<Course>> findCourseByInstructorId(@PathVariable("instructorId") int instructorId){
-        Optional<List<Course>> result = Optional.ofNullable(courseService.findByInstructorId(instructorId));
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+   @GetMapping("/instructors/{instructorId}")
+    public ResponseEntity<?> findCourseByInstructorId(@PathVariable("instructorId") int instructorId){
+        try {
+            Optional<List<Course>> result = Optional.ofNullable(courseService.findByInstructorId(instructorId));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/search/{title}")
-    public ResponseEntity<List<Course>> findByTitle(@PathVariable("title") String keyword){
-        Optional<List<Course>> result = Optional.ofNullable(courseService.findByTitle(keyword));
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> findByTitle(@PathVariable("title") String keyword){
+        try {
+            Optional<List<Course>> result = Optional.ofNullable(courseService.findByTitle(keyword));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/create")
-    public ResponseEntity<Map<String, Object>> create() {
-        Map<Integer, String> categories = new HashMap<>();
-        categoryService.findAll().forEach(c -> categories.put(c.getId(), c.getName()));
+    public ResponseEntity<?> create() {
+        try {
+            Map<Integer, String> categories = new HashMap<>();
+            categoryService.findAll().forEach(c -> categories.put(c.getId(), c.getName()));
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("categories", categories);
-        response.put("course", new CourseCreateDto());
+            Map<String, Object> response = new HashMap<>();
+            response.put("categories", categories);
+            response.put("course", new CourseCreateDto());
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @PostMapping("/create")
