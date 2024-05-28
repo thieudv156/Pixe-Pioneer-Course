@@ -3,12 +3,15 @@ package vn.aptech.pixelpioneercourse.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +23,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
@@ -46,6 +49,9 @@ public class User {
     @Column(nullable = false, name = "created_at")
     private LocalDate createdAt;
 
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    private Instructor instructor;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments;
 
@@ -53,12 +59,16 @@ public class User {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Discussion> discussions;
-
-    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Course> courses;
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Test> tests;
-
+    private List<Cart> carts;
+    
+    public List<String> getAuthorities() {
+        return Collections.singletonList(role.getRoleName());
+    }
+    
+    public SimpleGrantedAuthority getGrantedAuthorities(){
+        return new SimpleGrantedAuthority(role.getRoleName());
+    }
 }
