@@ -5,38 +5,34 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 
 @Entity
-@Table(name = "sub_lessons")
-public class SubLesson {
+@Table(name = "quizzes")
+public class Quizz {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int id;
-
-    @Column(nullable = false)
-    private String title;
 
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
     private Lesson lesson;
 
     @Column
-    private String content;
+    private String question;
 
     @Column
-    private boolean completeStatus=false;
+    private String correctAnswer;
 
     @Column
-    private String image;
+    private String wrongAnswer1;
 
     @Column
-    private LocalDateTime createdAt;
+    private String wrongAnswer2;
 
+    @Column
+    private String wrongAnswer3;
 
 }

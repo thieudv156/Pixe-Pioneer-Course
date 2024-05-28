@@ -50,11 +50,11 @@ public class CourseController {
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    @GetMapping("/instructors/{instructorId}")
-//    public ResponseEntity<List<Course>> findCourseByInstructorId(@PathVariable("instructorId") int instructorId){
-//        Optional<List<Course>> result = Optional.ofNullable(courseService.findByInstructorId(instructorId));
-//        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-//    }
+    @GetMapping("/instructors/{instructorId}")
+    public ResponseEntity<List<Course>> findCourseByInstructorId(@PathVariable("instructorId") int instructorId){
+        Optional<List<Course>> result = Optional.ofNullable(courseService.findByInstructorId(instructorId));
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @GetMapping("/search/{title}")
     public ResponseEntity<List<Course>> findByTitle(@PathVariable("title") String keyword){

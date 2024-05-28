@@ -28,13 +28,20 @@ public class Lesson {
     private Course course;
 
     @Column
-    private int duration;
+    private boolean completeStatus=false;
+
+    @Column
+    private String image;
 
     @Column
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
-    private List<Content> contents;
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Test> tests;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SubLesson> subLessons;
+
 
 
 

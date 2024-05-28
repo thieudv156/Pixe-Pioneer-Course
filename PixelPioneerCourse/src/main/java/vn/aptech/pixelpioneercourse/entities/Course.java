@@ -42,6 +42,9 @@ public class Course {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(name = "image")
+    private String image;
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments;
 
@@ -49,10 +52,8 @@ public class Course {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Discussion> discussions;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Content> contents;
 
 }
 

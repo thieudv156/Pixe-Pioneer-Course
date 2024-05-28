@@ -1,34 +1,39 @@
 package vn.aptech.pixelpioneercourse.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class CourseCreateDto {
-
-    private Integer id;
-
     @NotBlank(message = "Title is mandatory")
-    @Size(max = 255, message = "Title must be less than 255 characters")
     private String title;
 
     @NotNull(message = "Category ID is mandatory")
-    private Integer categoryId;
+    private int categoryId;
 
-    @Size(max = 1000, message = "Description must be less than 1000 characters")
+    @NotBlank(message = "Description is mandatory")
+    @Size(max = 5000, message = "Description cannot exceed 5000 characters")
     private String description;
 
-    @Positive(message = "Price must be positive")
+    @NotNull(message = "Price is mandatory")
+    @PositiveOrZero(message = "Price must be zero or positive")
     private double price;
 
     @NotNull(message = "Instructor ID is mandatory")
-    private Integer instructorId;
+    private int instructorId;
+
+    @NotNull(message = "Creation date is mandatory")
+    private LocalDateTime createdAt;
+
+    @NotNull(message = "Update date is mandatory")
+    private LocalDateTime updatedAt;
+
+    @NotBlank(message = "Image URL is mandatory")
+    private String image;
 }

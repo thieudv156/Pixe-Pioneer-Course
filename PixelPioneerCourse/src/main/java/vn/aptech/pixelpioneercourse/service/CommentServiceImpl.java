@@ -68,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
         review.setCourse(course);
         review.setUser(user);
         review.setRating(reviewCreateDto.getRating());
-        review.setComment(reviewCreateDto.getComment());
+        review.setContent(reviewCreateDto.getContent());
         review.setCreatedAt(LocalDateTime.now());
 
         return reviewRepository.save(review);

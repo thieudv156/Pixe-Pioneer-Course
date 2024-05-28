@@ -26,10 +26,16 @@ public class Enrollment {
     private User user;
 
 
-
     @Column(name="progress")
     private int progress = 0;
 
     @Column(nullable = false)
     private LocalDateTime enrolledAt;
+
+    @Column
+    private LocalDateTime paymentDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private PaymentMethod paymentMethod;
 }

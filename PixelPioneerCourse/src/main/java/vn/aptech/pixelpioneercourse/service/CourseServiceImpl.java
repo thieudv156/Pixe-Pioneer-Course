@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
+import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 
 import java.util.List;
@@ -13,14 +14,18 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService{
 
-    @Autowired
-    private CourseRepository courseRepository;
+    final private CourseRepository courseRepository;
+    final private ModelMapper mapper;
+    final private CategoryService categoryService;
+    final private UserService userService;
 
-    @Autowired
-    private ModelMapper mapper;
+    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService) {
+        this.courseRepository = courseRepository;
+        this.mapper = mapper;
+        this.categoryService = categoryService;
+        this.userService = userService;
 
-    @Autowired
-    private CategoryService CategoryService;
+    }
 
 
     //from CourseCreateDto to Course
@@ -70,8 +75,8 @@ public class CourseServiceImpl implements CourseService{
             Course existedCourse = courseRepository.findById(id).orElseThrow(()-> new RuntimeException("Course not found!"));
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
-            existedCourse.setCategory(CategoryService.findById(dto.getCategoryId()));
-//            existedCourse.setInstructor(InstructorService.findById(dto.getInstructorId()));
+            existedCourse.setCategory(categoryService.findById(dto.getCategoryId()));
+            existedCourse.setInstructor(userService.findById(dto.getInstructorId()));
             courseRepository.save(existedCourse);
             return true;
         }
@@ -95,7 +100,7 @@ public class CourseServiceImpl implements CourseService{
     //Find course by categoryId
     public List<Course> findByCategoryId(int categoryId){
         try{
-            Category category = CategoryService.findById(categoryId);
+            Category category = categoryService.findById(categoryId);
             return courseRepository.findByCategory(category);
         }
         catch (Exception e){
@@ -104,15 +109,15 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Find course by instructorId
-//    public List<Course> findByInstructorId(int instructorId){
-//        try{
-////            Instructor instructor = InstructorService.findById(instructorId);
-//            return courseRepository.findByInstructor(instructor);
-//        }
-//        catch (Exception e){
-//            throw new RuntimeException("Course is null");
-//        }
-//    }
+    public List<Course> findByInstructorId(int instructorId){
+        try{
+            User instructor = userService.findById(instructorId);
+            return courseRepository.findByInstructor(instructor);
+        }
+        catch (Exception e){
+            throw new RuntimeException("Course is null");
+        }
+    }
 
     //Find course by title
     public List<Course> findByTitle(String title){
