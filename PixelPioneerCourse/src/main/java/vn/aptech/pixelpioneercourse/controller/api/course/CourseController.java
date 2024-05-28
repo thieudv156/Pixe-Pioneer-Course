@@ -34,20 +34,32 @@ public class CourseController {
     private ModelMapper modelMapper;
 
     @GetMapping("")
-    public ResponseEntity<List<Course>> index(){
-        return ResponseEntity.ok(courseService.findAll());
+    public ResponseEntity<?> index(){
+        try {
+            return ResponseEntity.ok(courseService.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Course> findById(@PathVariable("id") int id){
-        Optional<Course> result = Optional.ofNullable(courseService.findById(id));
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> findById(@PathVariable("id") int id){
+        try {
+            Optional<Course> result = Optional.ofNullable(courseService.findById(id));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<Course>> findCourseByCategoryId(@PathVariable("categoryId") int categoryId){
-        Optional<List<Course>> result = Optional.ofNullable(courseService.findByCategoryId(categoryId));
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> findCourseByCategoryId(@PathVariable("categoryId") int categoryId){
+        try {
+            Optional<List<Course>> result = Optional.ofNullable(courseService.findByCategoryId(categoryId));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/instructors/{instructorId}")
