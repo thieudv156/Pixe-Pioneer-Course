@@ -27,14 +27,20 @@ public class Lesson {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @Column(name="completed_status")
-    private boolean completedStatus = false;
+    @Column
+    private boolean completeStatus=false;
 
-    @Column(nullable = false)
+    @Column
     private String image;
 
     @Column
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Test> tests;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SubLesson> subLessons;
 
 
 

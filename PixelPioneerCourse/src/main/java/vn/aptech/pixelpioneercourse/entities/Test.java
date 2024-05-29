@@ -16,15 +16,17 @@ public class Test {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int id;
 
+    @Column
+    private String title;
+
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id", name = "student_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id", name = "lesson_id")
+    @JoinColumn(name = "lesson_id", nullable = false)
     private Lesson lesson;
 
-    @Column(name="score")
+    @Column
     private int score;
-
 }

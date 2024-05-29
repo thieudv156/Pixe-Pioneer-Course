@@ -3,15 +3,12 @@ package vn.aptech.pixelpioneercourse.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @NoArgsConstructor
@@ -23,7 +20,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
@@ -58,18 +55,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Discussion> discussions;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Test> tests;
+    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Course> courses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Course> courses;
-    
-    public List<String> getAuthorities() {
-        return Collections.singletonList(role.getRoleName());
-    }
-    
-    public SimpleGrantedAuthority getGrantedAuthorities(){
-        return new SimpleGrantedAuthority(role.getRoleName());
-    }
+    private List<Test> tests;
 
 }

@@ -19,7 +19,7 @@ public class ReviewCreateDto {
     private Integer courseId;
 
     @NotNull(message = "Student ID is required")
-    private Integer studentId;
+    private Integer userId;
 
     @Min(value = 1, message = "Rating must be at least 1")
     @Max(value = 5, message = "Rating must be at most 5")

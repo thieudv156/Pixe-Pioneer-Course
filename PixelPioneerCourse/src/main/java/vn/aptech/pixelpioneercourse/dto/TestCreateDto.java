@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestCreateDto{
+public class TestCreateDto {
 
     @NotNull(message = "Student ID is required")
     private Integer studentId;

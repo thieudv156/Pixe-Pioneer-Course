@@ -1,6 +1,7 @@
 package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
@@ -13,18 +14,18 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService{
 
-    private final CourseRepository courseRepository;
-    private final ModelMapper mapper;
-    private final CategoryService categoryService;
-    private final UserService userService;
+    final private CourseRepository courseRepository;
+    final private ModelMapper mapper;
+    final private CategoryService categoryService;
+    final private UserService userService;
 
     public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService) {
         this.courseRepository = courseRepository;
         this.mapper = mapper;
         this.categoryService = categoryService;
         this.userService = userService;
-    }
 
+    }
 
 
     //from CourseCreateDto to Course
@@ -75,7 +76,7 @@ public class CourseServiceImpl implements CourseService{
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
             existedCourse.setCategory(categoryService.findById(dto.getCategoryId()));
-            existedCourse.setUser(userService.findById(dto.getInstructorId()));
+            existedCourse.setInstructor(userService.findById(dto.getInstructorId()));
             courseRepository.save(existedCourse);
             return true;
         }
@@ -108,10 +109,10 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Find course by instructorId
-    public List<Course> findByUserInstructorId(int instructorId){
+    public List<Course> findByInstructorId(int instructorId){
         try{
             User instructor = userService.findById(instructorId);
-            return courseRepository.findByUser(instructor);
+            return courseRepository.findByInstructor(instructor);
         }
         catch (Exception e){
             throw new RuntimeException("Course is null");

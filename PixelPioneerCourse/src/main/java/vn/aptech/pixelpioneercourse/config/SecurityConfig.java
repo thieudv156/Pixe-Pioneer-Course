@@ -84,7 +84,7 @@ public class SecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(request-> request.anyRequest().authenticated())
                 .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(authenticationMiddleware, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(authenticationMiddleware, UsernamePasswordAuthenticationFilter.class)
 //                .exceptionHandling(hdl->hdl.authenticationEntryPoint(
 //                        (req, res, ex) -> ResponseEntity.status(403).build()))
                 .cors(configurer-> new CorsConfiguration().applyPermitDefaultValues());

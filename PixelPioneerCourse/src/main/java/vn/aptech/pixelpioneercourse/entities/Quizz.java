@@ -6,9 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-
+@AllArgsConstructor
 
 @Entity
 @Table(name = "quizzes")
@@ -17,20 +16,23 @@ public class Quizz {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @ManyToOne
+    @JoinColumn(name = "lesson_id", nullable = false)
+    private Lesson lesson;
+
+    @Column
     private String question;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column
     private String correctAnswer;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String option1;
+    @Column
+    private String wrongAnswer1;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String option2;
+    @Column
+    private String wrongAnswer2;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String option3;
-
+    @Column
+    private String wrongAnswer3;
 
 }
