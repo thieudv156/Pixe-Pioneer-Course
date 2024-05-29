@@ -5,13 +5,18 @@ import vn.aptech.pixelpioneercourse.entities.Course;
 
 import java.util.List;
 
-public interface CourseService {
+public interface  CourseService {
     List<Course> findAll();
-    Course findById(int id);
-    boolean update(int id, CourseCreateDto dto);
+    Course findById(Integer id);
+    boolean update(Integer id, CourseCreateDto dto);
     Course save(CourseCreateDto dto);
-    boolean delete(int id);
-    List<Course> findByCategoryId(int categoryId);
-    List<Course> findByInstructorId(int instructorId);
+    boolean delete(Integer id);
+    List<Course> findByCategoryId(Integer categoryId);
+    List<Course> findByInstructorId(Integer instructorId);
     List<Course> findByTitle(String title);
+    List<Course> findAllPublishedCourses();
+    List<Course> findPublishedCoursesByInstructorId(Integer instructorId);
+    List<Course> findUnPublishedCoursesByInstructorId(Integer instructorId);
+    Course publishCourse(Integer courseId);
+    Course unpublishCourse(Integer courseId);
 }
