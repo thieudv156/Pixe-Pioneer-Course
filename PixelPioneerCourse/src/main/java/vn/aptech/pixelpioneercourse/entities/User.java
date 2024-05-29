@@ -23,7 +23,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
@@ -63,11 +63,11 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Course> courses;
-    
+
     public List<String> getAuthorities() {
         return Collections.singletonList(role.getRoleName());
     }
-    
+
     public SimpleGrantedAuthority getGrantedAuthorities(){
         return new SimpleGrantedAuthority(role.getRoleName());
     }

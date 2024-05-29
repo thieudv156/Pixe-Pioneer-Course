@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     private final PasswordEncoder encoder;
-    
+
     private final RoleService rService;
 
     public UserServiceImpl(UserRepository acct, PasswordEncoder ed, RoleService rs) {
@@ -84,45 +84,45 @@ public class UserServiceImpl implements UserService{
 
 
     public UserDetails loadUserByEmailorUsername(String EmailorUsername) throws UsernameNotFoundException {
-    	User tbUser = userRepository.findByEmail(EmailorUsername)
+        User tbUser = userRepository.findByEmail(EmailorUsername)
                 .orElseGet(() -> userRepository.findByUsername(EmailorUsername)
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password.")));
-        
+                        .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password.")));
+
         if (tbUser == userRepository.findByEmail(EmailorUsername).get()) {
-        	return new org.springframework.security.core.userdetails.User(tbUser.getEmail(), tbUser.getPassword(), true, true, true, true, Collections.emptyList());
+            return new org.springframework.security.core.userdetails.User(tbUser.getEmail(), tbUser.getPassword(), true, true, true, true, Collections.emptyList());
         }
         return new org.springframework.security.core.userdetails.User(tbUser.getUsername(), tbUser.getPassword(), true, true, true, true, Collections.emptyList());
-        
+
     }
-    
+
     private Role convertToRoleFromDto(RoleDto dto) {
-    	return mapper.map(dto, Role.class);
+        return mapper.map(dto, Role.class);
     }
 
 
     public boolean create(UserCreateDto u){
-    	Object res = null;
-    	try
-    	{
-    		if (u.getUsername().equals(findByUsername(u.getUsername()).getUsername()) || 
-    				u.getEmail().equals(findByEmail(u.getEmail()).getEmail()) ||
-    				u.getPhone().equals(findByUsername(u.getUsername()).getPhone()) ||
-    				u.getEmail().equals(findByEmail(u.getEmail()).getPhone())) {
-        		return false;
-        	}
-    	}
-    	catch (Exception e) {
-    		User user = mapper.map(u, User.class);
+        Object res = null;
+        try
+        {
+            if (u.getUsername().equals(findByUsername(u.getUsername()).getUsername()) ||
+                    u.getEmail().equals(findByEmail(u.getEmail()).getEmail()) ||
+                    u.getPhone().equals(findByUsername(u.getUsername()).getPhone()) ||
+                    u.getEmail().equals(findByEmail(u.getEmail()).getPhone())) {
+                return false;
+            }
+        }
+        catch (Exception e) {
+            User user = mapper.map(u, User.class);
             user.setPassword(encoder.encode(user.getPassword()));
             user.setActiveStatus(true);
             user.setCreatedAt(LocalDate.now());
             List<RoleDto> listRole = rService.findAll();
             for (RoleDto role : listRole) {
-            	if (role.getRoleName().equals("ROLE_USER")) user.setRole(convertToRoleFromDto(role));
+                if (role.getRoleName().equals("ROLE_USER")) user.setRole(convertToRoleFromDto(role));
             }
             res = userRepository.save(user);
-    	}
-    	return res != null;
+        }
+        return res != null;
     }
 
     public boolean update(UserCreateDto u){
@@ -139,22 +139,22 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteById(u.getId());;
     }
 
-    
+
     // =========================================================================================================
     /*
      * API SECTION
      */
-    
+
     @Value("jwt.secret")
     public String TOKEN_SECRET;
-    
+
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
-    
+
     @Autowired
     private JWT jwt;
-    
-    
+
+
     public Authentication processLogin(LoginDto body){
         String EmailorUsername = body.getEu();
         String password = body.getPassword();
@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService{
         if (userByEmail.isPresent()) {
             user = userByEmail.get();
         }
-        
+
         else {
             Optional<User> userByUsername = userRepository.findByUsername(EmailorUsername);
             if (userByUsername.isPresent()) {
@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService{
         if (user == null || !encoder.matches(password, user.getPassword())) {
             throw new UsernameNotFoundException("Email or password is invalid!");
         }
-        
+
         var expiredAt = LocalDateTime.now().plusDays(1);
         var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
 
@@ -188,31 +188,31 @@ public class UserServiceImpl implements UserService{
 
         return authentication;
     }
-    
+
     public Authentication processLogin(String email, String password){
-        
+
         if (!checkLogin(email, password)) {
-        	throw new UsernameNotFoundException("Email or password is invalid!");
+            throw new UsernameNotFoundException("Email or password is invalid!");
         }
 
         vn.aptech.pixelpioneercourse.entities.User user = userRepository.findByEmail(email).orElseThrow();
-        
+
 //        //so sanh password
 //        if(!encoder.matches(password, user.getPassword())){
 //            throw new UsernameNotFoundException("Email or password is invalid!");
 //        }
-         
+
         var expiredAt = LocalDateTime.now().plusDays(1);
         var accessToken = jwt.encode(user.getId(), user.getAuthorities(), expiredAt, TOKEN_SECRET);
 
-        
+
         //Tao refreshToken
         refreshTokenRepository.disableRefreshTokenFromUser(user.getId());
         RefreshToken refreshToken = new RefreshToken(user, 7);
         refreshTokenRepository.save(refreshToken);
-        
+
         Authentication authentication = new Authentication(new UserInformation(user), accessToken, refreshToken.getCode(), expiredAt);
-        
+
         return authentication;
     }
 }
