@@ -38,5 +38,8 @@ public class SubLesson {
     @Column
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Discussion> discussions;
+
 
 }

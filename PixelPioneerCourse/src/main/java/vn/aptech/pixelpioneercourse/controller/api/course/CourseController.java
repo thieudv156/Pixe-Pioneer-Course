@@ -24,14 +24,13 @@ import java.util.Optional;
 @RequestMapping("/api/course")
 public class CourseController {
 
-    @Autowired
-    private CourseService courseService;
+    private final CourseService courseService;
+    private final CategoryService categoryService;
 
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public CourseController(CourseService courseService, CategoryService categoryService) {
+        this.courseService = courseService;
+        this.categoryService = categoryService;
+    }
 
     @GetMapping("")
     public ResponseEntity<?> index(){

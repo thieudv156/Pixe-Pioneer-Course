@@ -60,6 +60,11 @@ public class CourseServiceImpl implements CourseService{
         }
         try {
             Course course = toCourse(dto);
+            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0) {
+                course.setCategory(categoryService.findById(dto.getCategoryId()));
+                course.setInstructor(userService.findById(dto.getInstructorId()));
+            }
+
             return courseRepository.save(course);
         } catch (Exception e) {
             throw new RuntimeException("Error saving course: " + e.getMessage());

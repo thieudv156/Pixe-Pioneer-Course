@@ -20,8 +20,8 @@ public class Discussion {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JoinColumn(name = "subLesson_id")
+    private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
