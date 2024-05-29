@@ -78,7 +78,7 @@ public class SecurityConfig {
     public SecurityFilterChain api(HttpSecurity http) throws Exception{
         PublicRoutes.PublicRoutesManager.publicRoutes()
                 .add(HttpMethod.GET, "/api/accounts")
-                .add(HttpMethod.POST, "/api/login")
+                .add(HttpMethod.POST, "/api/login", "/api/register")
                 .injectOn(http);
         http.csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/**")
