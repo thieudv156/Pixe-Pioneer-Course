@@ -17,8 +17,7 @@ public class RequestAuthorizerImpl implements RequestAuthorizer{
     
     @Value("jwt.secret")
     private String JWT_SECRET;
-    
-    @Autowired
+
     private JWT jwt;
     
     @Override
