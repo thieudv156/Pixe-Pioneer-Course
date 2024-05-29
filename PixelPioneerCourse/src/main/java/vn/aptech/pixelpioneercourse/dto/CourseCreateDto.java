@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.geom.QuadCurve2D;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,18 +16,18 @@ public class CourseCreateDto {
     private String title;
 
     @NotNull(message = "Category ID is mandatory")
-    private int categoryId;
+    private Integer categoryId;
 
     @NotBlank(message = "Description is mandatory")
     @Size(max = 5000, message = "Description cannot exceed 5000 characters")
     private String description;
 
     @NotNull(message = "Price is mandatory")
-    @PositiveOrZero(message = "Price must be zero or positive")
-    private double price;
+    @Min( value = 1,message = "Price must be 1 or positive")
+    private Double price;
 
     @NotNull(message = "Instructor ID is mandatory")
-    private int instructorId;
+    private Integer instructorId;
 
     private String image;
 }

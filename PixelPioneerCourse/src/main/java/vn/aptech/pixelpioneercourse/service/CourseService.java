@@ -9,7 +9,7 @@ public interface CourseService {
     List<Course> findAll();
     Course findById(int id);
     boolean update(int id, CourseCreateDto dto);
-    boolean save(CourseCreateDto dto);
+    Course save(CourseCreateDto dto);
     boolean delete(int id);
     List<Course> findByCategoryId(int categoryId);
     List<Course> findByInstructorId(int instructorId);

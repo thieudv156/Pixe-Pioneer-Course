@@ -20,5 +20,5 @@ public class TestCreateDto {
 
     @Min(value = 0, message = "Score must be at least 0")
     @Max(value = 100, message = "Score must be at most 100")
-    private int score;
+    private Integer score;
 }

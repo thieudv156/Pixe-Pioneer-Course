@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class DiscussionCreateDto {
     @NotNull(message = "Sub-lesson ID is mandatory")
-    private int subLessonId;
+    private Integer subLessonId;
 
     @NotNull(message = "User ID is mandatory")
-    private int userId;
+    private Integer userId;
 
     private Integer parentId;  // Optional field
 

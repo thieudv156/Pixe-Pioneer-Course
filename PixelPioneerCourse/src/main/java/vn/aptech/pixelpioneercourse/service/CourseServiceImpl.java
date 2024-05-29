@@ -3,9 +3,7 @@ package vn.aptech.pixelpioneercourse.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
-import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
-import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 
 import java.util.List;
@@ -53,7 +51,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Save course
-    public boolean save(CourseCreateDto dto){
+       public Course save(CourseCreateDto dto){
         if (dto == null) {
             throw new RuntimeException("Course is null");
         }
@@ -63,8 +61,7 @@ public class CourseServiceImpl implements CourseService{
                 course.setCategory(categoryService.findById(dto.getCategoryId()));
                 course.setInstructor(userService.findById(dto.getInstructorId()));
             }
-            courseRepository.save(course);
-            return true;
+            return courseRepository.save(course);
         } catch (Exception e) {
             throw new RuntimeException("Cannot save course!");
         }

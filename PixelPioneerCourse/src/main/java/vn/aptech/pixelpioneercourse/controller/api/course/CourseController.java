@@ -3,6 +3,7 @@ package vn.aptech.pixelpioneercourse.controller.api.course;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
@@ -92,17 +93,18 @@ public class CourseController {
     }
 
     @PostMapping("/create")
-public ResponseEntity<?> create(@Valid @RequestBody CourseCreateDto courseCreateDto) {
-    try {
-        if ( courseService.save(courseCreateDto)) {
-            return ResponseEntity.ok("Course created successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating course");
+    public ResponseEntity<?> create(@Valid @RequestBody CourseCreateDto courseCreateDto) {
+        try {
+            Course savedCourse = courseService.save(courseCreateDto);
+            if (savedCourse != null) {
+                return ResponseEntity.ok(savedCourse);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating course");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
     }
-}
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody CourseCreateDto courseCreateDto, @PathVariable("id") int id) {
