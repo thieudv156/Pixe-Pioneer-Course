@@ -58,7 +58,6 @@
 
 package vn.aptech.pixelpioneercourse.controller.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,22 +65,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import vn.aptech.pixelpioneercourse.service.AccountService;
+import vn.aptech.pixelpioneercourse.service.UserService;
 
 @RestController
 @RequestMapping("/app/login")
 public class LoginController {
 
-    private final AccountService accountService;
+    private final UserService userService;
 
-    @Autowired
-    public LoginController(AccountService accountService) {
-        this.accountService = accountService;
+    public LoginController(UserService uService) {
+        userService = uService;
     }
 
     @PostMapping()
     public ResponseEntity<String> checkLogin(@RequestParam String email, @RequestParam String password) {
-        if (accountService.checkLogin(email, password)) {
+        if (userService.checkLogin(email, password)) {
             System.out.println("LOGIN SUCCESSFUL FOR " + email);
             return ResponseEntity.ok().body("Login successful");
         } else {

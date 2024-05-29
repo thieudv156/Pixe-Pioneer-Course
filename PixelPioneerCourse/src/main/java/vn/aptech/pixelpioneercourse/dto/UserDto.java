@@ -2,9 +2,13 @@ package vn.aptech.pixelpioneercourse.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import vn.aptech.pixelpioneercourse.entities.Role;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class UserDto {
 
     @Getter

@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.aptech.pixelpioneercourse.dto.AccountDto;
 import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
-import vn.aptech.pixelpioneercourse.service.AccountService;
+import vn.aptech.pixelpioneercourse.entities.User;
+import vn.aptech.pixelpioneercourse.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api")
 public class LoginApi {
     @Autowired
-    private AccountService service;
+    private UserService service;
     
     @PostMapping(value = "/login")
     public ResponseEntity<Authentication> login(@RequestBody LoginDto body){
@@ -28,8 +28,8 @@ public class LoginApi {
     }
     
     @GetMapping(value = "/accounts")
-    public ResponseEntity<List<AccountDto>> findAllAccount(){
-        List<AccountDto> result = service.findAll();
+    public ResponseEntity<List<User>> findAllAccount(){
+        List<User> result = service.findAll();
         return ResponseEntity.ok(result);
     }
 }
