@@ -1,7 +1,6 @@
 package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.CategoryCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
@@ -37,6 +36,47 @@ public class CategoryServiceImpl implements CategoryService{
         }
         catch (Exception e){
             throw new RuntimeException("Category is null");
+        }
+    }
+
+    public boolean save(CategoryCreateDto dto){
+        if (dto == null) {
+            throw new RuntimeException("Course is null");
+        }
+        try {
+            Category category = toCategory(dto);
+            categoryRepository.save(category);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    //Update course
+    public boolean update(int id, CategoryCreateDto dto){
+        if(dto == null){
+            throw new RuntimeException("Course is null");
+        }
+        try{
+            Category existedCategory = categoryRepository.findById(id).orElseThrow(()-> new RuntimeException("Course not found!"));
+            existedCategory.setName(dto.getName());
+            categoryRepository.save(existedCategory);
+            return true;
+        }
+        catch (Exception e){
+            throw new RuntimeException("Course is null");
+        }
+
+    }
+
+    //Delete course
+    public boolean delete(int id){
+        try{
+            categoryRepository.deleteById(id);
+            return true;
+        }
+        catch (Exception e){
+            throw new RuntimeException("Course is null");
         }
     }
 

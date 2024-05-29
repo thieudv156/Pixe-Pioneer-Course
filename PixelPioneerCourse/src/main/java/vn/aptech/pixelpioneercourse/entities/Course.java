@@ -43,6 +43,12 @@ public class Course {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @Column(nullable = false)
+    private boolean isPublished = false;
+
     @Column(name = "image")
     private String image;
 

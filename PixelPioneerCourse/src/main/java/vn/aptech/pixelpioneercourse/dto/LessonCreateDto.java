@@ -18,9 +18,6 @@ public class LessonCreateDto {
     @NotNull(message = "Course ID is required")
     private Integer courseId;
 
-    @NotBlank(message = "Image is required")
     private String image;
 
-    @NotNull(message = "Created at date is required")
-    private LocalDateTime createdAt;
 }

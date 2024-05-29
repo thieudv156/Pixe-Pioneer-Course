@@ -9,11 +9,7 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
 
-    List<Course> findByCategory(Category category);
-
-
-
+    List<Course> findByCategoryId(int categoryId);
     List<Course> findByTitleContainingIgnoreCase(String title);
-
-    List<Course> findByInstructor(User instructor);
+    List<Course> findByInstructorId(int instructorId);
 }
