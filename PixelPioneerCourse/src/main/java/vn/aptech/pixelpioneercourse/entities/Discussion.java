@@ -39,4 +39,6 @@ public class Discussion {
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Discussion> children;
+    
+    
 }
