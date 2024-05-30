@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.DiscussionCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Discussion;
 import vn.aptech.pixelpioneercourse.repository.DiscussionRepository;
+import vn.aptech.pixelpioneercourse.until.SensitiveWordFilter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +32,7 @@ public class DiscussionServiceImpl implements DiscussionService {
     @Override
     public Discussion createDiscussion(DiscussionCreateDto discussionCreateDto) {
         Discussion discussion = new Discussion();
-        discussion.setContent(discussionCreateDto.getContent());
+        discussion.setContent(SensitiveWordFilter.filterSensitiveWords(discussionCreateDto.getContent()));
         discussion.setCreatedAt(LocalDateTime.now());
         return discussionRepository.save(discussion);
     }
@@ -43,7 +44,7 @@ public class DiscussionServiceImpl implements DiscussionService {
         if(existingDiscussion == null) {
             return null;
         }
-        existingDiscussion.setContent(discussionDetails.getContent());
+        existingDiscussion.setContent(SensitiveWordFilter.filterSensitiveWords(discussionDetails.getContent()));
         return discussionRepository.save(existingDiscussion);
     }
 
