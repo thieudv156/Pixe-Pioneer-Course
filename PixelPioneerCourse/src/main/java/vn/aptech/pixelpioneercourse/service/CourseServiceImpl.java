@@ -21,9 +21,7 @@ public class CourseServiceImpl implements CourseService{
         this.mapper = mapper;
         this.categoryService = categoryService;
         this.userService = userService;
-
     }
-
 
     //from CourseCreateDto to Course
     private Course toCourse(CourseCreateDto dto){
