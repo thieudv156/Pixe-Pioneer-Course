@@ -38,8 +38,59 @@ public class CourseServiceImpl implements CourseService{
         }
    }
 
+    public List<Course> findAllPublishedCourses(){
+        try{
+            return courseRepository.findByIsPublishedIsTrue();
+        }
+        catch (Exception e){
+            throw new RuntimeException("List of Course is null");
+        }
+    }
+
+   public List<Course> findPublishedCoursesByInstructorId(Integer instructorId){
+        try{
+            return courseRepository.findByInstructorIdAndIsPublishedIsTrue(instructorId);
+        }
+        catch (Exception e){
+            throw new RuntimeException("List of Course is null");
+        }
+   }
+
+    public List<Course> findUnPublishedCoursesByInstructorId(Integer instructorId){
+        try{
+            return courseRepository.findByInstructorIdAndIsPublishedIsFalse(instructorId);
+        }
+        catch (Exception e){
+            throw new RuntimeException("List of Course is null");
+        }
+    }
+
+    public Course publishCourse(Integer courseId) {
+        try {
+            Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found!"));
+            course.setIsPublished(true);
+            course.setPublishedDate(java.time.LocalDateTime.now());
+            return courseRepository.save(course);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot published course!", e);
+        }
+    }
+
+    public Course unpublishCourse(Integer courseId) {
+        try {
+            Course course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new RuntimeException("Course not found!"));
+            course.setIsPublished(false);
+            course.setPublishedDate(null);
+            return courseRepository.save(course);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot unpublished course!", e);
+        }
+    }
+
    //Find course by id
-    public Course findById(int id){
+    public Course findById(Integer id){
         try{
             return courseRepository.findById(id).orElseThrow(()-> new RuntimeException("Course not found!"));
         }
@@ -66,7 +117,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Update course
-    public boolean update(int id, CourseCreateDto dto){
+    public boolean update(Integer id, CourseCreateDto dto){
         if(dto == null){
             throw new RuntimeException("Course is null");
         }
@@ -87,7 +138,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Delete course
-    public boolean delete(int id){
+    public boolean delete(Integer id){
         try{
             courseRepository.deleteById(id);
             return true;
@@ -98,7 +149,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Find course by categoryId
-    public List<Course> findByCategoryId(int categoryId){
+    public List<Course> findByCategoryId(Integer categoryId){
         try{
             return courseRepository.findByCategoryId(categoryId);
         }
@@ -108,7 +159,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Find course by instructorId
-    public List<Course> findByInstructorId(int instructorId){
+    public List<Course> findByInstructorId(Integer instructorId){
         try{
             return courseRepository.findByInstructorId(instructorId);
         }
@@ -126,9 +177,6 @@ public class CourseServiceImpl implements CourseService{
             throw new RuntimeException("Course name not found!");
         }
     }
-
-
-
 
 
 }

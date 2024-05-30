@@ -19,7 +19,7 @@ import java.util.List;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false)
     private String title;
@@ -33,7 +33,7 @@ public class Course {
     private String description;
 
     @Column(nullable = false)
-    private double price;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
@@ -41,13 +41,16 @@ public class Course {
     private  User instructor;
 
     @Column(nullable = false)
+    private Boolean isPublished = false;
+
+    @Column()
+    private LocalDateTime publishedDate = null;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
-
-    @Column(nullable = false)
-    private boolean isPublished = false;
 
     @Column(name = "image")
     private String image;
