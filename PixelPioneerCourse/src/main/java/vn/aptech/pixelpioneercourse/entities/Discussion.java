@@ -17,10 +17,10 @@ import java.util.List;
 public class Discussion {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "subLesson_id")
+    @JoinColumn(name = "sub_lesson_id")
     private SubLesson subLesson;
 
     @ManyToOne
@@ -31,14 +31,13 @@ public class Discussion {
     @JoinColumn(name = "parent_id")
     private Discussion parent;
 
-    @Column(name="content", columnDefinition = "TEXT")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Discussion> children;
-    
-    
+
 }

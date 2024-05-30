@@ -40,6 +40,4 @@ public class SubLesson {
 
     @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Discussion> discussions;
-
-
 }

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Quizz {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)

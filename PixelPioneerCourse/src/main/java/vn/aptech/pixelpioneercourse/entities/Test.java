@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Test {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column
     private String title;
