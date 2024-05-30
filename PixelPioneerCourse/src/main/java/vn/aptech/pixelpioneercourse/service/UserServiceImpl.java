@@ -59,6 +59,10 @@ public class UserServiceImpl implements UserService{
                 .map(account -> mapper.map(account, User.class))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
     }
+    
+    public UserDto findByID(int id) {
+    	return userRepository.findById(id).map(account -> mapper.map(account, UserDto.class)).orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    }
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -125,14 +129,26 @@ public class UserServiceImpl implements UserService{
         return res != null;
     }
 
-    public boolean update(UserCreateDto u){
-        User existedAccount = userRepository.findByEmail(u.getEmail()).orElseThrow(() -> new RuntimeException("Account not found!"));
-        existedAccount.setUsername(u.getUsername());
-        existedAccount.setEmail(u.getEmail());
-        existedAccount.setPassword(u.getPassword());
-        existedAccount.setFullName(u.getFullName());
-        existedAccount.setPhone(u.getPhone());
-        return null != userRepository.save(existedAccount);
+    public boolean update(UserCreateDto u, int uID){
+    	User acc = userRepository.findById(uID).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
+        acc.setUsername(u.getUsername());
+        acc.setEmail(u.getEmail());
+        acc.setPassword(encoder.encode(acc.getPassword()));
+        acc.setFullName(u.getFullName());
+        acc.setPhone(u.getPhone());
+        userRepository.save(acc);
+        return true;
+    }
+    
+    public boolean updateWithRole(User u, int uID){
+    	User acc = userRepository.findById(uID).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
+        acc.setUsername(u.getUsername());
+        acc.setEmail(u.getEmail());
+        acc.setPassword(encoder.encode(acc.getPassword()));
+        acc.setFullName(u.getFullName());
+        acc.setPhone(u.getPhone());
+        userRepository.save(acc);
+        return true;
     }
 
     public void delete(User u){
