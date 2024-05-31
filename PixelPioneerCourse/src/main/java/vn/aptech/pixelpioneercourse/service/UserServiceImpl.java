@@ -76,14 +76,28 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
-    public boolean checkLogin(String EmailorUsername, String password) {
-        User acc = findByEmail(EmailorUsername);
-        if (acc == null) acc = findByUsername(EmailorUsername);
-        if (acc != null) {
-            String hashedPassword = acc.getPassword();
-            return encoder.matches(password, hashedPassword);
+    public String checkLogin(String EmailorUsername, String password) {
+        User acc = null;
+        try {
+        	acc = findByEmail(EmailorUsername);
+        	String hashedPassword = acc.getPassword();
+            if(encoder.matches(password, hashedPassword)) {
+            	return acc.getRole().getRoleName();
+            }
+        } catch (Exception e) {
+        	try {
+        		acc = findByUsername(EmailorUsername);
+        		if (acc != null) {
+        			String hashedPassword = acc.getPassword();
+                    if(encoder.matches(password, hashedPassword)) {
+                    	return acc.getRole().getRoleName();
+                    }
+        		}
+        	} catch (Exception e2) {
+        		return "";
+        	}
         }
-        return false;
+        return "";
     }
 
 
@@ -207,7 +221,7 @@ public class UserServiceImpl implements UserService{
 
     public Authentication processLogin(String email, String password){
 
-        if (!checkLogin(email, password)) {
+        if (checkLogin(email, password) == null) {
             throw new UsernameNotFoundException("Email or password is invalid!");
         }
 

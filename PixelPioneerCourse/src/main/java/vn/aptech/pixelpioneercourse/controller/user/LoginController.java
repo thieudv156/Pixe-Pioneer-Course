@@ -58,32 +58,52 @@
 
 package vn.aptech.pixelpioneercourse.controller.user;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
-@RestController
+@Controller
 @RequestMapping("/app/login")
 public class LoginController {
 
     private final UserService userService;
+    
+    @Autowired
+    private ModelMapper mapper;
 
     public LoginController(UserService uService) {
         userService = uService;
     }
+    
+    @GetMapping
+    public String loginPage() {
+    	return "guest_view/login";
+    }
 
-    @PostMapping()
-    public ResponseEntity<String> checkLogin(@RequestParam String email, @RequestParam String password) {
-        if (userService.checkLogin(email, password)) {
-            System.out.println("LOGIN SUCCESSFUL FOR " + email);
-            return ResponseEntity.ok().body("Login successful");
-        } else {
-            return ResponseEntity.status(HttpStatus.FOUND).body("Login failed");
+    @PostMapping
+    public String checkLogin(@RequestParam("info") String emailorusername, @RequestParam("password") String password, RedirectAttributes redirectAttributes) {
+        String r = userService.checkLogin(emailorusername, password);
+        if (r.equals("")) {
+            redirectAttributes.addFlashAttribute("loginErrorCondition", true);
+            redirectAttributes.addFlashAttribute("loginError", "Invalid username/email or password");
+            return "redirect:/app/login";
+        } else if (r.equals("ROLE_USER")) {
+            return "redirect:/app/course";
+        } else if (r.equals("ROLE_ADMIN")) {
+            return "redirect:/app/admin";
+        } else if (r.equals("ROLE_INSTRUCTOR")) {
+            return "redirect:/app/course";
         }
+        redirectAttributes.addFlashAttribute("loginErrorCondition", true);
+        redirectAttributes.addFlashAttribute("loginError", "Unknown error occurs");
+        return "redirect:/app/login";
     }
 }

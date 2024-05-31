@@ -4,6 +4,7 @@ import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.UserCreateDto;
 import vn.aptech.pixelpioneercourse.dto.UserDto;
+import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface UserService {
     UserDto findByID(int id);
     User findByEmail(String email);
     User findByUsername(String username);
-    boolean checkLogin(String EmailorUsername, String password);
+    String checkLogin(String EmailorUsername, String password);
     UserDetails loadUserByEmailorUsername(String EmailorUsername) throws UsernameNotFoundException;
     boolean create(UserCreateDto u);
     boolean update(UserCreateDto u, int id);

@@ -56,7 +56,7 @@ public class UserManagingApi {
 		}
 	}
 	
-	@PutMapping("/{id}")
+	@PutMapping("/deactivate/{id}")
 	public ResponseEntity<Boolean> deactivateAccount(@PathVariable("id") int id) {
 		User u = service.findById(id);
 		if (u != null) {
