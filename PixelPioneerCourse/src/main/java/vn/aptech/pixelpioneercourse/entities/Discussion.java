@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,14 +22,17 @@ public class Discussion {
 
     @ManyToOne
     @JoinColumn(name = "sub_lesson_id")
+    @JsonManagedReference
     private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonManagedReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @JsonManagedReference
     private Discussion parent;
 
     @Column(name = "content", columnDefinition = "TEXT")
@@ -37,7 +41,8 @@ public class Discussion {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Discussion> children;
 
 }

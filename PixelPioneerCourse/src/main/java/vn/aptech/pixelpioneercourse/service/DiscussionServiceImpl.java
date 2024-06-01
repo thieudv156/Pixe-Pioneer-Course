@@ -25,7 +25,7 @@ public class DiscussionServiceImpl implements DiscussionService {
     }
 
     @Override
-    public Discussion findById(int id) {
+    public Discussion findById(Integer id) {
         return discussionRepository.findById(id).orElseThrow(()-> new RuntimeException("Discussion not found"));
     }
 
@@ -39,7 +39,7 @@ public class DiscussionServiceImpl implements DiscussionService {
 
 
     @Override
-    public Discussion updateDiscussion(int id, DiscussionCreateDto discussionDetails) {
+    public Discussion updateDiscussion(Integer id, DiscussionCreateDto discussionDetails) {
         Discussion existingDiscussion = discussionRepository.findById(id).orElseThrow(()-> new RuntimeException("Discussion not found"));
         if(existingDiscussion == null) {
             return null;
@@ -49,12 +49,12 @@ public class DiscussionServiceImpl implements DiscussionService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(Integer id) {
         discussionRepository.deleteById(id);
     }
 
     @Override
-    public List<Discussion> findBySubLessonId(int subLessonId) {
+    public List<Discussion> findBySubLessonId(Integer subLessonId) {
         return discussionRepository.findDiscussionBySubLessonId(subLessonId);
     }
 }

@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface DiscussionService {
     List<Discussion> findAll();
-    Discussion findById(int id);
+    Discussion findById(Integer id);
     Discussion createDiscussion(DiscussionCreateDto discussionCreateDto);
-    Discussion updateDiscussion(int id, DiscussionCreateDto discussionDetails);
-    void deleteById(int id);
-    List<Discussion> findBySubLessonId(int subLessonId);
+    Discussion updateDiscussion(Integer id, DiscussionCreateDto discussionDetails);
+    void deleteById(Integer id);
+    List<Discussion> findBySubLessonId(Integer subLessonId);
     
 }

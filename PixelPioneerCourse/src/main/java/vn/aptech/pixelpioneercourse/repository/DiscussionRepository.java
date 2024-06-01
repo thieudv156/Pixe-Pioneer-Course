@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface DiscussionRepository extends JpaRepository<Discussion, Integer> {
-    List<Discussion> findDiscussionBySubLessonId(int id);
+    List<Discussion> findDiscussionBySubLessonId(Integer id);
 }
