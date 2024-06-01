@@ -7,8 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.exceptions.TemplateInputException;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.util.validation.metadata.DatabaseException;
 import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.RoleDto;
@@ -27,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -130,15 +133,29 @@ public class UserServiceImpl implements UserService{
             }
         }
         catch (Exception e) {
-            User user = mapper.map(u, User.class);
-            user.setPassword(encoder.encode(user.getPassword()));
-            user.setActiveStatus(true);
-            user.setCreatedAt(LocalDate.now());
-            List<RoleDto> listRole = rService.findAll();
-            for (RoleDto role : listRole) {
-                if (role.getRoleName().equals("ROLE_USER")) user.setRole(convertToRoleFromDto(role));
-            }
-            res = userRepository.save(user);
+        	try {
+        		if (u.getUsername().contains(" ")) {
+                	throw new Exception("Username must not contain spaces");
+                }
+        		if (!u.getEmail().contains("@")) {
+        			throw new Exception("Email must contain @");
+        		}
+            	try {
+                	User user = mapper.map(u, User.class);
+                    user.setPassword(encoder.encode(user.getPassword()));
+                    user.setActiveStatus(true);
+                    user.setCreatedAt(LocalDate.now());
+                    List<RoleDto> listRole = rService.findAll();
+                    for (RoleDto role : listRole) {
+                        if (role.getRoleName().equals("ROLE_USER")) user.setRole(convertToRoleFromDto(role));
+                    }
+                    res = userRepository.save(user);
+                } catch (Exception e2) {
+                	throw new DatabaseException("Register fails, contact us for further support");
+                }
+        	} catch (Exception e1) {
+        		throw new TemplateInputException(e1.getMessage());
+        	}
         }
         return res != null;
     }
@@ -168,7 +185,43 @@ public class UserServiceImpl implements UserService{
     public void delete(User u){
         userRepository.deleteById(u.getId());;
     }
+    
+    public String codeGeneratorForEmailVerification() {
+    	Random random = new Random();
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            code.append(random.nextInt(10)); // Appends a random digit (0-9)
+        }
+        return code.toString();
+    }
 
+    public boolean checkCode(String codeGenerated, String inputCode) {
+    	if (codeGenerated.equals(inputCode)) {
+			return true;
+		} 
+    	return false;
+    }
+    
+    public User findUserByPassword(String password) {
+    	return userRepository.findByPassword(encoder.encode(password))
+                .map(account -> mapper.map(account, User.class))
+                .orElseThrow(() -> new UsernameNotFoundException("You have entered an old password, please change it."));
+    }
+    
+    public void passwordChanger(String email, String password) throws Exception {
+    	try {
+    		User u = findByEmail(email);
+        	UserCreateDto user = mapper.map(u, UserCreateDto.class);
+        	if (user == null) {
+        		throw new Exception("User does not exist");
+        	} else {
+        		user.setPassword(encoder.encode(password));
+        		userRepository.save(mapper.map(user, User.class));
+        	}
+    	} catch (Exception e1) {
+    		throw new Exception(e1.getMessage());
+    	}
+    }
 
     // =========================================================================================================
     /*

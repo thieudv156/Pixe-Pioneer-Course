@@ -18,12 +18,16 @@ public interface UserService {
     UserDto findByID(int id);
     User findByEmail(String email);
     User findByUsername(String username);
+    User findUserByPassword(String password);
     String checkLogin(String EmailorUsername, String password);
     UserDetails loadUserByEmailorUsername(String EmailorUsername) throws UsernameNotFoundException;
     boolean create(UserCreateDto u);
     boolean update(UserCreateDto u, int id);
     boolean updateWithRole(User u, int uID);
     void delete(User u);
+    String codeGeneratorForEmailVerification();
+    boolean checkCode(String codeGenerated, String inputCode);
+    void passwordChanger(String email, String password) throws Exception;
     Authentication processLogin(LoginDto body);
     Authentication processLogin(String email, String password);
 }

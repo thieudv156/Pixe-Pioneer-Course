@@ -34,13 +34,19 @@ private final UserService userService;
 	
 	@PostMapping
 	public String register(@ModelAttribute UserCreateDto dto, RedirectAttributes redirectAttributes) {
-	    if (userService.create(dto)) {
-	        redirectAttributes.addFlashAttribute("successRegisterationCondition", true);
-	        redirectAttributes.addFlashAttribute("successRegisteration", "Successful registeration, please log in to your account");
-	        return "redirect:/app/login";
-	    } else {
-	        redirectAttributes.addFlashAttribute("failRegisterationCondition", true);
-	        redirectAttributes.addFlashAttribute("failRegisteration", "Invalid information or account has already existed");
+	    try {
+	    	if (userService.create(dto)) {
+		        redirectAttributes.addFlashAttribute("successCondition", true);
+		        redirectAttributes.addFlashAttribute("successMessage", "Successful registeration, please log in to your account");
+		        return "redirect:/app/login";
+		    } else {
+		        redirectAttributes.addFlashAttribute("failRegisterationCondition", true);
+		        redirectAttributes.addFlashAttribute("failRegisteration", "Invalid information or account has already existed");
+		        return "redirect:/app/register";
+		    }
+	    } catch (Exception e) {
+	    	redirectAttributes.addFlashAttribute("failRegisterationCondition", true);
+	        redirectAttributes.addFlashAttribute("failRegisteration", e.getMessage());
 	        return "redirect:/app/register";
 	    }
 	}
