@@ -3,10 +3,12 @@ package vn.aptech.pixelpioneercourse.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.LessonCreateDto;
+import vn.aptech.pixelpioneercourse.entities.Image;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
 import vn.aptech.pixelpioneercourse.repository.LessonRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class LessonServiceImpl implements LessonService {
@@ -44,9 +46,10 @@ public class LessonServiceImpl implements LessonService {
     public Lesson save(LessonCreateDto dto) {
         try {
             Lesson lesson = toLesson(dto);
-            if(dto.getImageName()!=null && dto.getCourseId()>0)
+            if(dto.getImage()!=null && dto.getCourseId()>0)
             {
-                lesson.setFrontPageImage(imageService.findByImageName(dto.getImageName()));
+                Image img = imageService.uploadImageToFileSystem(dto.getImage());
+                lesson.setFrontPageImage(img);
                 lesson.setCourse(courseService.findById(dto.getCourseId()));
                 return lessonRepository.save(lesson);
             }
@@ -65,18 +68,25 @@ public class LessonServiceImpl implements LessonService {
         }
     }
 
-    public Lesson update(Integer id, LessonCreateDto dto) {
+   public Lesson update(Integer id, LessonCreateDto dto) {
         try {
             Lesson lesson = lessonRepository.findById(id).orElse(null);
             if (lesson == null) {
                 throw new RuntimeException("Lesson is null");
             }
             lesson.setTitle(dto.getTitle());
-            if(dto.getImageName()!=null)
+            if(dto.getImage()!=null)
             {
-                lesson.setFrontPageImage(imageService.findByImageName(dto.getImageName()));
-            }
+                String oldImageName = lesson.getFrontPageImage().getImageName();
 
+                // Get the new image name
+                String newImageName = dto.getImage().getOriginalFilename();
+
+                if (!Objects.equals(newImageName, oldImageName)) {
+                    Image img = imageService.uploadImageToFileSystem(dto.getImage());
+                    lesson.setFrontPageImage(img);
+                }
+            }
             return lessonRepository.save(lesson);
         } catch (Exception e) {
             throw new RuntimeException("Lesson is null");
