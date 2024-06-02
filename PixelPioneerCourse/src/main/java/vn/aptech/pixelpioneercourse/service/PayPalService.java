@@ -10,9 +10,13 @@ import java.util.List;
 
 @Service
 public class PayPalService {
-    private APIContext apiContext;
+    private final APIContext apiContext;
+    
+    public PayPalService(APIContext apiContext) {
+        this.apiContext = apiContext;
+    }
 
-    public Payment createPayment(
+    public Payment createPayPalPayment(
             Double total,
             String currency,
             String method,
@@ -44,6 +48,40 @@ public class PayPalService {
         redirectUrls.setCancelUrl(cancelUrl);
         redirectUrls.setReturnUrl(successUrl);
         payment.setRedirectUrls(redirectUrls);
+
+        return payment.create(apiContext);
+    }
+
+    public Payment createCreditCardPayment(
+            Double total,
+            String currency,
+            String method,
+            String intent,
+            String description,
+            CreditCard creditCard) throws PayPalRESTException {
+
+        Amount amount = new Amount();
+        amount.setCurrency(currency);
+        amount.setTotal(String.format("%.2f", total));
+
+        Transaction transaction = new Transaction();
+        transaction.setDescription(description);
+        transaction.setAmount(amount);
+
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(transaction);
+
+        FundingInstrument fundingInstrument = new FundingInstrument();
+        fundingInstrument.setCreditCard(creditCard);
+
+        Payer payer = new Payer();
+        payer.setPaymentMethod(method);
+        payer.setFundingInstruments(List.of(fundingInstrument));
+
+        Payment payment = new Payment();
+        payment.setIntent(intent);
+        payment.setPayer(payer);
+        payment.setTransactions(transactions);
 
         return payment.create(apiContext);
     }
