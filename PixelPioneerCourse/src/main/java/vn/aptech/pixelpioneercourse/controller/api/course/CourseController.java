@@ -105,7 +105,7 @@ public class CourseController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<?> update(@Valid @RequestBody CourseCreateDto courseCreateDto, @PathVariable("id") Integer id) {
         try {
             if (courseService.update(id, courseCreateDto)) {
@@ -118,7 +118,7 @@ public class CourseController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
         try {
             if (courseService.delete(id)) {
@@ -131,7 +131,7 @@ public class CourseController {
         }
     }
 
-    @PutMapping("/publish/{id}")
+    @PutMapping("/{id}/publish")
     public ResponseEntity<?> publishCourse(@PathVariable("id") Integer id) {
         try {
             Course course = courseService.publishCourse(id);
@@ -145,7 +145,7 @@ public class CourseController {
         }
     }
 
-    @PutMapping("/unpublished/{id}")
+    @PutMapping("/{id}/unpublished")
     public ResponseEntity<?> unpublishedCourse(@PathVariable("id") Integer id) {
         try {
             Course course = courseService.unpublishCourse(id);
