@@ -15,12 +15,14 @@ public class CourseServiceImpl implements CourseService{
     final private ModelMapper mapper;
     final private CategoryService categoryService;
     final private UserService userService;
+    final private ImageService imageService;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService) {
         this.courseRepository = courseRepository;
         this.mapper = mapper;
         this.categoryService = categoryService;
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     //from CourseCreateDto to Course
@@ -106,11 +108,13 @@ public class CourseServiceImpl implements CourseService{
         }
         try {
             Course course = toCourse(dto);
-            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0) {
+            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0 && dto.getImageName()!=null) {
                 course.setCategory(categoryService.findById(dto.getCategoryId()));
                 course.setInstructor(userService.findById(dto.getInstructorId()));
+                course.setFrontPageImage(imageService.findByImageName(dto.getImageName()));
+                return courseRepository.save(course);
             }
-            return courseRepository.save(course);
+            return null;
         } catch (Exception e) {
             throw new RuntimeException("Cannot save course!");
         }
@@ -125,9 +129,8 @@ public class CourseServiceImpl implements CourseService{
             Course existedCourse = courseRepository.findById(id).orElseThrow(()-> new RuntimeException("Course not found!"));
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
-            existedCourse.setCategory(categoryService.findById(dto.getCategoryId()));
-            existedCourse.setInstructor(userService.findById(dto.getInstructorId()));
             existedCourse.setUpdatedAt(java.time.LocalDateTime.now());
+            existedCourse.setFrontPageImage(imageService.findByImageName(dto.getImageName()));
             courseRepository.save(existedCourse);
             return true;
         }

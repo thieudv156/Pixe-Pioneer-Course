@@ -13,10 +13,14 @@ public class LessonServiceImpl implements LessonService {
 
     final private LessonRepository lessonRepository;
     final private ModelMapper modelMapper;
+    final private ImageService imageService;
+    final private CourseService courseService;
 
-    public LessonServiceImpl(LessonRepository lessonRepository, ModelMapper modelMapper) {
+    public LessonServiceImpl(LessonRepository lessonRepository, ModelMapper modelMapper, ImageService imageService, CourseService courseService) {
         this.lessonRepository = lessonRepository;
         this.modelMapper = modelMapper;
+        this.imageService = imageService;
+        this.courseService = courseService;
     }
 
     public Lesson toLesson(LessonCreateDto dto) {return modelMapper.map(dto, Lesson.class);}
@@ -40,7 +44,13 @@ public class LessonServiceImpl implements LessonService {
     public Lesson save(LessonCreateDto dto) {
         try {
             Lesson lesson = toLesson(dto);
-            return lessonRepository.save(lesson);
+            if(dto.getImageName()!=null && dto.getCourseId()>0)
+            {
+                lesson.setFrontPageImage(imageService.findByImageName(dto.getImageName()));
+                lesson.setCourse(courseService.findById(dto.getCourseId()));
+                return lessonRepository.save(lesson);
+            }
+            return null;
         } catch (Exception e) {
             throw new RuntimeException("Lesson is null");
         }
@@ -62,7 +72,10 @@ public class LessonServiceImpl implements LessonService {
                 throw new RuntimeException("Lesson is null");
             }
             lesson.setTitle(dto.getTitle());
-            lesson.setImage(dto.getImage());
+            if(dto.getImageName()!=null)
+            {
+                lesson.setFrontPageImage(imageService.findByImageName(dto.getImageName()));
+            }
 
             return lessonRepository.save(lesson);
         } catch (Exception e) {

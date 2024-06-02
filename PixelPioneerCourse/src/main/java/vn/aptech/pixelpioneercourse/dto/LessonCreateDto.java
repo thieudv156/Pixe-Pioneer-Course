@@ -18,6 +18,6 @@ public class LessonCreateDto {
     @NotNull(message = "Course ID is required")
     private Integer courseId;
 
-    private String image;
+    private String imageName;
 
 }

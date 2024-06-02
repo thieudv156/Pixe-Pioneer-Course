@@ -32,11 +32,12 @@ public class SubLesson {
     @Column
     private boolean completeStatus=false;
 
-    @Column
-    private String image;
+    @OneToOne
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private Image frontPageImage;
 
     @Column
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Discussion> discussions;

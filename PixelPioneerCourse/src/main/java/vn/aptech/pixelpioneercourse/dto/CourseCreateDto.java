@@ -29,5 +29,5 @@ public class CourseCreateDto {
     @NotNull(message = "Instructor ID is mandatory")
     private Integer instructorId;
 
-    private String image;
+    private String imageName;
 }

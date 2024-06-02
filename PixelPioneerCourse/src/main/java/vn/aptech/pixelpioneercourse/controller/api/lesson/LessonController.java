@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.LessonCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
 import vn.aptech.pixelpioneercourse.service.LessonService;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class LessonController {
 
     final private LessonService lessonService;
+
 
     public LessonController(LessonService lessonService) {
         this.lessonService = lessonService;
@@ -71,6 +73,18 @@ public class LessonController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createLesson(@Valid @RequestBody LessonCreateDto dto){
+        try {
+            Optional<Lesson> result = Optional.ofNullable(lessonService.save(dto));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+
 
 
 }
