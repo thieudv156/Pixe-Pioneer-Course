@@ -6,6 +6,6 @@ import vn.aptech.pixelpioneercourse.entities.Image;
 
 public interface ImageService {
     Image findByImageName(String name);
-    String uploadImageToFileSystem(MultipartFile file);
+    Image uploadImageToFileSystem(MultipartFile file);
     Pair<byte[], String> downloadImageFromFileSystem(String fileName);
 }

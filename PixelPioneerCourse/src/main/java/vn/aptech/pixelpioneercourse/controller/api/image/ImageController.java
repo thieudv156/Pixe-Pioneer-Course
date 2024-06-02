@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import vn.aptech.pixelpioneercourse.entities.Image;
 import vn.aptech.pixelpioneercourse.service.ImageService;
 
 @RestController
@@ -21,7 +22,7 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) {
         try {
-            String result = imageService.uploadImageToFileSystem(file);
+            Image result = imageService.uploadImageToFileSystem(file);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());

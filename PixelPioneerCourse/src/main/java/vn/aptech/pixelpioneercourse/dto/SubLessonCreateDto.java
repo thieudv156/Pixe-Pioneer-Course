@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +22,8 @@ public class SubLessonCreateDto {
 
     private String content;
 
-    private String image;
+    @NotNull(message = "Image cannot be empty")
+    private MultipartFile image;
 
     @NotNull(message = "Created at date is required")
     private LocalDateTime createdAt;

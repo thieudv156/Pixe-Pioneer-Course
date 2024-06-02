@@ -31,7 +31,7 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-   public String uploadImageToFileSystem(MultipartFile file) {
+   public Image uploadImageToFileSystem(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File cannot be null or empty");
         }
@@ -55,7 +55,7 @@ public class ImageServiceImpl implements ImageService {
         } catch (IOException e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
-        return originalFilename;
+        return img;
     }
 
 

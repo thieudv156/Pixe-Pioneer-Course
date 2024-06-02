@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
+import vn.aptech.pixelpioneercourse.entities.Image;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 
 import java.util.List;
@@ -108,10 +109,12 @@ public class CourseServiceImpl implements CourseService{
         }
         try {
             Course course = toCourse(dto);
-            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0 && dto.getImageName()!=null) {
+            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0 && dto.getImage()!=null) {
                 course.setCategory(categoryService.findById(dto.getCategoryId()));
                 course.setInstructor(userService.findById(dto.getInstructorId()));
-                course.setFrontPageImage(imageService.findByImageName(dto.getImageName()));
+                Image imageName = imageService.uploadImageToFileSystem(dto.getImage());
+                course.setFrontPageImage(imageName);
+
                 return courseRepository.save(course);
             }
             return null;
@@ -130,14 +133,26 @@ public class CourseServiceImpl implements CourseService{
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
             existedCourse.setUpdatedAt(java.time.LocalDateTime.now());
-            existedCourse.setFrontPageImage(imageService.findByImageName(dto.getImageName()));
+            if(dto.getImage()!=null)
+            {
+                // Get the old image name
+                String oldImageName = existedCourse.getFrontPageImage().getImageName();
+
+                // Get the new image name
+                String newImageName = dto.getImage().getOriginalFilename();
+
+                // If the old image name is not equal to the new image name, upload and save the new image
+                if (!oldImageName.equals(newImageName)) {
+                    Image imageName = imageService.uploadImageToFileSystem(dto.getImage());
+                    existedCourse.setFrontPageImage(imageName);
+                }
+            }
             courseRepository.save(existedCourse);
             return true;
         }
         catch (Exception e){
             throw new RuntimeException("Course is null");
         }
-
     }
 
     //Delete course

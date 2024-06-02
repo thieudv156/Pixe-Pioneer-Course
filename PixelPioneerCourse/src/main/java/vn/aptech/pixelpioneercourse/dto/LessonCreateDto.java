@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class LessonCreateDto {
     @NotNull(message = "Course ID is required")
     private Integer courseId;
 
-    private String imageName;
+    @NotNull(message = "Image cannot be empty")
+    private MultipartFile image;
 
 }
