@@ -38,11 +38,15 @@ public class ResetPasswordController {
         requestedCode = userService.codeGeneratorForEmailVerification();
     }
 	
+    boolean mailSectionShow = true;
+    boolean codeSectionShow = false;
+    boolean passwordSectionShow = false;
+    
     @GetMapping
     public String resetPassPage(HttpSession session) {
-    	session.setAttribute("emailVerified", false);
-        session.setAttribute("codeVerified", false);
-        session.setAttribute("passwordChanged", false);
+    	session.setAttribute("emailShow", mailSectionShow);
+        session.setAttribute("codeShow", codeSectionShow);
+        session.setAttribute("passwordShow", passwordSectionShow);
     	return "guest_view/reset_password";
     }
     
@@ -58,53 +62,81 @@ public class ResetPasswordController {
                 "**" + requestedCode + "**\n\n" +
                 "If you did not request this code, please ignore this email or contact support.\n\n" +
                 "Best regards,\n" +
-                "Pixel Pioneer Course Adminstration Team");
+                "Pixel Pioneer Course Adminstration Team.");
         mailSender.send(message);
     }
 
     @PostMapping("/mail")
     public String emailChecker(@RequestParam("email") String email, RedirectAttributes ra, HttpSession session) {
-        User u = userService.findByEmail(email);
-        if (u != null) {
-            requestedEmail = email;
+    	try {
+    		userService.findByEmail(email);
+    		requestedEmail = email;
             sendSimpleMessage(email);
-            session.setAttribute("emailVerified", true); // Set this attribute when email is verified
-        } else {
-            ra.addFlashAttribute("emailNotFoundCondition", true);
-        }
-        return "redirect:/app/reset-password";
+            mailSectionShow = false;
+            session.setAttribute("emailShow", mailSectionShow); // Set this attribute when email is verified
+            codeSectionShow = true;
+            session.setAttribute("codeShow", codeSectionShow);
+            return "redirect:/app/reset-password";
+    	} catch (Exception e) {
+    		ra.addFlashAttribute("emailNotFoundCondition", true);
+    		ra.addFlashAttribute("emailNotFound", "Cannot find that account in our system :(");
+            return "redirect:/app/reset-password";
+    	}
+        
     }
 
     @PostMapping("/code")
     public String codeChecker(@RequestParam("codeChecker") String code, RedirectAttributes ra, HttpSession session) {
         if (requestedCode.equals(code)) {
-            session.setAttribute("codeVerified", true);
-            session.setAttribute("passwordChanged", false); // Reset password change
+        	codeSectionShow = false;
+        	session.setAttribute("codeShow", codeSectionShow);
+        	passwordSectionShow = true;
+            session.setAttribute("passwordShow", passwordSectionShow);
         } else {
             ra.addFlashAttribute("codeCheckingFailCondition", true);
+            ra.addFlashAttribute("codeCheckingFail", "Wrong code, please enter again.");
         }
         return "redirect:/app/reset-password";
     }
 
-    @PutMapping("/password")
-    public String passwordChange(@RequestParam("passwordChanger") String pw, RedirectAttributes ra, HttpSession session) {
+    @PostMapping("/password")
+    public String passwordChange(@RequestParam("passwordChanger") String pw, @RequestParam("repasswordChanger") String rpw,RedirectAttributes ra, HttpSession session) {
         try {
-        	if (userService.findUserByPassword(pw) == null) {
-                userService.passwordChanger(requestedEmail, pw);
-                session.setAttribute("passwordChanged", true);
-                session.setAttribute("emailVerified", false); // Reset email verification
-                session.setAttribute("codeVerified", false); // Reset code verification
-                ra.addFlashAttribute("successCondition", true);
-                ra.addFlashAttribute("successMessage", "Successfully changed password, please login.");
-                return "redirect:/app/login";
-            } else {
-                ra.addFlashAttribute("loginErrorCondition", true);
-                ra.addFlashAttribute("loginError", "Password change failed.");
-                return "redirect:/app/reset-password";
-            }
+        	if (pw.equals(rpw)) {
+        		if (userService.findUserByPassword(pw) == null) {
+                    userService.passwordChanger(requestedEmail, pw);
+                    mailSectionShow = true;
+                    session.setAttribute("emailShow", mailSectionShow); // Reset email verification
+                    codeSectionShow = false;
+                    session.setAttribute("codeShow", codeSectionShow); // Reset code verification
+                    passwordSectionShow = false;
+                    session.setAttribute("passwordShow", passwordSectionShow);
+                    ra.addFlashAttribute("successCondition", true);
+                    ra.addFlashAttribute("successMessage", "Successfully changed password, please login.");
+                    return "redirect:/app/login";
+                } else {
+                    ra.addFlashAttribute("loginErrorCondition", true);
+                    ra.addFlashAttribute("loginError", "Password change failed (you may enter an old password), please enter a new one.");
+                    return "redirect:/app/reset-password";
+                }
+        	} else if (pw.length() < 6) {
+        		ra.addFlashAttribute("loginErrorCondition", true);
+        		ra.addFlashAttribute("loginError", "Password must contain at least 6 letters");
+        		return "redirect:/app/reset-password";
+        	} else {
+        		ra.addFlashAttribute("loginErrorCondition", true);
+        		ra.addFlashAttribute("loginError", "Passwords don't match each other, please re-type them.");
+        		return "redirect:/app/reset-password";
+        	}
         } catch(Exception e) {
         	ra.addFlashAttribute("loginErrorCondition", true);
         	ra.addFlashAttribute("loginError", "Unknown error occurs, please contact us for further support");
+        	mailSectionShow = true;
+            session.setAttribute("emailShow", mailSectionShow);
+            codeSectionShow = false;
+            session.setAttribute("codeShow", codeSectionShow);
+            passwordSectionShow = false;
+            session.setAttribute("passwordShow", passwordSectionShow);
         	return "redirect:/app/reset-password";
         }
     }
