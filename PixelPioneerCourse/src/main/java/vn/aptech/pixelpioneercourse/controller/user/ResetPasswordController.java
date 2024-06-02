@@ -38,28 +38,30 @@ public class ResetPasswordController {
         requestedCode = userService.codeGeneratorForEmailVerification();
     }
 	
-    boolean mailSectionShow = true;
-    boolean codeSectionShow = false;
-    boolean passwordSectionShow = false;
+    private boolean mailSectionShow = true;
+    private boolean codeSectionShow = false;
+    private boolean passwordSectionShow = false;
     
     @GetMapping
     public String resetPassPage(HttpSession session) {
+    	mailSectionShow = true;
     	session.setAttribute("emailShow", mailSectionShow);
         session.setAttribute("codeShow", codeSectionShow);
         session.setAttribute("passwordShow", passwordSectionShow);
     	return "guest_view/reset_password";
     }
     
-    String requestedEmail = null;
+    private String requestedEmail = null;
     
     public void sendSimpleMessage(String receiverEmail) {
         SimpleMailMessage message = new SimpleMailMessage(); 
         message.setFrom("bot@PIXELPIONEERCOURSE.com");
         message.setTo(receiverEmail); 
-        message.setSubject("Email Verification - Code Verifying"); 
+        message.setSubject("Email Verification - Code Verifying Letter from PIXEL PIONEER COURSE"); 
         message.setText("Dear " + receiverEmail + ",\n\n" +
                 "Thank you for being our member. To complete your password changing process, please enter the following verification code:\n\n" +
                 "**" + requestedCode + "**\n\n" +
+                "This code will be unavailable right after you correctly enter it." + "\n" +
                 "If you did not request this code, please ignore this email or contact support.\n\n" +
                 "Best regards,\n" +
                 "Pixel Pioneer Course Adminstration Team.");
@@ -92,6 +94,7 @@ public class ResetPasswordController {
         	session.setAttribute("codeShow", codeSectionShow);
         	passwordSectionShow = true;
             session.setAttribute("passwordShow", passwordSectionShow);
+            requestedCode = null;
         } else {
             ra.addFlashAttribute("codeCheckingFailCondition", true);
             ra.addFlashAttribute("codeCheckingFail", "Wrong code, please enter again.");
@@ -102,23 +105,25 @@ public class ResetPasswordController {
     @PostMapping("/password")
     public String passwordChange(@RequestParam("passwordChanger") String pw, @RequestParam("repasswordChanger") String rpw,RedirectAttributes ra, HttpSession session) {
         try {
-        	if (pw.equals(rpw)) {
-        		if (userService.findUserByPassword(pw) == null) {
-                    userService.passwordChanger(requestedEmail, pw);
+        	if (pw.equals(rpw) && (pw.length() > 5 && rpw.length() > 5)) {
+        		try {
+        			userService.findUserByPassword(pw);
+        			ra.addFlashAttribute("loginErrorCondition", true);
+                    ra.addFlashAttribute("loginError", "Password change failed (you may enter an old password), please enter a new one.");
+                    return "redirect:/app/reset-password";
+        		} catch (Exception e) {
+        			userService.passwordChanger(requestedEmail, pw);
                     mailSectionShow = true;
                     session.setAttribute("emailShow", mailSectionShow); // Reset email verification
                     codeSectionShow = false;
                     session.setAttribute("codeShow", codeSectionShow); // Reset code verification
                     passwordSectionShow = false;
                     session.setAttribute("passwordShow", passwordSectionShow);
+                    requestedEmail = null;
                     ra.addFlashAttribute("successCondition", true);
                     ra.addFlashAttribute("successMessage", "Successfully changed password, please login.");
                     return "redirect:/app/login";
-                } else {
-                    ra.addFlashAttribute("loginErrorCondition", true);
-                    ra.addFlashAttribute("loginError", "Password change failed (you may enter an old password), please enter a new one.");
-                    return "redirect:/app/reset-password";
-                }
+        		}
         	} else if (pw.length() < 6) {
         		ra.addFlashAttribute("loginErrorCondition", true);
         		ra.addFlashAttribute("loginError", "Password must contain at least 6 letters");
@@ -130,7 +135,7 @@ public class ResetPasswordController {
         	}
         } catch(Exception e) {
         	ra.addFlashAttribute("loginErrorCondition", true);
-        	ra.addFlashAttribute("loginError", "Unknown error occurs, please contact us for further support");
+        	ra.addFlashAttribute("loginError", e.getMessage());
         	mailSectionShow = true;
             session.setAttribute("emailShow", mailSectionShow);
             codeSectionShow = false;

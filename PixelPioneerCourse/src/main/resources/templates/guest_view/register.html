@@ -1,8 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en"
       dir="ltr" xmlns:th="https://www.thymeleaf.org">
 
-    <head>
+	<div th:if="${session?.isUser == true or session?.isAdmin == true or session?.isInstructor == true}">
+		<b>You have been logged in, please log out to access this page.</b>
+	</div>
+
+    <head th:if="${session.isUser == null and session.isAdmin == null and session.isInstructor == null}">
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible"
               content="IE=edge">
@@ -49,7 +54,7 @@
 
     </head>
 
-    <body class="layout-app ">
+    <body class="layout-app " th:if="${session.isUser == null and session.isAdmin == null and session.isInstructor == null}">
 
         <div class="preloader">
             <div class="sk-chase">

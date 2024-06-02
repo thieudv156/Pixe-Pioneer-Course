@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService{
     	User acc = userRepository.findById(uID).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
         acc.setUsername(u.getUsername());
         acc.setEmail(u.getEmail());
-        acc.setPassword(encoder.encode(acc.getPassword()));
+        acc.setPassword(encoder.encode(u.getPassword()));
         acc.setFullName(u.getFullName());
         acc.setPhone(u.getPhone());
         userRepository.save(acc);
@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService{
     	User acc = userRepository.findById(uID).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
         acc.setUsername(u.getUsername());
         acc.setEmail(u.getEmail());
-        acc.setPassword(encoder.encode(acc.getPassword()));
+        acc.setPassword(u.getPassword());
         acc.setFullName(u.getFullName());
         acc.setPhone(u.getPhone());
         userRepository.save(acc);
@@ -208,6 +208,17 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new UsernameNotFoundException("You have entered an old password, please change it."));
     }
     
+    public boolean updatePassword(UserCreateDto u){
+    	User acc = userRepository.findByEmail(u.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
+        acc.setUsername(u.getUsername());
+        acc.setEmail(u.getEmail());
+        acc.setPassword(u.getPassword());
+        acc.setFullName(u.getFullName());
+        acc.setPhone(u.getPhone());
+        userRepository.save(acc);
+        return true;
+    }
+    
     public void passwordChanger(String email, String password) throws Exception {
     	try {
     		User u = findByEmail(email);
@@ -215,8 +226,10 @@ public class UserServiceImpl implements UserService{
         	if (user == null) {
         		throw new Exception("User does not exist");
         	} else {
+        		user.setEmail(email);
         		user.setPassword(encoder.encode(password));
-        		userRepository.save(mapper.map(user, User.class));
+//        		userRepository.save(mapper.map(user, User.class));
+        		updatePassword(user);
         	}
     	} catch (Exception e1) {
     		throw new Exception(e1.getMessage());

@@ -27,6 +27,7 @@ public interface UserService {
     void delete(User u);
     String codeGeneratorForEmailVerification();
     boolean checkCode(String codeGenerated, String inputCode);
+    boolean updatePassword(UserCreateDto u);
     void passwordChanger(String email, String password) throws Exception;
     Authentication processLogin(LoginDto body);
     Authentication processLogin(String email, String password);
