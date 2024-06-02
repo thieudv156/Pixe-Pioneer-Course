@@ -1,4 +1,5 @@
 package vn.aptech.pixelpioneercourse.entities;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,19 +16,21 @@ import java.time.LocalDateTime;
 public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
+    @JsonManagedReference
     private Course course;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonManagedReference
     private User user;
 
 
     @Column(name="progress")
-    private int progress = 0;
+    private Integer progress = 0;
 
     @Column(nullable = false)
     private LocalDateTime enrolledAt;
@@ -37,5 +40,6 @@ public class Enrollment {
 
     @Enumerated(EnumType.STRING)
     @Column
+    @JsonManagedReference
     private PaymentMethod paymentMethod;
 }

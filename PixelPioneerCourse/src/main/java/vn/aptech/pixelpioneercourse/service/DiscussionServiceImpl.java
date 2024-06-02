@@ -1,20 +1,22 @@
 package vn.aptech.pixelpioneercourse.service;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.DiscussionCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Discussion;
 import vn.aptech.pixelpioneercourse.repository.DiscussionRepository;
+import vn.aptech.pixelpioneercourse.until.SensitiveWordFilter;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+
 @Service
-public class DiscussionServiceImpl implements DiscussionService{
+public class DiscussionServiceImpl implements DiscussionService {
+
     private final DiscussionRepository discussionRepository;
-    private final ModelMapper mapper;
     
-    public DiscussionServiceImpl(DiscussionRepository discussionRepository, ModelMapper mapper){
+    private DiscussionServiceImpl(DiscussionRepository discussionRepository) {
         this.discussionRepository = discussionRepository;
-        this.mapper = mapper;
     }
 
     @Override
@@ -23,25 +25,36 @@ public class DiscussionServiceImpl implements DiscussionService{
     }
 
     @Override
-    public Discussion findById(int id) {
-        return discussionRepository.findById(id).orElseThrow(() -> new RuntimeException("Discussion not found"));
+    public Discussion findById(Integer id) {
+        return discussionRepository.findById(id).orElseThrow(()-> new RuntimeException("Discussion not found"));
     }
 
     @Override
-    public Discussion save(DiscussionCreateDto discussionCreateDto) {
-        return discussionRepository.save(toDiscussion(discussionCreateDto));
+    public Discussion createDiscussion(DiscussionCreateDto discussionCreateDto) {
+        Discussion discussion = new Discussion();
+        discussion.setContent(SensitiveWordFilter.filterSensitiveWords(discussionCreateDto.getContent()));
+        discussion.setCreatedAt(LocalDateTime.now());
+        return discussionRepository.save(discussion);
     }
 
 
     @Override
-    public void deleteById(int id) {
+    public Discussion updateDiscussion(Integer id, DiscussionCreateDto discussionDetails) {
+        Discussion existingDiscussion = discussionRepository.findById(id).orElseThrow(()-> new RuntimeException("Discussion not found"));
+        if(existingDiscussion == null) {
+            return null;
+        }
+        existingDiscussion.setContent(SensitiveWordFilter.filterSensitiveWords(discussionDetails.getContent()));
+        return discussionRepository.save(existingDiscussion);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
         discussionRepository.deleteById(id);
     }
-    
-    
-    //convert dto -> entity
-    private Discussion toDiscussion(DiscussionCreateDto dto){
-        return mapper.map(dto, Discussion.class);
+
+    @Override
+    public List<Discussion> findBySubLessonId(Integer subLessonId) {
+        return discussionRepository.findDiscussionBySubLessonId(subLessonId);
     }
-    
 }

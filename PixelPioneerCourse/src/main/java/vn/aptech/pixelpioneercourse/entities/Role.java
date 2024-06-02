@@ -16,7 +16,7 @@ import java.util.List;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     private String roleName; //ROLE_STUDENT, ROLE_ADMIN, ROLE_INSTRUCTOR
