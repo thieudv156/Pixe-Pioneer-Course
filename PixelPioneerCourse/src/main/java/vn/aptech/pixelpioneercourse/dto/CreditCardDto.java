@@ -2,8 +2,15 @@ package vn.aptech.pixelpioneercourse.dto;
 
 import com.paypal.api.payments.CreditCard;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreditCardDto {
+
     @NotBlank(message = "Credit card number is mandatory")
     private String number;
 

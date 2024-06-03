@@ -1,12 +1,13 @@
 package vn.aptech.pixelpioneercourse.controller.api.payment;
 
-import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.Links;
 import com.paypal.base.rest.PayPalRESTException;
-import org.springframework.beans.factory.annotation.Value;
-import vn.aptech.pixelpioneercourse.dto.CreditCardDto;
+import vn.aptech.pixelpioneercourse.dto.PaymentRequestDto;
+import vn.aptech.pixelpioneercourse.entities.PaymentMethod;
 import vn.aptech.pixelpioneercourse.service.PayPalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,54 +28,30 @@ public class PayPalController {
     private String cancelUrl;
 
     @PostMapping("/pay")
-    public ResponseEntity<Map<String, String>> payWithPayPal(@RequestParam double amount) {
+    public ResponseEntity<Map<String, String>> createPayment(@RequestBody PaymentRequestDto paymentRequestDto) {
         Map<String, String> response = new HashMap<>();
         try {
-            Payment payment = payPalService.createPayPalPayment(
-                    amount,
-                    "USD",
-                    "paypal",
-                    "sale",
-                    "Course payment",
-                    cancelUrl,
-                    successUrl);
-            for (Links link : payment.getLinks()) {
-                if (link.getRel().equals("approval_url")) {
-                    response.put("approval_url", link.getHref());
-                    return ResponseEntity.ok(response);
+            Payment payment = payPalService.createPayment(paymentRequestDto, cancelUrl, successUrl);
+            if (paymentRequestDto.getPaymentMethod() == PaymentMethod.PAYPAL) {
+                for (Links link : payment.getLinks()) {
+                    if ("approval_url".equals(link.getRel())) {
+                        response.put("approval_url", link.getHref());
+                        return ResponseEntity.ok(response);
+                    }
                 }
-            }
-        } catch (PayPalRESTException e) {
-            e.printStackTrace();
-            response.put("error", "Payment creation failed");
-            return ResponseEntity.status(500).body(response);
-        }
-        response.put("error", "Payment creation failed");
-        return ResponseEntity.status(500).body(response);
-    }
-
-    @PostMapping("/pay-with-card")
-    public ResponseEntity<Map<String, String>> payWithCard(@RequestBody CreditCardDto creditCardDto) {
-        Map<String, String> response = new HashMap<>();
-        try {
-            Payment payment = payPalService.createCreditCardPayment(
-                    10.00,
-                    "USD",
-                    "credit_card",
-                    "sale",
-                    "Course payment",
-                    creditCardDto.toCreditCard());
-            if (payment.getState().equals("approved")) {
+                response.put("error", "Approval URL not found");
+            } else if ("approved".equals(payment.getState())) {
                 response.put("status", "success");
                 response.put("paymentId", payment.getId());
                 return ResponseEntity.ok(response);
+            } else {
+                response.put("error", "Payment not approved");
             }
         } catch (PayPalRESTException e) {
             e.printStackTrace();
             response.put("error", "Payment creation failed");
             return ResponseEntity.status(500).body(response);
         }
-        response.put("error", "Payment not approved");
         return ResponseEntity.status(500).body(response);
     }
 
@@ -83,7 +60,7 @@ public class PayPalController {
         Map<String, String> response = new HashMap<>();
         try {
             Payment payment = payPalService.executePayment(paymentId, payerId);
-            if (payment.getState().equals("approved")) {
+            if ("approved".equals(payment.getState())) {
                 response.put("status", "success");
                 response.put("paymentId", payment.getId());
                 return ResponseEntity.ok(response);

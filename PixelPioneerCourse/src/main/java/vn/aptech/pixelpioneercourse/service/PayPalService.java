@@ -3,28 +3,32 @@ package vn.aptech.pixelpioneercourse.service;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vn.aptech.pixelpioneercourse.dto.CreditCardDto;
+import vn.aptech.pixelpioneercourse.dto.PaymentRequestDto;
+import vn.aptech.pixelpioneercourse.entities.PaymentMethod;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PayPalService {
-    private final APIContext apiContext;
-    
-    public PayPalService(APIContext apiContext) {
-        this.apiContext = apiContext;
+
+    @Autowired
+    private APIContext apiContext;
+
+    public Payment createPayment(PaymentRequestDto paymentRequestDto, String cancelUrl, String successUrl) throws PayPalRESTException {
+        if (paymentRequestDto.getPaymentMethod() == PaymentMethod.PAYPAL) {
+            return createPayPalPayment(paymentRequestDto.getAmount(), "USD", "paypal", "sale", "Course payment", cancelUrl, successUrl);
+        } else if (paymentRequestDto.getPaymentMethod() == PaymentMethod.CREDIT_CARD && paymentRequestDto.getCreditCard() != null) {
+            return createCreditCardPayment(paymentRequestDto.getAmount(), "USD", "sale", "Course payment", paymentRequestDto.getCreditCard());
+        } else {
+            throw new IllegalArgumentException("Invalid payment method or missing credit card information");
+        }
     }
 
-    public Payment createPayPalPayment(
-            Double total,
-            String currency,
-            String method,
-            String intent,
-            String description,
-            String cancelUrl,
-            String successUrl) throws PayPalRESTException {
-
+    private Payment createPayPalPayment(Double total, String currency, String method, String intent, String description, String cancelUrl, String successUrl) throws PayPalRESTException {
         Amount amount = new Amount();
         amount.setCurrency(currency);
         amount.setTotal(String.format("%.2f", total));
@@ -37,10 +41,10 @@ public class PayPalService {
         transactions.add(transaction);
 
         Payer payer = new Payer();
-        payer.setPaymentMethod(method.toString());
+        payer.setPaymentMethod(method);
 
         Payment payment = new Payment();
-        payment.setIntent(intent.toString());
+        payment.setIntent(intent);
         payment.setPayer(payer);
         payment.setTransactions(transactions);
 
@@ -52,14 +56,7 @@ public class PayPalService {
         return payment.create(apiContext);
     }
 
-    public Payment createCreditCardPayment(
-            Double total,
-            String currency,
-            String method,
-            String intent,
-            String description,
-            CreditCard creditCard) throws PayPalRESTException {
-
+    private Payment createCreditCardPayment(Double total, String currency, String intent, String description, CreditCardDto creditCardDto) throws PayPalRESTException {
         Amount amount = new Amount();
         amount.setCurrency(currency);
         amount.setTotal(String.format("%.2f", total));
@@ -72,10 +69,10 @@ public class PayPalService {
         transactions.add(transaction);
 
         FundingInstrument fundingInstrument = new FundingInstrument();
-        fundingInstrument.setCreditCard(creditCard);
+        fundingInstrument.setCreditCard(creditCardDto.toCreditCard());
 
         Payer payer = new Payer();
-        payer.setPaymentMethod(method);
+        payer.setPaymentMethod("credit_card");
         payer.setFundingInstruments(List.of(fundingInstrument));
 
         Payment payment = new Payment();
