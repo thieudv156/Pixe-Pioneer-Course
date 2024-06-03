@@ -1,6 +1,9 @@
 package vn.aptech.pixelpioneercourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +18,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "discussions")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Discussion {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
@@ -22,17 +28,17 @@ public class Discussion {
 
     @ManyToOne
     @JoinColumn(name = "sub_lesson_id")
-    @JsonManagedReference
+    @JsonBackReference
     private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Discussion parent;
 
     @Column(name = "content", columnDefinition = "TEXT")

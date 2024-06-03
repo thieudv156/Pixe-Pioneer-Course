@@ -1,5 +1,7 @@
 package vn.aptech.pixelpioneercourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +24,7 @@ public class Role {
     private String roleName; //ROLE_STUDENT, ROLE_ADMIN, ROLE_INSTRUCTOR
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<User> users;
 }
     

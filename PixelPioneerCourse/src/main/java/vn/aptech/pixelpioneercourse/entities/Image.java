@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,11 +26,14 @@ public class Image {
     private String imageUrl;
 
     @OneToOne(mappedBy = "frontPageImage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private Lesson lesson;
 
     @OneToOne(mappedBy = "frontPageImage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private Course course;
 
     @OneToOne(mappedBy = "frontPageImage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private SubLesson subLesson;
 }
