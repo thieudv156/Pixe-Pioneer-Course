@@ -2,6 +2,8 @@ package vn.aptech.pixelpioneercourse.controller.user;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import vn.aptech.pixelpioneercourse.dto.CustomOauth2User;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
 @Controller
@@ -28,6 +31,9 @@ public class LoginController {
 
     @GetMapping
     public String loginPage(HttpSession session) {
+    	System.out.println(session.getAttribute("isUser"));
+    	System.out.println(session.getAttribute("isAdmin"));
+    	System.out.println(session.getAttribute("isInstructor"));
         if (session.getAttribute("isUser") != null || session.getAttribute("isAdmin") != null || session.getAttribute("isInstructor") != null) {
             // Redirect based on the role
             if (session.getAttribute("isUser") != null) {
@@ -39,6 +45,12 @@ public class LoginController {
             }
         }
         return "guest_view/login";
+    }
+    
+    @GetMapping("/loginSuccess")
+    public String loginSuccess(@AuthenticationPrincipal CustomOauth2User customUser) {
+        // Use customUser here
+        return "redirect:/app/course";
     }
 
     @PostMapping

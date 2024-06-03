@@ -11,6 +11,7 @@ import org.thymeleaf.exceptions.TemplateInputException;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.util.validation.metadata.DatabaseException;
+import vn.aptech.pixelpioneercourse.Provider;
 import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.RoleDto;
@@ -145,6 +146,7 @@ public class UserServiceImpl implements UserService{
                     user.setPassword(encoder.encode(user.getPassword()));
                     user.setActiveStatus(true);
                     user.setCreatedAt(LocalDate.now());
+                    user.setProvider(Provider.LOCAL);
                     List<RoleDto> listRole = rService.findAll();
                     for (RoleDto role : listRole) {
                         if (role.getRoleName().equals("ROLE_USER")) user.setRole(convertToRoleFromDto(role));
@@ -234,6 +236,21 @@ public class UserServiceImpl implements UserService{
     	} catch (Exception e1) {
     		throw new Exception(e1.getMessage());
     	}
+    }
+    
+    public void processOAuthPostLogin(String username) {
+        User existUser = userRepository.findByUsername(username).get();
+         
+        if (existUser == null) {
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.setCreatedAt(LocalDate.now());
+            newUser.setProvider(Provider.GOOGLE);
+            newUser.setActiveStatus(true);          
+             
+            userRepository.save(newUser);        
+        }
+         
     }
 
     // =========================================================================================================

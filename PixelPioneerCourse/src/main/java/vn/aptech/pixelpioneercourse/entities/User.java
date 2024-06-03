@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.aptech.pixelpioneercourse.Provider;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -73,4 +74,14 @@ public class User {
         return new SimpleGrantedAuthority(role.getRoleName());
     }
 
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+ 
+    public Provider getProvider() {
+        return provider;
+    }
+ 
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
 }

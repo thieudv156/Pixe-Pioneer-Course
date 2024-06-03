@@ -49,7 +49,7 @@ public class JWTImpl implements JWT{
     @Override
     public Authorized decode(String token, String secret) {
         log.info("Decode jwt");
-        Jws<Claims> decodedToken = Jwts.parserBuilder()
+        Jws<Claims> decodedToken = Jwts.parser()
                 .setSigningKey(secretToKey(secret))
                 .build()
                 .parseClaimsJws(token);

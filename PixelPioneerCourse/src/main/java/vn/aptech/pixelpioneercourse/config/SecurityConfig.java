@@ -1,7 +1,10 @@
 package vn.aptech.pixelpioneercourse.config;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,23 +18,37 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
+import vn.aptech.pixelpioneercourse.service.CustomOAuth2User;
+import vn.aptech.pixelpioneercourse.service.CustomOAuth2UserService;
+import vn.aptech.pixelpioneercourse.service.UserService;
+import vn.aptech.pixelpioneercourse.dto.CustomOauth2User;
+import vn.aptech.pixelpioneercourse.Provider;
+import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.middle.AuthenticationMiddleware;
 import vn.aptech.pixelpioneercourse.until.*;
+import vn.aptech.pixelpioneercourse.dto.*;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class SecurityConfig{
     private UserDetailsService userDetailsService;
 
 //    @Autowired
@@ -47,6 +64,9 @@ public class SecurityConfig {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
     
     @Autowired
     private AuthenticationMiddleware authenticationMiddleware;
@@ -69,10 +89,25 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/app/login", "/app/register").anonymous()
                         .requestMatchers(HttpMethod.POST, "/app/login", "/app/register").anonymous()
                         .requestMatchers("/public/**").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated() // Changed from permitAll to authenticated for security
                 )
+                .oauth2Login(oauth -> {
+                    oauth.loginPage("/app/login");
+                    oauth.userInfoEndpoint(o -> {
+                        o.userService(customOAuth2UserService);
+                    });
+                    oauth.successHandler(new AuthenticationSuccessHandler() {
+                        @Override
+                        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, org.springframework.security.core.Authentication authentication) throws IOException, ServletException {
+                            System.out.println(authentication.getPrincipal());
+                            DefaultOidcUser oauthUser = (DefaultOidcUser) authentication.getPrincipal();
+                            String email = oauthUser.getAttribute("email");
+                            processOAuthPostLogin(email);
+                            response.sendRedirect("/app/course");
+                        }
+                    });
+                }) // Added missing semicolon here
                 .build();
-        
     }
     
     @Bean
@@ -93,10 +128,17 @@ public class SecurityConfig {
         return http.build();
     }
     
+    @Autowired
+    private ModelMapper mapper;
+    
     public void processOAuthPostLogin(String email){
         Optional<User> opUser = userRepository.findByEmail(email);
         if(opUser.isEmpty()) {
             User user = new User();
+            user.setActiveStatus(true);
+            user.setCreatedAt(LocalDate.now());
+            user.setProvider(Provider.GOOGLE);
+            user.setRole(mapper.map("ROLE_USER", Role.class));
             user.setEmail(email);
             userRepository.save(user);
         }

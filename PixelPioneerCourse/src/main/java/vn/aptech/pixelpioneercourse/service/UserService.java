@@ -29,6 +29,7 @@ public interface UserService {
     boolean checkCode(String codeGenerated, String inputCode);
     boolean updatePassword(UserCreateDto u);
     void passwordChanger(String email, String password) throws Exception;
+    void processOAuthPostLogin(String username);
     Authentication processLogin(LoginDto body);
     Authentication processLogin(String email, String password);
 }
