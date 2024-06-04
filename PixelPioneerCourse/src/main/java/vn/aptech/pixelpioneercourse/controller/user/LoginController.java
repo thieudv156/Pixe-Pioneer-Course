@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.controller.user;
 
+import org.jetbrains.annotations.Async;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
