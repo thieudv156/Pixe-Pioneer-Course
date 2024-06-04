@@ -48,4 +48,8 @@ public class Lesson {
     @JsonManagedReference
     private List<SubLesson> subLessons;
 
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Quiz> quizzes;
+
 }

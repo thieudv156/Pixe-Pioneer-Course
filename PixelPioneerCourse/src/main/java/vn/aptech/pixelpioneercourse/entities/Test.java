@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,9 +18,6 @@ public class Test {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Integer id;
-
-    @Column
-    private String title;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -31,4 +30,8 @@ public class Test {
 
     @Column
     private int score;
+
+    @OneToMany
+    private List<Quiz> quizzes;
+
 }
