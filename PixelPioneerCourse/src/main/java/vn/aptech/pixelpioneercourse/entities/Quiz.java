@@ -19,7 +19,7 @@ public class Quiz {
 
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference(value = "lesson-quiz")
     private Lesson lesson;
 
     @Column

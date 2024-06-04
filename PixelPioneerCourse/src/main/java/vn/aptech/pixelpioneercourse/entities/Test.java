@@ -21,11 +21,12 @@ public class Test {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference(value = "user-test")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference(value = "lesson-test")
     private Lesson lesson;
 
     @Column

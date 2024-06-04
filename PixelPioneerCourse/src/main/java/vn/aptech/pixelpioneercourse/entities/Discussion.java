@@ -28,17 +28,17 @@ public class Discussion {
 
     @ManyToOne
     @JoinColumn(name = "sub_lesson_id")
-    @JsonBackReference
+    @JsonBackReference(value = "sublesson-discussion")
     private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonBackReference(value = "user-discussion")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @JsonBackReference
+    @JsonBackReference(value = "parent-discussion")
     private Discussion parent;
 
     @Column(name = "content", columnDefinition = "TEXT")
@@ -48,7 +48,7 @@ public class Discussion {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "parent-discussion")
     private List<Discussion> children;
 
 }

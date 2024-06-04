@@ -21,11 +21,12 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    @JsonBackReference
+    @JsonBackReference(value = "course-review")
     private Course course;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "user-review")
     private User user;
 
     @Column(nullable = false)

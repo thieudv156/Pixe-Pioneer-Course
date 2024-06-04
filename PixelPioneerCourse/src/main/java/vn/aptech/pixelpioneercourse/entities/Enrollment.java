@@ -1,4 +1,5 @@
 package vn.aptech.pixelpioneercourse.entities;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,12 +21,12 @@ public class Enrollment {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference(value = "course-enrollment")
     private Course course;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference(value = "user-enrollment")
     private User user;
 
 
@@ -40,6 +41,5 @@ public class Enrollment {
 
     @Enumerated(EnumType.STRING)
     @Column
-    @JsonManagedReference
     private PaymentMethod paymentMethod;
 }

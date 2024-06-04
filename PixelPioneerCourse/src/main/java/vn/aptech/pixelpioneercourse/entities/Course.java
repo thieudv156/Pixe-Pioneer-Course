@@ -26,7 +26,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference(value = "course-category")
     private Category category;
 
     @Column(columnDefinition = "TEXT")
@@ -37,7 +37,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
-    @JsonBackReference
+    @JsonBackReference(value = "instructor-course")
     private  User instructor;
 
     @Column(nullable = false)
@@ -57,11 +57,11 @@ public class Course {
     private Image frontPageImage;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "course-enrollment")
     private List<Enrollment> enrollments;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "course-review")
     private List<Review> reviews;
     
 

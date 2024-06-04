@@ -24,7 +24,7 @@ public class Role {
     private String roleName; //ROLE_STUDENT, ROLE_ADMIN, ROLE_INSTRUCTOR
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "user-role")
     private List<User> users;
 }
     

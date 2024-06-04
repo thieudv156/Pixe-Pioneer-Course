@@ -27,7 +27,7 @@ public class Lesson {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference(value = "course-lesson")
     private Course course;
 
     @Column
@@ -41,15 +41,15 @@ public class Lesson {
     private LocalDateTime createdAt=LocalDateTime.now();
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "lesson-test")
     private List<Test> tests;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "lesson-sublesson")
     private List<SubLesson> subLessons;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "lesson-quiz")
     private List<Quiz> quizzes;
 
 }
