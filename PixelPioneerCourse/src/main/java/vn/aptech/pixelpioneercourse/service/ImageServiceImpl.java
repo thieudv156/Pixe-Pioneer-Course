@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    private static final String FOLDER_PATH = "/Users/tu4n/End_term_project/Pixe-Pioneer-Course/PixelPioneerCourse/src/main/resources/templates/static/public/images/upload_images";
+    private final Path FOLDER_PATH = Path.of(Paths.get(System.getProperty("user.dir")) + "/PixelPioneerCourse/src/main/resources/templates/static/public/images/upload_images");
     private final ImageRepository imageRepository;
 
     public ImageServiceImpl(ImageRepository imageRepository) {
@@ -41,9 +41,10 @@ public class ImageServiceImpl implements ImageService {
             throw new IllegalArgumentException("Original filename cannot be null or empty");
         }
 
-        String filePath = FOLDER_PATH + "/" + originalFilename;
+        String filePath = FOLDER_PATH + "/" + originalFilename+System.currentTimeMillis();
+
         Image img = Image.builder()
-                .imageName(originalFilename)
+                .imageName(originalFilename+System.currentTimeMillis())
                 .imageType(file.getContentType())
                 .imageUrl(filePath)
                 .build();
