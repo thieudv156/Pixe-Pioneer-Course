@@ -1,13 +1,16 @@
 package vn.aptech.pixelpioneercourse.controller.api.course;
 
-import jakarta.validation.Valid;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.service.CategoryService;
 import vn.aptech.pixelpioneercourse.service.CourseService;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +22,7 @@ public class CourseController {
 
     private final CourseService courseService;
     private final CategoryService categoryService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public CourseController(CourseService courseService, CategoryService categoryService) {
         this.courseService = courseService;
@@ -91,9 +95,19 @@ public class CourseController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody CourseCreateDto courseCreateDto) {
+    @PostMapping(value = "/create")
+    public ResponseEntity<?> create(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("courseData") String courseData) {
+
         try {
+            // Convert courseData (JSON string) to CourseCreateDto
+            CourseCreateDto courseCreateDto = objectMapper.readValue(courseData, CourseCreateDto.class);
+
+            // Set the image file to the DTO
+            courseCreateDto.setImage(image);
+
+            // Save the course
             Course savedCourse = courseService.save(courseCreateDto);
             if (savedCourse != null) {
                 return ResponseEntity.ok(savedCourse);
@@ -106,14 +120,25 @@ public class CourseController {
     }
 
     @PutMapping("/{id}/update")
-    public ResponseEntity<?> update(@Valid @RequestBody CourseCreateDto courseCreateDto, @PathVariable("id") Integer id) {
+    public ResponseEntity<?> update(
+            @PathVariable("id") Integer id,
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("courseData") String courseData) {
+
         try {
+            // Convert courseData (JSON string) to CourseCreateDto
+            CourseCreateDto courseCreateDto = objectMapper.readValue(courseData, CourseCreateDto.class);
+
+            // Set the image file to the DTO
+            courseCreateDto.setImage(image);
+
+            // Update the course
             if (courseService.update(id, courseCreateDto)) {
                 return ResponseEntity.ok("Course updated successfully");
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }

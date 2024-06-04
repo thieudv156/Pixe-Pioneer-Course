@@ -119,7 +119,7 @@ public class CourseServiceImpl implements CourseService{
             }
             return null;
         } catch (Exception e) {
-            throw new RuntimeException("Cannot save course!");
+            throw new RuntimeException("Cannot save course!"+e.getMessage());
         }
     }
 
