@@ -1,19 +1,14 @@
 <!DOCTYPE html>
-
 <html lang="en"
       dir="ltr" xmlns:th="https://www.thymeleaf.org">
 
-	<div th:if="${session?.isUser == true or session?.isAdmin == true or session?.isInstructor == true}">
-		<b>You have been logged in, please log out to access this page.</b>
-	</div>
-
-    <head th:if="${session.isUser == null and session.isAdmin == null and session.isInstructor == null}">
+    <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible"
               content="IE=edge">
         <meta name="viewport"
               content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Login</title>
+        <title>Users - General</title>
 
         <!-- Prevent the demo from appearing in search engines -->
         <meta name="robots"
@@ -54,7 +49,7 @@
 
     </head>
 
-    <body class="layout-app " th:if="${session.isUser == null and session.isAdmin == null and session.isInstructor == null}">
+    <body class="layout-app ui " th:if="${session.isUser == null and session.isAdmin == true and session.isInstructor == null}">
 
         <div class="preloader">
             <div class="sk-chase">
@@ -83,21 +78,26 @@
 
                 <!-- Header -->
 
-                <div class="navbar navbar-expand navbar-light border-bottom-2"
+                <!-- Navbar -->
+
+                <div class="navbar navbar-expand pr-0 navbar-light border-bottom-2"
                      id="default-navbar"
                      data-primary>
 
-                    <!-- Navbar toggler -->
+                    <!-- Navbar Toggler -->
+
                     <button class="navbar-toggler w-auto mr-16pt d-block d-lg-none rounded-0"
                             type="button"
                             data-toggle="sidebar">
                         <span class="material-icons">short_text</span>
                     </button>
 
+                    <!-- // END Navbar Toggler -->
+
                     <!-- Navbar Brand -->
+
                     <a href="index.html"
                        class="navbar-brand mr-16pt d-lg-none">
-                        <!-- <img class="navbar-brand-icon" src="../../public/images/logo/white-100@2x.png" width="30" alt="PIXEL PIONEER COURSE"> -->
 
                         <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
 
@@ -107,139 +107,39 @@
 
                         </span>
 
-                        <span class="d-none d-lg-block">PIXEL PIONEER COURSE</span>
+                        <span class="d-none d-lg-block">Pixel Pioneer Course</span>
                     </a>
 
-                    <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt" style="display: none;">
-                        <li class="nav-item" style="display: none;">
-                            <a href="index.html"
-                               class="nav-link">Home</a>
-                        </li>
-                        <li class="nav-item dropdown">
+                    <!-- // END Navbar Brand -->
+
+                    <div class="flex"></div>
+
+                        <div class="nav-item dropdown">
                             <a href="#"
-                               class="nav-link dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-caret="false">Courses</a>
-                            <div class="dropdown-menu">
-                                <a href="courses.html"
-                                   class="dropdown-item">Browse Courses</a>
-                                <a href="student-course.html"
-                                   class="dropdown-item">Preview Course</a>
-                                <a href="student-lesson.html"
-                                   class="dropdown-item">Preview Lesson</a>
-                                <a href="student-take-course.html"
-                                   class="dropdown-item"><span class="mr-16pt">Take Course</span> <span class="badge badge-notifications badge-accent text-uppercase ml-auto">Pro</span></a>
-                                <a href="student-take-lesson.html"
-                                   class="dropdown-item">Take Lesson</a>
-                                <a href="student-take-quiz.html"
-                                   class="dropdown-item">Take Quiz</a>
-                                <a href="student-quiz-result-details.html"
-                                   class="dropdown-item">Quiz Result</a>
-                                <a href="student-dashboard.html"
-                                   class="dropdown-item">Student Dashboard</a>
-                                <a href="student-my-courses.html"
-                                   class="dropdown-item">My Courses</a>
-                                <a href="student-quiz-results.html"
-                                   class="dropdown-item">My Quizzes</a>
-                                <a href="help-center.html"
-                                   class="dropdown-item">Help Center</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a href="#"
-                               class="nav-link dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-caret="false" style="display: none;">Paths</a>
-                            <div class="dropdown-menu">
-                                <a href="paths.html"
-                                   class="dropdown-item">Browse Paths</a>
-                                <a href="student-path.html"
-                                   class="dropdown-item">Path Details</a>
-                                <a href="student-path-assessment.html"
-                                   class="dropdown-item">Skill Assessment</a>
-                                <a href="student-path-assessment-result.html"
-                                   class="dropdown-item">Skill Result</a>
-                                <a href="student-paths.html"
-                                   class="dropdown-item">My Paths</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="pricing.html"
-                               class="nav-link" style="display: none;">Pricing</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a href="#"
-                               class="nav-link dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-caret="false" style="display: none;">Teachers</a>
-                            <div class="dropdown-menu">
-                                <a href="instructor-dashboard.html"
-                                   class="dropdown-item">Instructor Dashboard</a>
-                                <a href="instructor-courses.html"
-                                   class="dropdown-item">Manage Courses</a>
-                                <a href="instructor-quizzes.html"
-                                   class="dropdown-item">Manage Quizzes</a>
-                                <a href="instructor-earnings.html"
-                                   class="dropdown-item">Earnings</a>
-                                <a href="instructor-statement.html"
-                                   class="dropdown-item">Statement</a>
-                                <a href="instructor-edit-course.html"
-                                   class="dropdown-item">Edit Course</a>
-                                <a href="instructor-edit-quiz.html"
-                                   class="dropdown-item">Edit Quiz</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown"
-                            data-toggle="tooltip"
-                            data-title="Community"
-                            data-placement="bottom"
-                            data-boundary="window" style="display: none;">
-                            <a href="#"
-                               class="nav-link dropdown-toggle"
+                               class="nav-link d-flex align-items-center dropdown-toggle"
                                data-toggle="dropdown"
                                data-caret="false">
-                                <i class="material-icons">people_outline</i>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a href="teachers.html"
-                                   class="dropdown-item">Browse Teachers</a>
-                                <a href="student-profile.html"
-                                   class="dropdown-item">Student Profile</a>
-                                <a href="teacher-profile.html"
-                                   class="dropdown-item">Instructor Profile</a>
-                                <a href="blog.html"
-                                   class="dropdown-item">Blog</a>
-                                <a href="blog-post.html"
-                                   class="dropdown-item">Blog Post</a>
-                                <a href="faq.html"
-                                   class="dropdown-item">FAQ</a>
-                                <a href="help-center.html"
-                                   class="dropdown-item">Help Center</a>
-                                <a href="discussions.html"
-                                   class="dropdown-item">Discussions</a>
-                                <a href="discussion.html"
-                                   class="dropdown-item">Discussion Details</a>
-                                <a href="discussions-ask.html"
-                                   class="dropdown-item">Ask Question</a>
-                            </div>
-                        </li>
-                    </ul>
 
-                    <ul class="nav navbar-nav ml-auto mr-0">
-                        <li class="nav-item active" style="display: none;">
-                            <a href="login.html"
-                               class="nav-link"
-                               data-toggle="tooltip"
-                               data-title="Login"
-                               data-placement="bottom"
-                               data-boundary="window"><i class="material-icons">lock_open</i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/app/register"
-                               class="btn btn-outline-dark">Register</a>
-                        </li>
-                    </ul>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div class="dropdown-header"><strong>Account</strong></div>
+                                <a class="dropdown-item"
+                                   href="edit-account.html">Edit Account</a>
+                                <a class="dropdown-item"
+                                   href="billing.html">Billing</a>
+                                <a class="dropdown-item"
+                                   href="billing-history.html">Payments</a>
+                                <a class="dropdown-item"
+                                   href="login.html">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- // END Navbar Menu -->
+
                 </div>
+
+                <!-- // END Navbar -->
 
                 <!-- // END Header -->
 
@@ -249,45 +149,126 @@
 
                 <!-- Page Content -->
 
-                <div class="pt-32pt pt-sm-64pt pb-32pt">
-                    <div class="container page__container">
-                        <div th:if="${successCondition}" class="alert alert-success" role="alert">
-						    <span style="color: green; font-weight: bold;" th:text="${successMessage}"></span>
-						</div>
-				
-				        <!-- Page Content -->
-				        <form th:action="@{/app/login}" method="post" class="col-md-5 p-0 mx-auto">
-				            <div class="pt-32pt pt-sm-64pt pb-32pt">
-				                <div class="container page__container">
-				                    <div class="form-group">
-				                        <label class="form-label" for="info">Info:</label>
-				                        <input required id="info" type="text" class="form-control" name="info" placeholder="Your email or username">
-				                    </div>
-				                    <div class="form-group">
-				                        <label class="form-label" for="password">Password:</label>
-				                        <input required id="password" type="password" class="form-control" name="password" placeholder="Your password">
-				                        <p class="text-right"><a href="/app/reset-password" class="small">Forgot your password?</a></p>
-				                    </div>
-				                    <br>
-				                    <div th:if="${loginErrorCondition}" class="alert alert-danger" role="alert">
-									    <span style="color: red; font-weight: bold;" th:text="${loginError}"></span>
-									</div>
-				                    <div class="text-center">
-				                        <button class="btn btn-primary" type="submit">Login</button>
-				                    </div>
-				                </div>
-				            </div>
-				        </form>
-                    </div>
+                <div class="container page__container page-section pb-0">
+                    <h1 class="h2 mb-0">List of Users</h1>
+                    <ol class="breadcrumb m-0 p-0">
+                        <li class="breadcrumb-item">Users</li>
+                        <li class="breadcrumb-item active">General</li>
+                    </ol>
                 </div>
-                <div class="page-separator justify-content-center m-0">
-                    <div class="page-separator__text">or sign-in with</div>
-                </div>
-                <div class="bg-body pt-32pt pb-32pt pb-md-64pt text-center">
-                    <div class="container page__container">
-                        <a th:href="@{/oauth2/authorization/google}"
-                           class="btn btn-danger btn-block-xs">GOOGLE</a>
+
+                <div class="container page__container page-section">
+                
+                	<div class="page-separator">
+                        <div class="page-separator__text">Users</div>
                     </div>
+
+                    <div class="card mb-lg-32pt">
+
+                        <div class="table-responsive"
+                             data-toggle="lists"
+                             data-lists-sort-by="js-lists-values-employee-name"
+                             data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
+
+                            <table class="table mb-0 thead-border-top-0 table-nowrap">
+                                <thead>
+								    <tr>
+								        <th>
+								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">ID</a>
+								        </th>
+								        <th style="width: 150px;">
+								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Full Name</a>
+								        </th>
+								        <th style="width: 150px;">
+								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Username</a>
+								        </th>
+								        <th style="width: 150px;">
+								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Email</a>
+								        </th>
+								        <th style="width: 150px;">Status</th>
+								        <th style="width: 120px;">
+								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Created At</a>
+								        </th>
+								        <th style="width: 150px;">
+								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Provider</a>
+								        </th>
+								        <th style="width: 24px;" class="pl-0"></th>
+								    </tr>
+								</thead>
+
+                                <tbody class="list" id="users">
+								    <tr th:each="user : ${users}" class="selected">
+								    	<td>
+								    		<strong class="js-lists-values-employee-name" th:text="${user.id}">ID</strong>
+								    	</td>
+								    	<td>
+								    		<p class="js-lists-values-employee-name" th:text="${user.fullName}">Fullname</p>
+								    	</td>
+								        <td>
+								            <p class="js-lists-values-employee-name" th:text="${user.username}">Username</p>
+								        </td>
+								        <td>
+								        	<p class="js-lists-values-employee-name" th:text="${user.email}">Email</p>
+								        </td>
+								        <td>
+								        	<p class="js-lists-values-employee-name" th:text="${user.activeStatus}">Active Status</p>
+								        </td>
+								        <td>
+								        	<p class="js-lists-values-employee-name" th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy')}">Create at
+								        </td>
+								        <td>
+								           <p class="js-lists-values-employee-name" th:text="${user.provider}">Provider</p> 
+								        </td>
+								    </tr>
+								</tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-footer p-8pt">
+
+                            <ul class="pagination justify-content-start pagination-xsm m-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link"
+                                       href="#"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true"
+                                              class="material-icons">chevron_left</span>
+                                        <span>Prev</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="#"
+                                       aria-label="Page 1">
+                                        <span>1</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="#"
+                                       aria-label="Page 2">
+                                        <span>2</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="#"
+                                       aria-label="Next">
+                                        <span>Next</span>
+                                        <span aria-hidden="true"
+                                              class="material-icons">chevron_right</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                        <!-- <div class="card-body bordet-top text-right">
+  15 <span class="text-50">of 1,430</span> <a href="#" class="text-50"><i class="material-icons ml-1">arrow_forward</i></a>
+</div> -->
+
+                    </div>
+                    </div>
+
                 </div>
 
                 <!-- // END Page Content -->
@@ -300,16 +281,16 @@
                             <img class="brand-icon"
                                  src="/public/images/logo/black-70@2x.png"
                                  width="30"
-                                 alt="PIXEL PIONEER COURSE"> PIXEL PIONEER COURSE
+                                 alt="Pixel Pioneer Course"> Pixel Pioneer Course
                         </p>
-                        <p class="measure-lead-max text-50 small mr-8pt">PIXEL PIONEER COURSE is a beautifully crafted user interface for modern Education Platforms, including Courses & Tutorials, Video Lessons, Student and Teacher Dashboard, Curriculum Management, Earnings and Reporting, ERP, HR, CMS, Tasks, Projects, eCommerce and more.</p>
+                        <p class="measure-lead-max text-50 small mr-8pt">Pixel Pioneer Course is a beautifully crafted user interface for modern Education Platforms, including Courses & Tutorials, Video Lessons, Student and Teacher Dashboard, Curriculum Management, Earnings and Reporting, ERP, HR, CMS, Tasks, Projects, eCommerce and more.</p>
                         <p class="mb-8pt d-flex">
                             <a href=""
                                class="text-70 text-underline mr-8pt small">Terms</a>
                             <a href=""
                                class="text-70 text-underline small">Privacy policy</a>
                         </p>
-                        <p class="text-50 small mt-n1 mb-0">Copyright 2024 &copy; All rights reserved.</p>
+                        <p class="text-50 small mt-n1 mb-0">Copyright 2019 &copy; All rights reserved.</p>
                     </div>
                 </div>
 
@@ -330,7 +311,7 @@
                         <!-- Sidebar Content -->
 
                         <div class="d-flex align-items-center navbar-height">
-                            <form action="index.html" style="display: none;"
+                            <form action="index.html"
                                   class="search-form search-form--black mx-16pt pr-0 pl-16pt">
                                 <input type="text"
                                        class="form-control pl-0"
@@ -340,9 +321,9 @@
                             </form>
                         </div>
 
-                        <a href="/app/login"
+                        <a href="index.html"
                            class="sidebar-brand ">
-                            <!-- <img class="sidebar-brand-icon" src="../../public/images/illustration/student/128/white.svg" alt="PIXEL PIONEER COURSE"> -->
+                            <!-- <img class="sidebar-brand-icon" src="/public/images/illustration/student/128/white.svg" alt="Pixel Pioneer Course"> -->
 
                             <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -352,12 +333,11 @@
 
                             </span>
 
-                            <span style="text-align: center;">PIXEL PIONEER COURSE</span>
+                            <span>Pixel Pioneer Course</span>
                         </a>
 
-                        <div class="sidebar-heading" style="display: none;">Applications</div>
-                        <div class="sidebar-heading" style="font-size: large; color: white; align-self: center">Log in to unlock more features :D</div>
-                        <ul class="sidebar-menu" style="display: none;">
+                        <div class="sidebar-heading">Applications</div>
+                        <ul class="sidebar-menu">
 
                             <li class="sidebar-menu-item">
                                 <a class="sidebar-menu-button js-sidebar-collapse"
@@ -763,7 +743,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="sidebar-menu-item active open">
+                            <li class="sidebar-menu-item">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#account_menu">
@@ -771,7 +751,7 @@
                                     Account
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
-                                <ul class="sidebar-submenu collapse show sm-indent"
+                                <ul class="sidebar-submenu collapse sm-indent"
                                     id="account_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
@@ -779,7 +759,7 @@
                                             <span class="sidebar-menu-text">Pricing</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item active">
+                                    <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
                                            href="login.html">
                                             <span class="sidebar-menu-text">Login</span>
@@ -946,9 +926,9 @@
                             </li>
                         </ul>
 
-                        <div class="sidebar-heading" style="display: none;">UI</div>
-                        <ul class="sidebar-menu" style="display: none;">
-                            <li class="sidebar-menu-item">
+                        <div class="sidebar-heading">UI</div>
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-menu-item active open">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#components_menu">
@@ -956,7 +936,7 @@
                                     Components
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
-                                <ul class="sidebar-submenu collapse sm-indent"
+                                <ul class="sidebar-submenu collapse show sm-indent"
                                     id="components_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
@@ -982,7 +962,7 @@
                                             <span class="sidebar-menu-text">Loaders</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item">
+                                    <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
                                            href="ui-tables.html">
                                             <span class="sidebar-menu-text">Tables</span>
@@ -1176,43 +1156,43 @@
                                     id="layouts_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Compact_App_Layout/login.html">
+                                           href="../Compact_App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Compact</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_App_Layout/login.html">
+                                           href="../Mini_App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Mini</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_Secondary_Layout/login.html">
+                                           href="../Mini_Secondary_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Mini + Secondary</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
-                                           href="../App_Layout/login.html">
+                                           href="../App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">App</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Boxed_App_Layout/login.html">
+                                           href="../Boxed_App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Boxed</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Sticky_App_Layout/login.html">
+                                           href="../Sticky_App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Sticky</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Fixed_Layout/login.html">
+                                           href="../Fixed_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Fixed</span>
                                         </a>
                                     </li>
@@ -1253,6 +1233,14 @@
 
         <!-- Preloader -->
         <script src="/public/js/preloader.js"></script>
+
+        <!-- List.js -->
+        <script src="/public/vendor/list.min.js"></script>
+        <script src="/public/js/list.js"></script>
+
+        <!-- Tables -->
+        <script src="/public/js/toggle-check-all.js"></script>
+        <script src="/public/js/check-selected-row.js"></script>
 
     </body>
 

@@ -1,13 +1,17 @@
 package vn.aptech.pixelpioneercourse.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import vn.aptech.pixelpioneercourse.Provider;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -24,6 +28,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @JsonBackReference(value = "user-role")
+    @JsonIgnoreProperties({"users", "id"})
     private Role role;
 
     @Column(nullable = false, unique = true)
@@ -47,7 +52,6 @@ public class User {
     @Column(nullable = false, name = "created_at")
     private LocalDate createdAt;
 
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "user-enrollment")
     private List<Enrollment> enrollments;
@@ -68,4 +72,22 @@ public class User {
     @JsonManagedReference(value = "user-test")
     private List<Test> tests;
 
+    public List<String> getAuthorities() {
+        return Collections.singletonList(role.getRoleName());
+    }
+
+    public SimpleGrantedAuthority getGrantedAuthorities(){
+        return new SimpleGrantedAuthority(role.getRoleName());
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
 }

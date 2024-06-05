@@ -1,6 +1,6 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +25,6 @@ public class Role {
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "user-role")
+    @JsonIgnoreProperties({"role", "password", "getAuthorities()", "getGrantedAuthorities()"})
     private List<User> users;
 }
-    

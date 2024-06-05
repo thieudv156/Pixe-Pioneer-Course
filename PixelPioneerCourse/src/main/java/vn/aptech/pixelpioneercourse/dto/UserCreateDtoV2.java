@@ -1,32 +1,32 @@
 package vn.aptech.pixelpioneercourse.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import vn.aptech.pixelpioneercourse.Provider;
 import vn.aptech.pixelpioneercourse.entities.Role;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-public class UserDto {
-
-    @Getter
-    private int id;
-    
-    @JsonIgnoreProperties({"id", "users"})
-    @Getter
-    private Role role;
-    @Getter
+public class UserCreateDtoV2 {
     private String username;
-    @Getter
+
     private String password;
-    @Getter
+
     private String email;
-    @Getter
+
     private String fullName;
-    @Getter
+
+    private boolean activeStatus = true;
+    
     private String phone;
+    
+    private Role role;
+    
+    private LocalDate createdAt;
+    
+    private Provider provider;
 }
