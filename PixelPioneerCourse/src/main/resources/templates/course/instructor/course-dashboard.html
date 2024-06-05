@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="mdk-header-layout__content page-content ">
+    <div class="pt-32pt">
+        <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+            <div class="flex d-flex flex-column flex-sm-row align-items-center mb-24pt mb-md-0">
+                <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                    <h2 class="mb-0">Courses</h2>
+                    <ol class="breadcrumb p-0 m-0">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                        <li class="breadcrumb-item active">
+                            Courses
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row" role="tablist">
+                <div class="col-auto">
+                    <a th:href="@{/instructor-edit-course}" class="btn btn-outline-secondary">Add Course</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container page__container page-section">
+        <div class="page-separator">
+            <div class="page-separator__text">Development Courses</div>
+        </div>
+        <div class="row">
+            <div th:each="course : ${courses}" class="col-sm-6 col-md-4 col-xl-3 mb-4">
+                <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal"
+                     data-overlay-onload-show
+                     data-popover-onload-show
+                     data-force-reveal
+                     data-partial-height="44"
+                     data-toggle="popover"
+                     data-trigger="click">
+                    <a th:href="@{/instructor-edit-course/{id}(id=${course.id})}"
+                       class="js-image"
+                       data-position="">
+                        <img th:src="@{${imageApiUrl+'/'+course.frontPageImage.imageName}}"
+                             alt="course" class="img-fluid">
+                        <span class="overlay__content align-items-start justify-content-start">
+                            <span class="overlay__action card-body d-flex align-items-center">
+                                <i class="material-icons mr-4pt">edit</i>
+                                <span class="card-title text-white">Edit</span>
+                            </span>
+                        </span>
+                    </a>
+                    <div class="mdk-reveal__content">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="flex">
+                                    <a class="card-title mb-4pt"
+                                       th:href="@{/instructor-edit-course/{id}(id=${course.id})}"
+                                       th:text="${course.title}">Course Title</a>
+                                </div>
+                                <a th:href="@{/instructor-edit-course/{id}(id=${course.id})}"
+                                   class="ml-4pt material-icons text-20 card-course__icon-favorite">edit</a>
+                            </div>
+                            <div class="d-flex">
+                                <div class="rating flex">
+                                    <span th:each="star : ${#numbers.sequence(1, 5)}" class="rating__item">
+                                        <span class="material-icons" th:text="${star <= course.reviews.size() ? 'star' : 'star_border'}"></span>
+                                    </span>
+                                </div>
+                                <small class="text-50" th:text="${course.enrollments.size() + ' students'}">6 students</small>
+                            </div>
+                            <div class="d-flex">
+<!--                                <small class="text-50" th:text="${course.duration + ' hours'}">6 hours</small>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

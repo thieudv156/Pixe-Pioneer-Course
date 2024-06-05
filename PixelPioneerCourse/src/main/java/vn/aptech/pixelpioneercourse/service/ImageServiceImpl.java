@@ -41,10 +41,10 @@ public class ImageServiceImpl implements ImageService {
             throw new IllegalArgumentException("Original filename cannot be null or empty");
         }
 
-        String filePath = FOLDER_PATH + "/" + originalFilename+System.currentTimeMillis();
+        String filePath = FOLDER_PATH + "/" + System.currentTimeMillis()+"_"+originalFilename;
 
         Image img = Image.builder()
-                .imageName(originalFilename+System.currentTimeMillis())
+                .imageName(System.currentTimeMillis()+"_"+originalFilename )
                 .imageType(file.getContentType())
                 .imageUrl(filePath)
                 .build();
