@@ -1,7 +1,11 @@
 package vn.aptech.pixelpioneercourse.service;
 
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Image;
@@ -73,7 +77,6 @@ public class CourseServiceImpl implements CourseService{
             Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found!"));
             course.setIsPublished(true);
-            course.setPublishedDate(java.time.LocalDateTime.now());
             return courseRepository.save(course);
         } catch (Exception e) {
             throw new RuntimeException("Cannot published course!", e);
@@ -85,7 +88,6 @@ public class CourseServiceImpl implements CourseService{
             Course course = courseRepository.findById(courseId)
                     .orElseThrow(() -> new RuntimeException("Course not found!"));
             course.setIsPublished(false);
-            course.setPublishedDate(null);
             return courseRepository.save(course);
         } catch (Exception e) {
             throw new RuntimeException("Cannot unpublished course!", e);
@@ -103,18 +105,17 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Save course
-       public Course save(CourseCreateDto dto){
+    public Course save(CourseCreateDto dto, MultipartFile image){
         if (dto == null) {
             throw new RuntimeException("Course is null");
         }
         try {
             Course course = toCourse(dto);
-            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0 && dto.getImage()!=null) {
+            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0 && image!=null) {
                 course.setCategory(categoryService.findById(dto.getCategoryId()));
                 course.setInstructor(userService.findById(dto.getInstructorId()));
-                Image imageName = imageService.uploadImageToFileSystem(dto.getImage());
+                Image imageName = imageService.uploadImageToFileSystem(image);
                 course.setFrontPageImage(imageName);
-
                 return courseRepository.save(course);
             }
             return null;
@@ -124,7 +125,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Update course
-    public boolean update(Integer id, CourseCreateDto dto){
+    public boolean update(Integer id, CourseCreateDto dto, MultipartFile image){
         if(dto == null){
             throw new RuntimeException("Course is null");
         }
@@ -132,18 +133,17 @@ public class CourseServiceImpl implements CourseService{
             Course existedCourse = courseRepository.findById(id).orElseThrow(()-> new RuntimeException("Course not found!"));
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
-            existedCourse.setUpdatedAt(java.time.LocalDateTime.now());
-            if(dto.getImage()!=null)
+            if(image!=null)
             {
                 // Get the old image name
                 String oldImageName = existedCourse.getFrontPageImage().getImageName();
 
                 // Get the new image name
-                String newImageName = dto.getImage().getOriginalFilename();
+                String newImageName = image.getOriginalFilename();
 
                 // If the old image name is not equal to the new image name, upload and save the new image
                 if (!oldImageName.equals(newImageName)) {
-                    Image imageName = imageService.uploadImageToFileSystem(dto.getImage());
+                    Image imageName = imageService.uploadImageToFileSystem(image);
                     existedCourse.setFrontPageImage(imageName);
                 }
             }

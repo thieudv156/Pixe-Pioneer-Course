@@ -3,11 +3,15 @@ package vn.aptech.pixelpioneercourse.controller.api.lesson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.LessonCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
 import vn.aptech.pixelpioneercourse.service.LessonService;
+import vn.aptech.pixelpioneercourse.until.ControllerUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,11 +23,13 @@ public class LessonController {
 
     final private LessonService lessonService;
     private final ObjectMapper objectMapper;
+    private final Validator validator;
 
 
-    public LessonController(LessonService lessonService, ObjectMapper objectMapper) {
+    public LessonController(LessonService lessonService, ObjectMapper objectMapper, Validator validator) {
         this.lessonService = lessonService;
         this.objectMapper = objectMapper;
+        this.validator = validator;
     }
 
     @GetMapping("/course/{courseId}")
@@ -64,6 +70,13 @@ public class LessonController {
         try {
             LessonCreateDto dto = objectMapper.readValue(lessonData, LessonCreateDto.class);
             dto.setImage(image);
+            BindingResult bindingResult = new BeanPropertyBindingResult(dto, "lessonCreateDto");
+            validator.validate(dto, bindingResult);
+
+            // Check for validation errors
+            if(bindingResult.hasErrors()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
+            }
             Optional<Lesson> result = Optional.ofNullable(lessonService.update(lessonId, dto));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         } catch (IOException e) {
@@ -89,6 +102,11 @@ public class LessonController {
         try {
             LessonCreateDto dto = objectMapper.readValue(lessonData, LessonCreateDto.class);
             dto.setImage(image);
+            BindingResult bindingResult = new BeanPropertyBindingResult(dto, "lessonCreateDto");
+            validator.validate(dto, bindingResult);
+            if(bindingResult.hasErrors()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
+            }
             Optional<Lesson> result = Optional.ofNullable(lessonService.save(dto));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         } catch (IOException e) {

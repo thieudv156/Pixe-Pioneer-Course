@@ -30,6 +30,4 @@ public class CourseCreateDto {
     @NotNull(message = "Instructor ID is mandatory")
     private Integer instructorId;
 
-    @NotNull(message = "Image cannot be empty")
-    private MultipartFile image;
 }

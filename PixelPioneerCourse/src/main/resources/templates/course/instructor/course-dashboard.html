@@ -51,7 +51,7 @@
             </div>
             <div class="row" role="tablist">
                 <div class="col-auto">
-                    <a th:href="@{/instructor-edit-course}" class="btn btn-outline-secondary">Add Course</a>
+                    <a th:href="@{/app/course/create}" class="btn btn-outline-secondary">Add Course</a>
                 </div>
             </div>
         </div>
@@ -69,7 +69,7 @@
                      data-partial-height="44"
                      data-toggle="popover"
                      data-trigger="click">
-                    <a th:href="@{/course/{id}(id=${course.id})}"
+                    <a th:href="@{/app/course/{id}(id=${course.id})}"
                        class="js-image"
                        data-position="">
                         <img th:src="@{${imageApiUrl+'/'+course.frontPageImage.imageName}}"
@@ -80,10 +80,10 @@
                             <div class="d-flex">
                                 <div class="flex">
                                     <a class="card-title mb-4pt"
-                                       th:href="@{/course/{id}/update(id=${course.id})}"
+                                       th:href="@{/app/course/{id}(id=${course.id})}"
                                        th:text="${course.title}">Course Title</a>
                                 </div>
-                                <a th:href="@{/course/{id}(id=${course.id})}"
+                                <a th:href="@{/app/course/{id}/update(id=${course.id})}"
                                    class="ml-4pt material-icons text-20 card-course__icon-favorite">edit</a>
                             </div>
                             <div class="d-flex">

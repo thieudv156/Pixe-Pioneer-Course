@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Course</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-group.card {
+            margin-bottom: 20px;
+        }
+
+        #image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Create Course</h2>
+    <form action="/create" th:action="@{'/app/course/' + ${courseId} + '/update'}" th:object="${courseUpdateDto}" method="post" enctype="multipart/form-data">
+    <div class="row">
+            <div class="col-md-8">
+
+                <div class="page-separator">
+                    <div class="page-separator__text">Basic information</div>
+                </div>
+
+                <div class="form-group mb-24pt">
+                    <label class="form-label">Course title</label>
+                    <input type="text"
+                           class="form-control form-control-lg"
+                           placeholder="Course title"
+                           th:field="*{title}"
+                           required>
+                </div>
+
+                <div class="form-group mb-32pt">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" rows="3" placeholder="Course description" th:field="*{description}" required></textarea>
+                    <small class="form-text text-muted">Shortly describe this course.</small>
+                </div>
+
+                <div class="page-separator">
+                    <div class="page-separator__text">Sections</div>
+                </div>
+
+                <!-- Your accordion code for sections here -->
+
+            </div>
+            <div class="col-md-4">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Upload Image</label>
+                            <input type="file" class="form-control-file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+                            <small class="form-text text-muted">Upload an image for the course.</small>
+                        </div>
+                        <img id="image-preview" th:if="${oldImageUrl}" th:src="${oldImageUrl}" alt="Old Image" style="max-width: 100%; max-height: 200px;">
+                    </div>
+                </div>
+
+                <div class="page-separator">
+                    <div class="page-separator__text">Options</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Price</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group form-inline">
+                                        <span class="input-group-prepend"><span class="input-group-text">$</span></span>
+                                        <input type="number" class="form-control" value="0" min="0" th:field="*{price}">
+                                    </div>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">The recommended price is between $17 and $24</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header text-center">
+                        <button type="submit" class="btn btn-accent">Save changes</button>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <!-- Additional options or buttons here -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+        var image = document.getElementById('image-preview');
+        image.src = URL.createObjectURL(event.target.files[0]);
+        image.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

@@ -1,14 +1,19 @@
 package vn.aptech.pixelpioneercourse.controller.api.course;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.validation.Validator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
+import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.service.CategoryService;
 import vn.aptech.pixelpioneercourse.service.CourseService;
+import vn.aptech.pixelpioneercourse.until.ControllerUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,10 +28,12 @@ public class CourseController {
     private final CourseService courseService;
     private final CategoryService categoryService;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Validator validator;
 
-    public CourseController(CourseService courseService, CategoryService categoryService) {
+    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator) {
         this.courseService = courseService;
         this.categoryService = categoryService;
+        this.validator = validator;
     }
 
     @GetMapping("")
@@ -49,7 +56,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/categories/{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public ResponseEntity<?> findCourseByCategoryId(@PathVariable("categoryId") Integer categoryId){
         try {
             Optional<List<Course>> result = Optional.ofNullable(courseService.findByCategoryId(categoryId));
@@ -82,13 +89,7 @@ public class CourseController {
     @GetMapping("/create")
     public ResponseEntity<?> create() {
         try {
-            Map<Integer, String> categories = new HashMap<>();
-            categoryService.findAll().forEach(c -> categories.put(c.getId(), c.getName()));
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("categories", categories);
-            response.put("course", new CourseCreateDto());
-
+            List<Category> response = categoryService.findAll();
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
@@ -105,10 +106,14 @@ public class CourseController {
             CourseCreateDto courseCreateDto = objectMapper.readValue(courseData, CourseCreateDto.class);
 
             // Set the image file to the DTO
-            courseCreateDto.setImage(image);
 
+            BindingResult bindingResult = new BeanPropertyBindingResult(courseCreateDto, "courseCreateDto");
+            validator.validate(courseCreateDto, bindingResult);
+            if(bindingResult.hasErrors()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
+            }
             // Save the course
-            Course savedCourse = courseService.save(courseCreateDto);
+            Course savedCourse = courseService.save(courseCreateDto, image);
             if (savedCourse != null) {
                 return ResponseEntity.ok(savedCourse);
             } else {
@@ -130,10 +135,12 @@ public class CourseController {
             CourseCreateDto courseCreateDto = objectMapper.readValue(courseData, CourseCreateDto.class);
 
             // Set the image file to the DTO
-            courseCreateDto.setImage(image);
-
+            BindingResult bindingResult = new BeanPropertyBindingResult(courseCreateDto, "courseCreateDto");
+            if(bindingResult.hasErrors()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
+            }
             // Update the course
-            if (courseService.update(id, courseCreateDto)) {
+            if (courseService.update(id, courseCreateDto, image)) {
                 return ResponseEntity.ok("Course updated successfully");
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");

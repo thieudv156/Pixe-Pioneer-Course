@@ -8,8 +8,3 @@ VALUES (1, 'anhtuan040507', 'anhtuan123', 'anhtuan200745@gmail.com', 'NVAT', '08
 
 INSERT INTO categories (name)
 VALUES ('Computer Science'),('Data Science'),('Business'),('Mathematics'),('Physics'),('Chemistry'),('Biology'),('Engineering'),('Arts'),('Music');
-
-INSERT INTO courses (title, category_id, price, instructor_id, is_published, created_at, updated_at,image_id, description)
-VALUES ('Advanced Computer Science', 1, 200.0, 1, true, '2022-02-01', '2022-02-01',1,'This is a course about advanced computer science'),
-       ('Advanced Data Science', 2, 200.0, 1, true, '2022-02-01', '2022-02-01',2,'This is a course about advanced data science'),
-       ('Advanced Business Theory', 3, 200.0, 1, true, '2022-02-01', '2022-02-01',3,'This is a course about advanced business theory');

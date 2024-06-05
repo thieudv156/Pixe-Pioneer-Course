@@ -43,14 +43,8 @@ public class Course {
     @Column(nullable = false)
     private Boolean isPublished = false;
 
-    @Column()
-    private LocalDateTime publishedDate = null;
-
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @OneToOne
     @JoinColumn(name = "image_id", referencedColumnName = "id")
@@ -63,7 +57,5 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "course-review")
     private List<Review> reviews;
-    
-
 }
 
