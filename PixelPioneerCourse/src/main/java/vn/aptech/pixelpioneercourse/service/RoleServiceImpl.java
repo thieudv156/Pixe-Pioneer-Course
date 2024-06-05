@@ -22,6 +22,10 @@ public class RoleServiceImpl implements RoleService{
     {
         return roleRepository.findAll().stream().map(o->mapper.map(o, RoleDto.class)).toList();
     }
+    
+    public List<String> findAllToName() {
+    	return roleRepository.findAll().stream().map(o->mapper.map(o.getRoleName(), String.class)).toList();
+    }
 
     public Optional<RoleDto> findById(int id)
     {

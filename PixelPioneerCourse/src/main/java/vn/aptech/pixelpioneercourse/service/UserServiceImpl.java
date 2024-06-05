@@ -189,6 +189,7 @@ public class UserServiceImpl implements UserService{
         acc.setPassword(u.getPassword());
         acc.setFullName(u.getFullName());
         acc.setPhone(u.getPhone());
+        acc.setRole(u.getRole());
         userRepository.save(acc);
         return true;
     }

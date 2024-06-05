@@ -152,165 +152,105 @@
                 <!-- Page Content -->
 
                 <div class="container page__container page-section pb-0">
-                    <h1 class="h2 mb-0">List of Users</h1>
+                    <h1 class="h2 mb-0">Users information modifying</h1>
                     <ol class="breadcrumb m-0 p-0">
                         <li class="breadcrumb-item">Users</li>
-                        <li class="breadcrumb-item active">General</li>
+                        <li class="breadcrumb-item">General</li>
+                        <li class="breadcrumb-item active">Update</li>
                     </ol>
                 </div>
 
                 <div class="container page__container page-section">
-                
-                	<div class="page-separator">
-                        <div class="page-separator__text">Users</div>
-                    </div>
-
-                    <div class="card mb-lg-32pt">
-
-                        <div class="table-responsive"
-                             data-toggle="lists"
-                             data-lists-sort-by="js-lists-values-employee-name"
-                             data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
-							
-							<div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
-							    <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
-							</div>
-							<div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
-							    <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
-							</div>
-
-                            <table class="table mb-0 thead-border-top-0 table-nowrap">
-                                <thead>
-								    <tr>
-								        <th>
-								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">ID</a>
-								        </th>
-								        <th style="width: 150px;">
-								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Full Name</a>
-								        </th>
-								        <th style="width: 150px;">
-								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Username</a>
-								        </th>
-								        <th style="width: 150px;">
-								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Email</a>
-								        </th>
-								        <th style="width: 150px;">
-								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Phone</a>
-								        </th>
-								        <th style="width: 150px;">Status</th>
-								        <th style="width: 120px;">
-								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Created At</a>
-								        </th>
-								        <th style="width: 150px;">
-								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Provider</a>
-								        </th>
-								        <th style="width: 150px;">
-								            <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Action</a>
-								        </th>
-								        <th style="width: 24px;" class="pl-0"></th>
-								    </tr>
-								</thead>
-
-                                <tbody class="list" id="users">
-								    <tr th:each="user : ${users}" class="selected">
-								    	<td>
-								    		<strong class="js-lists-values-employee-name" th:text="${user.id}">ID</strong>
-								    	</td>
-								    	<td>
-								    		<p class="js-lists-values-employee-name" th:text="${user.fullName}">Fullname</p>
-								    	</td>
-								        <td>
-								            <p class="js-lists-values-employee-name" th:text="${user.username}">Username</p>
-								        </td>
-								        <td>
-								        	<p class="js-lists-values-employee-name" th:text="${user.email}">Email</p>
-								        </td>
-								        <td>
-								        	<p class="js-lists-values-employee-name" th:text="${user.phone}">Phone</p>
-								        </td>
-								        <td>
-								        	<p class="js-lists-values-employee-name">
-											    <span th:if="${user.activeStatus}" class="badge bg-success" style="height: 3vh;">Active</span>
-											    <span th:if="${!user.activeStatus}" class="badge bg-danger" style="height: 3vh;">Inactive</span>
-											</p>
-								        </td>
-								        <td>
-								        	<p class="js-lists-values-employee-name" th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy')}">Create at
-								        </td>
-								        <td>
-								           <p class="js-lists-values-employee-name" th:text="${user.provider}">Provider</p> 
-								        </td>
-								        <td>
-										    <div th:if="${user.role.roleName != 'ROLE_ADMIN'}">
-										        <div th:if="${user.activeStatus}">
-										            <form id="deactivate" th:action="@{/app/admin/users/deactivate}" method="post">
-										                <input type="hidden" name="uid" th:value="${user.id}" />
-										                <button type="submit" class="btn btn-accent btn-rounded">Deactivate</button>
-										            </form>
-										        </div>
-										        <div th:if="${!user.activeStatus}">
-										            <form id="activate" th:action="@{/app/admin/users/activate}" method="post">
-										                <input type="hidden" name="uid" th:value="${user.id}" />
-										                <button type="submit" class="btn btn-primary btn-rounded">Activate</button>
-										            </form>
-										        </div>
-										    </div>
-										    <div th:if="${user.role.roleName != 'ROLE_ADMIN'}">
-											    <form id="update" th:action="@{/app/admin/users/update}" method="post">
-											    	<input type="hidden" th:value="${user.id}" name="id"/>
-											        <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
-											    </form>
-											</div>
-										</td>
-								    </tr>
-								</tbody>
-                            </table>
-                        </div>
-
-                        <div class="card-footer p-8pt">
-
-                            <ul class="pagination justify-content-start pagination-xsm m-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link"
-                                       href="#"
-                                       aria-label="Previous">
-                                        <span aria-hidden="true"
-                                              class="material-icons">chevron_left</span>
-                                        <span>Prev</span>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="#"
-                                       aria-label="Page 1">
-                                        <span>1</span>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="#"
-                                       aria-label="Page 2">
-                                        <span>2</span>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link"
-                                       href="#"
-                                       aria-label="Next">
-                                        <span>Next</span>
-                                        <span aria-hidden="true"
-                                              class="material-icons">chevron_right</span>
-                                    </a>
-                                </li>
-                            </ul>
-
-                        </div>
-                        <!-- <div class="card-body bordet-top text-right">
-  15 <span class="text-50">of 1,430</span> <a href="#" class="text-50"><i class="material-icons ml-1">arrow_forward</i></a>
-</div> -->
-
-                    </div>
-                    </div>
+                	<form th:action="@{/app/admin/users/update/updateCheck}" method="post" id="updateForm" name="updateForm">
+                		<input type="hidden" name="id" th:value="${uid}"/>
+					    <!-- Username Field -->
+					    <div class="col-lg-8 d-flex align-items-center">
+					        <div class="flex" style="max-width: 100%">
+					            <label class="form-label" for="username">Username</label>
+					            <input type="text"
+					                   class="form-control form-control-rounded"
+					                   placeholder="Enter the modified username"
+					                   required
+					                   id="username"
+					                   name="username"
+					                   th:value="${userInfo.username}">
+					        </div>
+					    </div>
+					    <!-- Password Field -->
+					    <div class="col-lg-8 d-flex align-items-center">
+					        <div class="flex" style="max-width: 100%">
+					            <label class="form-label" for="password">Password</label>
+					            <input type="password"
+					                   class="form-control form-control-rounded"
+					                   placeholder="Enter the modified password"
+					                   required
+					                   id="password"
+					                   name="password">
+					        </div>
+					    </div>
+					    <!-- Email Field -->
+					    <div class="col-lg-8 d-flex align-items-center">
+					        <div class="flex" style="max-width: 100%">
+					            <label class="form-label" for="email">Email</label>
+					            <input type="email"
+					                   class="form-control form-control-rounded"
+					                   placeholder="Enter the modified email"
+					                   required
+					                   id="email"
+					                   name="email"
+					                   th:value="${userInfo.email}"
+					                   th:readonly="${userInfo.provider != 'GOOGLE'}">
+					        </div>
+					    </div>
+					    <!-- Full Name Field -->
+					    <div class="col-lg-8 d-flex align-items-center">
+					        <div class="flex" style="max-width: 100%">
+					            <label class="form-label" for="fullName">Full Name</label>
+					            <input type="text"
+					                   class="form-control form-control-rounded"
+					                   placeholder="Enter the modified full name"
+					                   required
+					                   id="fullName"
+					                   name="fullName"
+					                   th:value="${userInfo.fullName}"
+					                   th:readonly="${userInfo.provider != 'GOOGLE'}">
+					        </div>
+					    </div>
+					    <!-- Phone Field -->
+					    <div class="col-lg-8 d-flex align-items-center">
+					        <div class="flex" style="max-width: 100%">
+					            <label class="form-label" for="phone">Phone</label>
+					            <input type="text"
+					                   class="form-control form-control-rounded"
+					                   placeholder="Enter the modified phone number"
+					                   required
+					                   id="phone"
+					                   name="phone"
+					                   th:value="${userInfo.phone}">
+					        </div>
+					    </div>
+					    <!-- Role Selection -->
+					    <div class="col-lg-8 d-flex align-items-center">
+					        <div class="flex" style="max-width: 100%">
+					            <label class="form-label" for="role">Role</label>
+					            <select class="form-control form-control-rounded" 
+					            	id="select02" 
+					            	name="role" 
+					            	required
+                                    data-toggle="select"
+                                    data-minimum-results-for-search="-1">
+					                <option th:each="role : ${allRoles}"
+					                        th:value="${role.id}"
+					                        th:text="${role.roleName}"
+					                        th:selected="${role.roleName == userInfo.role.roleName}"></option>
+					            </select>
+					        </div>
+					    </div>
+					    <!-- Submit Button -->
+					    <div class="col-lg-8 d-flex align-items-center mt-2">
+					        <button type="submit" class="btn btn-primary btn-rounded">Update</button>
+					    </div>
+					</form>
 
                 </div>
 
