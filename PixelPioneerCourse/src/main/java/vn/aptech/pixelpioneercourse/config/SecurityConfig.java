@@ -6,11 +6,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,6 +41,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import vn.aptech.pixelpioneercourse.repository.RoleRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
 import vn.aptech.pixelpioneercourse.service.CustomOAuth2User;
 import vn.aptech.pixelpioneercourse.service.CustomOAuth2UserService;
@@ -102,11 +105,12 @@ public class SecurityConfig{
         return http.csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/**")
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers(HttpMethod.GET, "/app/register", "/app/course", "/app/login").anonymous()
-                        .requestMatchers(HttpMethod.POST, "/app/login", "/app/register").anonymous()
-                        .requestMatchers("/public/**").permitAll()
-                        .anyRequest().permitAll() // Changed from permitAll to authenticated for security
-                )
+            	    .requestMatchers(HttpMethod.GET, "/app/register", "/app/login").anonymous()
+            	    .requestMatchers(HttpMethod.GET, "/app/course").permitAll() // Allows anonymous, USER, and INSTRUCTOR roles
+            	    .requestMatchers(HttpMethod.POST, "/app/login", "/app/register").anonymous()
+            	    .requestMatchers("/public/**").permitAll()
+            	    .anyRequest().authenticated() // Requires authentication for all other requests
+            	)
                 .oauth2Login(oauth -> {
                     oauth.loginPage("/app/login");
                     oauth.userInfoEndpoint(o -> {
@@ -123,13 +127,13 @@ public class SecurityConfig{
                     });
                 })
                 .logout(logout -> logout
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST")) // Specify the logout URL
-                    .logoutSuccessUrl("/login?logout") // Redirect to the login page with a query parameter indicating successful logout
-                    .deleteCookies("JSESSIONID") // Delete session cookies
-                    .clearAuthentication(true) // Clear authentication
-                    .invalidateHttpSession(true) // Invalidate session
-                    .permitAll()
-                )
+            	    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // Updated to match '/logout' and method GET
+            	    .logoutSuccessUrl("/app/login?logout")
+            	    .deleteCookies("JSESSIONID")
+            	    .clearAuthentication(true)
+            	    .invalidateHttpSession(true)
+            	    .permitAll()
+            	)
                 .build();
     }
 
@@ -150,14 +154,6 @@ public class SecurityConfig{
 //                        (req, res, ex) -> ResponseEntity.status(403).build()))
                 .cors(configurer-> new CorsConfiguration().applyPermitDefaultValues());
         return http.build();
-    }
-    
-    private Role assignRole() {
-    	List<RoleDto> listRole = rService.findAll();
-        for (RoleDto role : listRole) {
-            if (role.getRoleName().equals("ROLE_USER")) return mapper.map(role, Role.class);
-        }
-        return null;
     }
     
     public String generateUsername(String fullName) {
@@ -182,21 +178,41 @@ public class SecurityConfig{
         return username.toLowerCase(); // or return alternativeUsername.toLowerCase();
     }
     
+    @Autowired
+    @Lazy
+    private UserService userService;
+    
+    public String generateUniquePhoneNumber() {
+        Random random = new Random();
+        String phoneNumber;
+        do {
+            // Generate a 10-digit phone number starting with '0'
+            phoneNumber = "0" + random.ints(9, 0, 10) //10 digit, ranges from 0 to 9
+                                       .mapToObj(Integer::toString)
+                                       .reduce("", (a, b) -> a + b);
+        } while (!userService.checkPhone(phoneNumber)); // Check if the phone number already exists
+        return phoneNumber;
+    }
+    
+    @Autowired
+    private RoleRepository roleRepository;
+    
     public void processOAuthPostLogin(String email, String fullname){
         Optional<User> opUser = userRepository.findByEmail(email);
+        Role student = roleRepository.findByRoleName("ROLE_USER").get();
         if(opUser.isEmpty()) {
-            User user = new User();
+            UserCreateDtoV2 user = new UserCreateDtoV2();
+            user.setRole(student);
             user.setActiveStatus(true);
             user.setCreatedAt(LocalDate.now());
             user.setProvider(Provider.GOOGLE);
             user.setFullName(fullname);
             user.setUsername(generateUsername(fullname));
-            user.setPhone("0123456789");
             PasswordEncoder ed = passwordEncoder();
             user.setPassword(ed.encode("1"));
-            user.setRole(assignRole());
+            user.setPhone(generateUniquePhoneNumber());
             user.setEmail(email);
-            userRepository.save(user);
+            userRepository.save(mapper.map(user, User.class));
         }
     }
 }

@@ -79,6 +79,15 @@ public class UserServiceImpl implements UserService{
                 .map(account -> mapper.map(account, User.class))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
+    
+    public boolean checkPhone(String phone) {
+    	try {
+    		userRepository.findByPhone(phone).get();
+    		return false;
+    	} catch (Exception e) {
+    		return true;
+    	}
+    }
 
     public String checkLogin(String EmailorUsername, String password) {
         User acc = null;

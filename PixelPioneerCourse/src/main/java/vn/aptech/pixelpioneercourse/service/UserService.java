@@ -30,6 +30,7 @@ public interface UserService {
     boolean updatePassword(UserCreateDto u);
     void passwordChanger(String email, String password) throws Exception;
     void processOAuthPostLogin(String username);
+    boolean checkPhone(String phone);
     Authentication processLogin(LoginDto body);
     Authentication processLogin(String email, String password);
 }
