@@ -109,7 +109,7 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.GET, "/app/course").permitAll() // Allows anonymous, USER, and INSTRUCTOR roles
                         .requestMatchers(HttpMethod.POST, "/app/login", "/app/register").anonymous()
                         .requestMatchers("/public/**").permitAll()
-                        .anyRequest().authenticated() // Requires authentication for all other requests
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> {
                     oauth.loginPage("/app/login");

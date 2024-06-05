@@ -68,6 +68,18 @@ public class UserManagingApi {
 		}
 	}
 	
+	@PutMapping("/activate/{id}")
+	public ResponseEntity<Boolean> activateAccount(@PathVariable("id") int id) {
+		User u = service.findById(id);
+		if (u != null) {
+			u.setActiveStatus(!u.isActiveStatus());
+			service.updateWithRole(u, id);
+			return ResponseEntity.ok(true);
+		} else {
+			return ResponseEntity.badRequest().body(false);
+		}
+	}
+	
 	@PostMapping
 	public ResponseEntity<Boolean> createAccount(@RequestBody UserCreateDto dto) {
 		dto.setPassword(encoder.encode(dto.getPassword()));

@@ -25,7 +25,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER) //lay role tu findAll
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @JsonBackReference(value = "user-role")
     @JsonIgnoreProperties({"users", "id"})

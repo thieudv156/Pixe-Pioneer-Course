@@ -32,9 +32,6 @@ public class LoginController {
 
     @GetMapping
     public String loginPage(HttpSession session) {
-    	System.out.println(session.getAttribute("isUser"));
-    	System.out.println(session.getAttribute("isAdmin"));
-    	System.out.println(session.getAttribute("isInstructor"));
         if (session.getAttribute("isUser") != null || session.getAttribute("isAdmin") != null || session.getAttribute("isInstructor") != null) {
             // Redirect based on the role
             if (session.getAttribute("isUser") != null) {
