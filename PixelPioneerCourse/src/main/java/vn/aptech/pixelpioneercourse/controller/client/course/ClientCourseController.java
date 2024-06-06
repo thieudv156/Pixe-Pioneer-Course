@@ -43,6 +43,7 @@ public class ClientCourseController {
         imageApiUrl = apiBaseUrl + "/image";
     }
 
+
     @GetMapping("")
     public String index(Model model){
         RestTemplate restTemplate = new RestTemplate();
@@ -83,12 +84,56 @@ public class ClientCourseController {
         String oldImageUrl = imageApiUrl + "/" + oldImage.getImageName();
         Category currentCategory = course.get().getCategory();
         model.addAttribute("oldImageUrl", oldImageUrl);
-        model.addAttribute("courseUpdateDto", courseCreateDto);
+        model.addAttribute("courseCreateDto", courseCreateDto);
         model.addAttribute("courseId", course.get().getId());
+        model.addAttribute("currentCategory", currentCategory);
         return "course/instructor/course-update";
     }
 
+    @PostMapping("/{id}/update")
+    public String updateCourse(@ModelAttribute CourseCreateDto courseCreateDto,
+                               @RequestParam(value = "image",required = false) MultipartFile image,
+                               @PathVariable("id") Integer id,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            // Convert CourseCreateDto to JSON string
+            String courseData = objectMapper.writeValueAsString(courseCreateDto);
+            System.out.println(courseData);
 
+            // Create a MultiValueMap to hold the parts
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("courseData", courseData);
+
+            // Handle file upload
+            if (!image.isEmpty()) {
+                body.add("image", image.getResource());
+            }
+
+            // Set headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            // Create HttpEntity
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+            // Make the API call to update the course
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Course> response = restTemplate.exchange(courseApiUrl + "/" + id+ "/update", HttpMethod.PUT, requestEntity, Course.class);
+            Course updatedCourse = response.getBody();
+
+            if(updatedCourse == null){
+                redirectAttributes.addFlashAttribute("errorMessage", "Course not found!");
+                return "redirect:/app/course/" + id + "/update";  // Redirect back to the course update form
+            }
+            redirectAttributes.addFlashAttribute("successMessage", "Course updated successfully!");
+            return "redirect:/app/course/instructor/1";  // Redirect to the course detail page
+        } catch (Exception e) {
+            // Add error message
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating course: " + e.getMessage());
+
+            return "redirect:/app/course/" + id + "/update";  // Redirect back to the course update form
+        }
+    }
 
 
     @GetMapping("/create")
@@ -112,7 +157,6 @@ public class ClientCourseController {
 
             // Convert CourseCreateDto to JSON string
             String courseData = objectMapper.writeValueAsString(courseCreateDto);
-
             // Create a MultiValueMap to hold the parts
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("courseData", courseData);

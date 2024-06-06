@@ -125,7 +125,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Update course
-    public boolean update(Integer id, CourseCreateDto dto, MultipartFile image){
+    public Course update(Integer id, CourseCreateDto dto, MultipartFile image){
         if(dto == null){
             throw new RuntimeException("Course is null");
         }
@@ -133,6 +133,7 @@ public class CourseServiceImpl implements CourseService{
             Course existedCourse = courseRepository.findById(id).orElseThrow(()-> new RuntimeException("Course not found!"));
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
+            existedCourse.setDescription(dto.getDescription());
             if(image!=null)
             {
                 // Get the old image name
@@ -147,8 +148,7 @@ public class CourseServiceImpl implements CourseService{
                     existedCourse.setFrontPageImage(imageName);
                 }
             }
-            courseRepository.save(existedCourse);
-            return true;
+            return courseRepository.save(existedCourse);
         }
         catch (Exception e){
             throw new RuntimeException("Course is null");

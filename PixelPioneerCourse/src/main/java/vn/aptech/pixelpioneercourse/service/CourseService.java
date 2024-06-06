@@ -9,7 +9,7 @@ import java.util.List;
 public interface  CourseService {
     List<Course> findAll();
     Course findById(Integer id);
-    boolean update(Integer id, CourseCreateDto dto,MultipartFile image);
+    Course update(Integer id, CourseCreateDto dto,MultipartFile image);
     Course save(CourseCreateDto dto, MultipartFile image);
     boolean delete(Integer id);
     List<Course> findByCategoryId(Integer categoryId);

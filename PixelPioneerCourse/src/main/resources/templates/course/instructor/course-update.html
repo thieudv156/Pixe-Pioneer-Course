@@ -20,10 +20,16 @@
 <body>
 <div class="container">
     <h2>Create Course</h2>
-    <form action="/create" th:action="@{'/app/course/' + ${courseId} + '/update'}" th:object="${courseUpdateDto}" method="post" enctype="multipart/form-data">
+    <form th:action="@{'/app/course/' + ${courseId} + '/update'}" th:object="${courseCreateDto}" method="post" enctype="multipart/form-data">
     <div class="row">
             <div class="col-md-8">
+                <div th:if="${successMessage}" class="alert alert-success" role="alert">
+                    <p th:text="${successMessage}"></p>
+                </div>
 
+                <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                    <p th:text="${errorMessage}"></p>
+                </div>
                 <div class="page-separator">
                     <div class="page-separator__text">Basic information</div>
                 </div>
@@ -66,9 +72,16 @@
                 <div class="page-separator">
                     <div class="page-separator__text">Options</div>
                 </div>
-
                 <div class="card">
                     <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select name="categoryId" class="form-control custom-select" th:field="*{categoryId}" readonly>
+                                <option  th:value="${currentCategory.id}" th:text="${currentCategory.name}">Category Name</option>
+                            </select>
+                            <small class="form-text text-muted">Select a category.</small>
+                        </div>
+
                         <div class="form-group">
                             <label class="form-label">Price</label>
                             <div class="row">
@@ -79,7 +92,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <small class="form-text text-muted">The recommended price is between $17 and $24</small>
                         </div>
                     </div>
                 </div>

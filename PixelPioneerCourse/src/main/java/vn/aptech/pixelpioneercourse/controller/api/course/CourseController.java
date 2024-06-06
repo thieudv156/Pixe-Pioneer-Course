@@ -127,8 +127,8 @@ public class CourseController {
     @PutMapping("/{id}/update")
     public ResponseEntity<?> update(
             @PathVariable("id") Integer id,
-            @RequestParam("image") MultipartFile image,
-            @RequestParam("courseData") String courseData) {
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "courseData", required = false) String courseData) {
 
         try {
             // Convert courseData (JSON string) to CourseCreateDto
@@ -139,11 +139,11 @@ public class CourseController {
             if(bindingResult.hasErrors()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
             }
-            // Update the course
-            if (courseService.update(id, courseCreateDto, image)) {
-                return ResponseEntity.ok("Course updated successfully");
+            Course updatedCourse = courseService.update(id, courseCreateDto, image);
+            if (updatedCourse != null) {
+                return ResponseEntity.ok(updatedCourse);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error updating course");
             }
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());

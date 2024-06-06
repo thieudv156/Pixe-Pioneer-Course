@@ -1,7 +1,9 @@
 package vn.aptech.pixelpioneercourse.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,9 +15,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
 @Table(name = "courses")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +30,6 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    @JsonBackReference(value = "course-category")
     private Category category;
 
     @Column(columnDefinition = "TEXT")
@@ -38,7 +41,7 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
     @JsonBackReference(value = "instructor-course")
-    private  User instructor;
+    private User instructor;
 
     @Column(nullable = false)
     private Boolean isPublished = false;
@@ -58,4 +61,3 @@ public class Course {
     @JsonManagedReference(value = "course-review")
     private List<Review> reviews;
 }
-

@@ -60,6 +60,13 @@
         <div class="page-separator">
             <div class="page-separator__text">Development Courses</div>
         </div>
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <p th:text="${errorMessage}"></p>
+        </div>
         <div class="row">
             <div th:each="course : ${courses}" class="col-sm-6 col-md-4 col-xl-3 mb-4">
                 <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal"
