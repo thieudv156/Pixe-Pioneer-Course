@@ -19,9 +19,10 @@ public interface UserService {
     User findByEmail(String email);
     User findByUsername(String username);
     User findUserByPassword(String password);
-    String checkLogin(String EmailorUsername, String password);
+    User checkLogin(String EmailorUsername, String password);
     UserDetails loadUserByEmailorUsername(String EmailorUsername) throws UsernameNotFoundException;
     boolean create(UserCreateDto u);
+    boolean create(User user);
     boolean update(UserCreateDto u, int id);
     boolean updateWithRole(User u, int uID);
     void delete(User u);

@@ -107,7 +107,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(HttpMethod.GET, "/app/register", "/app/login").anonymous()
                         .requestMatchers(HttpMethod.GET, "/app/course").permitAll() // Allows anonymous, USER, and INSTRUCTOR roles
-                        .requestMatchers(HttpMethod.POST, "/app/login", "/app/register").anonymous()
+                        .requestMatchers(HttpMethod.GET, "/app/login/checkLogin", "/app/register").anonymous()
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().permitAll()
                 )
@@ -128,7 +128,7 @@ public class SecurityConfig{
                 })
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // Updated to match '/logout' and method GET
-                        .logoutSuccessUrl("/app/login?logout")
+                        .logoutSuccessUrl("/app/login")
                         .deleteCookies("JSESSIONID")
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)

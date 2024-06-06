@@ -3,11 +3,7 @@
 <html lang="en"
       dir="ltr" xmlns:th="https://www.thymeleaf.org">
 
-	<div th:if="${session?.isUser == true or session?.isAdmin == true or session?.isInstructor == true}">
-		<b>You have been logged in, please log out to access this page.</b>
-	</div>
-
-    <head th:if="${session.isUser == null and session.isAdmin == null and session.isInstructor == null}">
+    <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible"
               content="IE=edge">
@@ -54,7 +50,7 @@
 
     </head>
 
-    <body class="layout-app " th:if="${session.isUser == null and session.isAdmin == null and session.isInstructor == null}">
+    <body class="layout-app" th:if="${session.isUser == null and session.isAdmin == null and session.isInstructor == null}">
 
         <div class="preloader">
             <div class="sk-chase">
@@ -145,24 +141,6 @@
                                    class="dropdown-item">Help Center</a>
                             </div>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a href="#"
-                               class="nav-link dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-caret="false" style="display: none;">Paths</a>
-                            <div class="dropdown-menu">
-                                <a href="paths.html"
-                                   class="dropdown-item">Browse Paths</a>
-                                <a href="student-path.html"
-                                   class="dropdown-item">Path Details</a>
-                                <a href="student-path-assessment.html"
-                                   class="dropdown-item">Skill Assessment</a>
-                                <a href="student-path-assessment-result.html"
-                                   class="dropdown-item">Skill Result</a>
-                                <a href="student-paths.html"
-                                   class="dropdown-item">My Paths</a>
-                            </div>
-                        </li>
                         <li class="nav-item">
                             <a href="pricing.html"
                                class="nav-link" style="display: none;">Pricing</a>
@@ -239,6 +217,8 @@
                                class="btn btn-outline-dark">Register</a>
                         </li>
                     </ul>
+                    
+                    
                 </div>
 
                 <!-- // END Header -->
@@ -256,7 +236,7 @@
 						</div>
 				
 				        <!-- Page Content -->
-				        <form th:action="@{/app/login}" method="post" class="col-md-5 p-0 mx-auto">
+				        <form th:action="@{/app/login/checkLogin}" method="post" class="col-md-5 p-0 mx-auto">
 				            <div class="pt-32pt pt-sm-64pt pb-32pt">
 				                <div class="container page__container">
 				                    <div class="form-group">

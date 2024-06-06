@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.controller.admin;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import net.sf.jsqlparser.util.validation.metadata.DatabaseException;
 import vn.aptech.pixelpioneercourse.dto.RoleDto;
 import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
@@ -101,6 +103,33 @@ public class UserManagingController {
 		}
 	}
 	
+	@GetMapping("/create")
+	public String createPage() {
+		return "admin_view/users/create";
+	}
+	
+	@PostMapping("/create")
+	public String create(@ModelAttribute("userInfo") User user, RedirectAttributes ra) {
+		try {
+			userService.findByEmail(user.getEmail());
+			ra.addFlashAttribute("ErrorCondition", true);
+			ra.addFlashAttribute("ErrorError", "User has existed with email "+user.getEmail());
+			return "redirect:/app/admin/users/create";
+		} catch (Exception e) {
+			try {
+				userService.findByUsername(user.getUsername());
+				ra.addFlashAttribute("ErrorCondition", true);
+				ra.addFlashAttribute("ErrorError", "User has existed with username "+user.getUsername());
+				return "redirect:/app/admin/users/create";
+			} catch (Exception e2) {
+				userService.create(user);
+				ra.addFlashAttribute("SuccessCondition", true);
+				ra.addFlashAttribute("SuccessSuccess", "Successfully create user.");
+				return "redirect:/app/admin/users";
+			}
+		}
+	}
+	
 	@PostMapping("/update")
 	public String updatePage(@RequestParam("id") String id, RedirectAttributes ra, Model model) {
 		try {
@@ -124,6 +153,11 @@ public class UserManagingController {
 			if (user.getPassword().indexOf("$") != 0) {
 				user.setPassword(encoder.encode(user.getPassword()));
 			}
+			if (!user.getPhone().matches("\\d+")) {
+				ra.addFlashAttribute("ErrorCondtion", true);
+				ra.addFlashAttribute("ErrorError", "Phone must contain only digits");
+				return "redirect:/app/admin/users";
+			}
 			Role role = mapper.map(roleService.findById(user.getRole().getId()).get(), Role.class);
 			System.out.println(user.getId());
 			user.setRole(role);
@@ -134,6 +168,20 @@ public class UserManagingController {
 		} catch (Exception e) {
 			ra.addFlashAttribute("ErrorCondition", true);
 			ra.addFlashAttribute("ErrorError", e.getMessage());
+			return "redirect:/app/admin/users";
+		}
+	}
+	
+	@PostMapping("/delete")
+	public String delete(@ModelAttribute("uid") String uid, RedirectAttributes ra) {
+		try {
+			userService.delete(userService.findById(Integer.parseInt(uid)));
+			ra.addFlashAttribute("SuccessCondition", true);
+			ra.addFlashAttribute("SuccessSuccess", "Successfully delete user.");
+			return "redirect:/app/admin/users";
+		} catch (Exception e) {
+			ra.addFlashAttribute("ErrorCondition", true);
+			ra.addFlashAttribute("ErrorError", e.getMessage()+".");
 			return "redirect:/app/admin/users";
 		}
 	}

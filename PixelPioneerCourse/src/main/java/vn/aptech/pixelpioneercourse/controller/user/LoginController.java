@@ -1,9 +1,7 @@
 package vn.aptech.pixelpioneercourse.controller.user;
 
-import org.jetbrains.annotations.Async;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import vn.aptech.pixelpioneercourse.dto.CustomOauth2User;
+import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
 @Controller
@@ -46,36 +45,37 @@ public class LoginController {
     }
     
     @GetMapping("/loginSuccess")
-    public String loginSuccess(@AuthenticationPrincipal CustomOauth2User customUser) {
+    public String loginSuccess() {
         // Use customUser here
         return "redirect:/app/course";
     }
 
-    @PostMapping
+    @PostMapping("/checkLogin")
     public String checkLogin(@RequestParam("info") String emailorusername, @RequestParam("password") String password, RedirectAttributes redirectAttributes, HttpSession session) {
-        String role = userService.checkLogin(emailorusername, password);
-        if (role.equals("")) {
+        User u = userService.checkLogin(emailorusername, password);
+        if (u.getRole().getRoleName().equals("")) {
             redirectAttributes.addFlashAttribute("loginErrorCondition", true);
-            redirectAttributes.addFlashAttribute("loginError", "Invalid username/email or password");
+            redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");
             return "redirect:/app/login";
-        } else if (role.equals("ROLE_USER")) {
+        } else if (u.getRole().getRoleName().equals("ROLE_USER") && session.getAttribute("isUser") == null) {
             session.setAttribute("isUser", true);
             session.setAttribute("isAdmin", null);
             session.setAttribute("isInstructor", null);
-            return "redirect:/app/course";
-        } else if (role.equals("ROLE_ADMIN")) {
+            return "redirect:/app/login/loginSuccess";
+        } else if (u.getRole().getRoleName().equals("ROLE_ADMIN") && session.getAttribute("isAdmin") == null) {
             session.setAttribute("isAdmin", true);
             session.setAttribute("isUser", null);
             session.setAttribute("isInstructor", null);
-            return "redirect:/app/admin";
-        } else if (role.equals("ROLE_INSTRUCTOR")) {
+            return "redirect:/app/admin/users";
+        } else if (u.getRole().getRoleName().equals("ROLE_INSTRUCTOR") && session.getAttribute("isInstructor") == null) {
             session.setAttribute("isInstructor", true);
             session.setAttribute("isAdmin", null);
             session.setAttribute("isUser", null);
-            return "redirect:/app/course";
+            return "redirect:/app/login/loginSuccess";
+        } else {
+        	redirectAttributes.addFlashAttribute("loginErrorCondition", true);
+            redirectAttributes.addFlashAttribute("loginError", "Unknown error occurs");
+            return "redirect:/app/login";
         }
-        redirectAttributes.addFlashAttribute("loginErrorCondition", true);
-        redirectAttributes.addFlashAttribute("loginError", "Unknown error occurs");
-        return "redirect:/app/login";
     }
 }
