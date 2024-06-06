@@ -89,13 +89,13 @@ public class UserServiceImpl implements UserService{
     	}
     }
 
-    public String checkLogin(String EmailorUsername, String password) {
+    public User checkLogin(String EmailorUsername, String password) {
         User acc = null;
         try {
         	acc = findByEmail(EmailorUsername);
         	String hashedPassword = acc.getPassword();
             if(encoder.matches(password, hashedPassword)) {
-            	return acc.getRole().getRoleName();
+            	return acc;
             }
         } catch (Exception e) {
         	try {
@@ -103,14 +103,14 @@ public class UserServiceImpl implements UserService{
         		if (acc != null) {
         			String hashedPassword = acc.getPassword();
                     if(encoder.matches(password, hashedPassword)) {
-                    	return acc.getRole().getRoleName();
+                    	return acc;
                     }
         		}
         	} catch (Exception e2) {
-        		return "";
+        		return null;
         	}
         }
-        return "";
+        return null;
     }
 
 
@@ -169,6 +169,32 @@ public class UserServiceImpl implements UserService{
         	}
         }
         return res != null;
+    }
+    
+    public boolean create(User user) {
+    	try {
+    		if (user.getUsername().contains(" ")) {
+            	throw new Exception("Username must not contain spaces");
+            }
+    		if (!user.getEmail().contains("@")) {
+    			throw new Exception("Email must contain @");
+    		}
+        	try {
+                user.setPassword(encoder.encode(user.getPassword()));
+                user.setActiveStatus(true);
+                user.setCreatedAt(LocalDate.now());
+                user.setProvider(Provider.LOCAL);
+                List<RoleDto> listRole = rService.findAll();
+                for (RoleDto role : listRole) {
+                    if (role.getRoleName().equals("ROLE_USER")) user.setRole(convertToRoleFromDto(role));
+                }
+                return userRepository.save(user) != null;
+            } catch (Exception e2) {
+            	throw new DatabaseException("Register fails, contact us for further support");
+            }
+    	} catch (Exception e1) {
+    		throw new TemplateInputException(e1.getMessage());
+    	}
     }
 
     public boolean update(UserCreateDto u, int uID){

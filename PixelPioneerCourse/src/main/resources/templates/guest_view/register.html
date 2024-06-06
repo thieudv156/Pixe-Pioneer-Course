@@ -3,11 +3,7 @@
 <html lang="en"
       dir="ltr" xmlns:th="https://www.thymeleaf.org">
 
-	<div th:if="${session?.isUser == true or session?.isAdmin == true or session?.isInstructor == true}">
-		<b>You have been logged in, please log out to access this page.</b>
-	</div>
-
-    <head th:if="${session.isUser == null and session.isAdmin == null and session.isInstructor == null}">
+    <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible"
               content="IE=edge">
@@ -143,24 +139,6 @@
                                    class="dropdown-item">My Quizzes</a>
                                 <a href="help-center.html"
                                    class="dropdown-item">Help Center</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a href="#"
-                               class="nav-link dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-caret="false" style="display: none;">Paths</a>
-                            <div class="dropdown-menu">
-                                <a href="paths.html"
-                                   class="dropdown-item">Browse Paths</a>
-                                <a href="student-path.html"
-                                   class="dropdown-item">Path Details</a>
-                                <a href="student-path-assessment.html"
-                                   class="dropdown-item">Skill Assessment</a>
-                                <a href="student-path-assessment-result.html"
-                                   class="dropdown-item">Skill Result</a>
-                                <a href="student-paths.html"
-                                   class="dropdown-item">My Paths</a>
                             </div>
                         </li>
                         <li class="nav-item">
