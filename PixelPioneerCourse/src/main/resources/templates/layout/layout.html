@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Prevent the demo from appearing in search engines -->
+    <meta name="robots" content="noindex">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CRoboto:400,500%7CExo+2:600&display=swap" rel="stylesheet">
+
+    <!-- Preloader -->
+    <link th:href="@{/public/vendor/spinkit.css}" rel="stylesheet">
+
+    <!-- Perfect Scrollbar -->
+    <link th:href="@{/public/vendor/perfect-scrollbar.css}" rel="stylesheet">
+
+    <!-- Material Design Icons -->
+    <link th:href="@{/public/css/material-icons.css}" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link th:href="@{/public/css/fontawesome.css}" rel="stylesheet">
+
+    <!-- Preloader -->
+    <link th:href="@{/public/css/preloader.css}" rel="stylesheet">
+
+    <!-- App CSS -->
+    <link th:href="@{/public/css/app.css}" rel="stylesheet">
+
+    <title th:text="${pageTitle}">Default title</title>
+</head>
+<body class="layout-sticky-subnav layout-default">
+<div class="preloader">
+    <div class="sk-chase">
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+    </div>
+</div>
+
+<header th:replace="layout/header :: header"></header>
+<main>
+    <div th:replace="layout/fragments/flash-messages :: flashMessages"></div>
+<!--    <div th:replace="~{::content}"></div>-->
+</main>
+<footer th:replace="layout/footer :: footer"></footer>
+<script th:replace="layout/scripts :: scripts"></script>
+</body>
+</html>

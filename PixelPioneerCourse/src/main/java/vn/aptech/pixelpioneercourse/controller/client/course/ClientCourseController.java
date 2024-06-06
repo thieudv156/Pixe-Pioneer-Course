@@ -60,7 +60,8 @@ public class ClientCourseController {
         List<Course> courseList = Arrays.asList(courseArray);
         model.addAttribute("courses", courseList);
         model.addAttribute("imageApiUrl", imageApiUrl);
-        return "course/instructor/course-dashboard";
+        model.addAttribute("pageTitle", "My Courses");
+        return "layout/layout";
     }
 
     @GetMapping("/{id}")
@@ -87,6 +88,7 @@ public class ClientCourseController {
         model.addAttribute("courseCreateDto", courseCreateDto);
         model.addAttribute("courseId", course.get().getId());
         model.addAttribute("currentCategory", currentCategory);
+        model.addAttribute("pageTitle", "Update Course");
         return "course/instructor/course-update";
     }
 
