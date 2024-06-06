@@ -64,6 +64,7 @@ public class LoginController {
             return "redirect:/app/login/loginSuccess";
         } else if (u.getRole().getRoleName().equals("ROLE_ADMIN") && session.getAttribute("isAdmin") == null) {
             session.setAttribute("isAdmin", true);
+            session.setAttribute("userId", u.getId());
             session.setAttribute("isUser", null);
             session.setAttribute("isInstructor", null);
             return "redirect:/app/admin/users";
