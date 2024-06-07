@@ -1,4 +1,4 @@
-package vn.aptech.pixelpioneercourse.controller.client.course;
+package vn.aptech.pixelpioneercourse.controller.app.course;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -17,12 +18,13 @@ import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Image;
+import vn.aptech.pixelpioneercourse.entities.Lesson;
 
 import java.util.*;
 
 @Controller("clientCourseController")
 @RequestMapping("/app/course")
-public class ClientCourseController {
+public class AppCourseController {
     @Value("${api.base.url}")
     private String apiBaseUrl;
 
@@ -31,7 +33,7 @@ public class ClientCourseController {
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
 
-    public ClientCourseController(ModelMapper modelMapper,ObjectMapper objectMapper) {
+    public AppCourseController(ModelMapper modelMapper, ObjectMapper objectMapper) {
         this.modelMapper = modelMapper;
         this.objectMapper = objectMapper;
     }
@@ -61,35 +63,33 @@ public class ClientCourseController {
         model.addAttribute("courses", courseList);
         model.addAttribute("imageApiUrl", imageApiUrl);
         model.addAttribute("pageTitle", "My Courses");
-        return "layout/layout";
+        return "course/instructor/course-dashboard";
     }
+
 
     @GetMapping("/{id}")
-    public String showCourseDetail(Model model, @PathVariable("id") Integer id){
-        RestTemplate restTemplate = new RestTemplate();
-        Course course = restTemplate.getForObject(courseApiUrl + "/" + id, Course.class);
-        model.addAttribute("course", course);
-        model.addAttribute("imageApiUrl", imageApiUrl);
-        return "course/instructor/course-detail";
-    }
-
-    @GetMapping("/{id}/update")
-        public String updateCourse(Model model, @PathVariable("id") Integer id){
+        public String showCourseById(Model model, @PathVariable("id") Integer id){
         RestTemplate restTemplate = new RestTemplate();
         Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
         if(course.isEmpty()){
             return "redirect:/app/course/instructor/1";
         }
+        Optional<Category[]> categories = Optional.ofNullable(restTemplate.getForObject(apiBaseUrl + "/category", Category[].class));
+        List<Category> categoryList = Arrays.asList(categories.get());
         CourseCreateDto courseCreateDto = modelMapper.map(course.get(), CourseCreateDto.class);
-        Image oldImage = course.get().getFrontPageImage();
-        String oldImageUrl = imageApiUrl + "/" + oldImage.getImageName();
-        Category currentCategory = course.get().getCategory();
-        model.addAttribute("oldImageUrl", oldImageUrl);
+        if (course.get().getFrontPageImage() == null) {
+            model.addAttribute("oldImageUrl", imageApiUrl + "/default.jpg");
+        } else {
+            model.addAttribute("oldImageUrl", imageApiUrl + "/" + course.get().getFrontPageImage().getImageName());
+        }
+
+        List<Lesson> lessons = course.get().getLessons();
         model.addAttribute("courseCreateDto", courseCreateDto);
         model.addAttribute("courseId", course.get().getId());
-        model.addAttribute("currentCategory", currentCategory);
-        model.addAttribute("pageTitle", "Update Course");
-        return "course/instructor/course-update";
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("pageTitle", "Course detail");
+        model.addAttribute("lessons", lessons);
+        return "course/instructor/course-detail";
     }
 
     @PostMapping("/{id}/update")
@@ -133,62 +133,38 @@ public class ClientCourseController {
             // Add error message
             redirectAttributes.addFlashAttribute("errorMessage", "Error updating course: " + e.getMessage());
 
-            return "redirect:/app/course/" + id + "/update";  // Redirect back to the course update form
+            return "redirect:/app/course/" + id;  // Redirect back to the course update form
         }
     }
 
+    @GetMapping("/create-course")
+    public String createCourse(RedirectAttributes redirectAttributes){
 
-    @GetMapping("/create")
-    public String createCourse(Model model){
-        RestTemplate restTemplate = new RestTemplate();
-        Category[] categoryArray = restTemplate.getForObject(courseApiUrl + "/create", Category[].class);
-        Map<Integer, String> map = new HashMap<>();
-        List<Category> categoryList = Arrays.asList(categoryArray);
-        model.addAttribute("categories", categoryList);
-        model.addAttribute("courseCreateDto", new CourseCreateDto());
-        return "course/instructor/course-create";
-    }
-
-    @PostMapping("/create")
-    public String createCourse(@ModelAttribute CourseCreateDto courseCreateDto,
-                               @RequestParam("image") MultipartFile image,
-                               RedirectAttributes redirectAttributes) {
         try {
-            // Set instructor ID
-            courseCreateDto.setInstructorId(1);
-
-            // Convert CourseCreateDto to JSON string
-            String courseData = objectMapper.writeValueAsString(courseCreateDto);
-            // Create a MultiValueMap to hold the parts
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("courseData", courseData);
-
-            // Handle file upload
-            if (!image.isEmpty()) {
-                body.add("image", image.getResource());
-            }
-
-            // Set headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-            // Create HttpEntity
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-            // Make the API call to create the course
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<Course> response = restTemplate.exchange(courseApiUrl + "/create", HttpMethod.POST, requestEntity, Course.class);
-            Course createdCourse = response.getBody();
-
-            // Add success message
-            redirectAttributes.addFlashAttribute("successMessage", "Course created successfully!");
-
-            return "redirect:/app/course/instructor/1";  // Redirect to the course detail page
-        } catch (Exception e) {
-            // Add error message
-            redirectAttributes.addFlashAttribute("errorMessage", "Error creating course: " + e.getMessage());
-
-            return "redirect:/app/course/new";  // Redirect back to the course creation form
+            Course course = restTemplate.getForObject(courseApiUrl + "/create-course", Course.class);
+            if (course == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error creating course");
+                return "redirect:/app/course/instructor/1";
+            }
+            redirectAttributes.addFlashAttribute("successMessage", "Course created successfully");
+            return "redirect:/app/course/" + course.getId();
+        } catch (RestClientException e) {
+            throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("/{id}/delete")
+    public String deleteCourse(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.delete(courseApiUrl + "/" + id + "/delete");
+            redirectAttributes.addFlashAttribute("successMessage", "Course deleted successfully");
+            return "redirect:/app/course/instructor/1";
+        } catch (RestClientException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting course: " + e.getMessage());
+            return "redirect:/app/course/instructor/1";
+        }
+    }
+
 }

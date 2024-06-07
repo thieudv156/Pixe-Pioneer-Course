@@ -2,6 +2,7 @@ package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.LessonCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Image;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
@@ -43,22 +44,6 @@ public class LessonServiceImpl implements LessonService {
         }
     }
 
-    public Lesson save(LessonCreateDto dto) {
-        try {
-            Lesson lesson = toLesson(dto);
-            if(dto.getImage()!=null && dto.getCourseId()>0)
-            {
-                Image img = imageService.uploadImageToFileSystem(dto.getImage());
-                lesson.setFrontPageImage(img);
-                lesson.setCourse(courseService.findById(dto.getCourseId()));
-                return lessonRepository.save(lesson);
-            }
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException("Lesson is null");
-        }
-    }
-
     public boolean delete(Integer id) {
         try {
             lessonRepository.deleteById(id);
@@ -68,28 +53,25 @@ public class LessonServiceImpl implements LessonService {
         }
     }
 
-   public Lesson update(Integer id, LessonCreateDto dto) {
+   public Lesson update(Integer id, LessonCreateDto dto, MultipartFile image) {
         try {
             Lesson lesson = lessonRepository.findById(id).orElse(null);
             if (lesson == null) {
                 throw new RuntimeException("Lesson is null");
             }
             lesson.setTitle(dto.getTitle());
-            if(dto.getImage()!=null)
-            {
-                String oldImageName = lesson.getFrontPageImage().getImageName();
+            if (image != null) {
+                String newImageName = image.getOriginalFilename();
+                Image frontPageImage = lesson.getFrontPageImage();
 
-                // Get the new image name
-                String newImageName = dto.getImage().getOriginalFilename();
-
-                if (!Objects.equals(newImageName, oldImageName)) {
-                    Image img = imageService.uploadImageToFileSystem(dto.getImage());
-                    lesson.setFrontPageImage(img);
+                if (frontPageImage == null || !frontPageImage.getImageName().equals(newImageName)) {
+                    Image uploadedImage = imageService.uploadImageToFileSystem(image);
+                    lesson.setFrontPageImage(uploadedImage);
                 }
             }
             return lessonRepository.save(lesson);
         } catch (Exception e) {
-            throw new RuntimeException("Lesson is null");
+            throw new RuntimeException("Lesson is null: "+e.getMessage());
         }
     }
 
@@ -103,6 +85,18 @@ public class LessonServiceImpl implements LessonService {
             return lessonRepository.save(lesson);
         } catch (Exception e) {
             throw new RuntimeException("Lesson is null");
+        }
+    }
+
+    public Lesson createNewLesson(Integer courseId)
+    {
+        try {
+            Lesson lesson = new Lesson();
+            lesson.setCourse(courseService.findById(courseId));
+            lesson.setTitle("New Lesson");
+            return lessonRepository.save(lesson);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot create new lesson!: " + e.getMessage());
         }
     }
 

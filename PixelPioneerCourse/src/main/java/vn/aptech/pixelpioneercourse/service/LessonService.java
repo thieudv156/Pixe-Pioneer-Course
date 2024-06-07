@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.LessonCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
 
@@ -8,8 +9,9 @@ import java.util.List;
 public interface LessonService {
     List<Lesson> findAllLessonByCourseId(Integer courseId);
     Lesson findById(Integer id);
-    Lesson save(LessonCreateDto dto);
     boolean delete(Integer id);
-    Lesson update(Integer id, LessonCreateDto dto);
+    Lesson update(Integer id, LessonCreateDto dto, MultipartFile image);
     Lesson completeLesson(Integer id);
+    Lesson createNewLesson(Integer courseId);
 }
+

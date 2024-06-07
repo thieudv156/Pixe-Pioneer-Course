@@ -16,10 +16,4 @@ public class LessonCreateDto {
     @NotBlank(message = "Title is required")
     private String title;
 
-    @NotNull(message = "Course ID is required")
-    private Integer courseId;
-
-    @NotNull(message = "Image cannot be empty")
-    private MultipartFile image;
-
 }

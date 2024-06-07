@@ -10,7 +10,6 @@ public interface  CourseService {
     List<Course> findAll();
     Course findById(Integer id);
     Course update(Integer id, CourseCreateDto dto,MultipartFile image);
-    Course save(CourseCreateDto dto, MultipartFile image);
     boolean delete(Integer id);
     List<Course> findByCategoryId(Integer categoryId);
     List<Course> findByInstructorId(Integer instructorId);
@@ -20,4 +19,5 @@ public interface  CourseService {
     List<Course> findUnPublishedCoursesByInstructorId(Integer instructorId);
     Course publishCourse(Integer courseId);
     Course unpublishCourse(Integer courseId);
+    Course createNewCourse();
 }

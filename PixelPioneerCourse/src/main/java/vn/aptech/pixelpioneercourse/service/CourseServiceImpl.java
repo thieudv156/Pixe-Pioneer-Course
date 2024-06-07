@@ -104,25 +104,19 @@ public class CourseServiceImpl implements CourseService{
         }
     }
 
-    //Save course
-    public Course save(CourseCreateDto dto, MultipartFile image){
-        if (dto == null) {
-            throw new RuntimeException("Course is null");
-        }
-        try {
-            Course course = toCourse(dto);
-            if (dto.getCategoryId() > 0 && dto.getInstructorId() > 0 && image!=null) {
-                course.setCategory(categoryService.findById(dto.getCategoryId()));
-                course.setInstructor(userService.findById(dto.getInstructorId()));
-                Image imageName = imageService.uploadImageToFileSystem(image);
-                course.setFrontPageImage(imageName);
-                return courseRepository.save(course);
-            }
-            return null;
+    public Course createNewCourse()
+    {
+        try{
+            Course newCourse = new Course();
+            newCourse.setTitle("New Course");
+            newCourse.setDescription("Description");
+            newCourse.setInstructor(userService.findById(1));
+            return courseRepository.save(newCourse);
         } catch (Exception e) {
-            throw new RuntimeException("Cannot save course!"+e.getMessage());
+            throw new RuntimeException("Cannot create new course!: "+ e.getMessage());
         }
     }
+
 
     //Update course
     public Course update(Integer id, CourseCreateDto dto, MultipartFile image){
@@ -134,24 +128,21 @@ public class CourseServiceImpl implements CourseService{
             existedCourse.setTitle(dto.getTitle());
             existedCourse.setPrice(dto.getPrice());
             existedCourse.setDescription(dto.getDescription());
-            if(image!=null)
-            {
-                // Get the old image name
-                String oldImageName = existedCourse.getFrontPageImage().getImageName();
-
-                // Get the new image name
+            existedCourse.setCategory(categoryService.findById(dto.getCategoryId()));
+            if (image != null) {
                 String newImageName = image.getOriginalFilename();
+                Image frontPageImage = existedCourse.getFrontPageImage();
 
-                // If the old image name is not equal to the new image name, upload and save the new image
-                if (!oldImageName.equals(newImageName)) {
-                    Image imageName = imageService.uploadImageToFileSystem(image);
-                    existedCourse.setFrontPageImage(imageName);
+                if (frontPageImage == null || !frontPageImage.getImageName().equals(newImageName)) {
+                    Image uploadedImage = imageService.uploadImageToFileSystem(image);
+                    existedCourse.setFrontPageImage(uploadedImage);
                 }
             }
+
             return courseRepository.save(existedCourse);
         }
         catch (Exception e){
-            throw new RuntimeException("Course is null");
+            throw new RuntimeException("Course is null "+e.getMessage());
         }
     }
 

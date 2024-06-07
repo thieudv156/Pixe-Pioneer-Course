@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import vn.aptech.pixelpioneercourse.Provider;
+import vn.aptech.pixelpioneercourse.entities.Provider;
 import vn.aptech.pixelpioneercourse.entities.Role;
 
 @Data
