@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.exceptions.TemplateInputException;
 
 import net.sf.jsqlparser.util.validation.metadata.DatabaseException;
-import vn.aptech.pixelpioneercourse.Provider;
+import vn.aptech.pixelpioneercourse.entities.Provider;
 import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.RoleDto;

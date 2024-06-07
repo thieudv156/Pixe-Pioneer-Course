@@ -8,3 +8,6 @@ VALUES (1, 'anhtuan040507', 'anhtuan123', 'anhtuan200745@gmail.com', 'NVAT', '08
 
 INSERT INTO categories (name)
 VALUES ('Computer Science'),('Data Science'),('Business'),('Mathematics'),('Physics'),('Chemistry'),('Biology'),('Engineering'),('Arts'),('Music');
+
+insert into images(image_name, image_url, image_type)
+values('default.jpg','D:\Pixe-Pioneer-Course\PixelPioneerCourse\src\main\resources\static\public\images\default.jpg','image/jpg');

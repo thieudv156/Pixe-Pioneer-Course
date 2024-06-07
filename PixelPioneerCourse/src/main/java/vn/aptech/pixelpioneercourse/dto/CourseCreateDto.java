@@ -27,7 +27,6 @@ public class CourseCreateDto {
     @Min( value = 1,message = "Price must be 1 or positive")
     private Double price;
 
-    @NotNull(message = "Instructor ID is mandatory")
     private Integer instructorId;
 
 }

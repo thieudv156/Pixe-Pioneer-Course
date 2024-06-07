@@ -52,9 +52,22 @@
                 </div>
                 <div class="row" role="tablist">
                     <div class="col-auto">
-                        <a th:href="@{/app/course/create}" class="btn btn-outline-secondary">Add Course</a>
+                        <a th:href="@{/app/course/create-course}" class="btn btn-outline-secondary">Add Course</a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div th:fragment="flashMessages">
+            <!-- Success Message -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Error Message -->
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
         <div class="container page__container page-section">
@@ -73,7 +86,7 @@
                         <a th:href="@{/app/course/{id}(id=${course.id})}"
                            class="js-image"
                            data-position="">
-                            <img th:src="@{${imageApiUrl+'/'+course.frontPageImage.imageName}}"
+                            <img th:src="${course.frontPageImage != null} ? @{${imageApiUrl+'/'+course.frontPageImage.imageName}} : @{${imageApiUrl+'/default.jpg'}}"
                                  alt="course" class="img-fluid">
                         </a>
                         <div class="mdk-reveal__content">
@@ -84,7 +97,7 @@
                                            th:href="@{/app/course/{id}(id=${course.id})}"
                                            th:text="${course.title}">Course Title</a>
                                     </div>
-                                    <a th:href="@{/app/course/{id}/update(id=${course.id})}"
+                                    <a th:href="@{/app/course/{id}(id=${course.id})}"
                                        class="ml-4pt material-icons text-20 card-course__icon-favorite">edit</a>
                                 </div>
                                 <div class="d-flex">

@@ -29,14 +29,14 @@ public class Course {
     private String title;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
-    private Double price;
+    private Double price = 1.0;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
@@ -60,4 +60,7 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "course-review")
     private List<Review> reviews;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lesson> lessons;
 }

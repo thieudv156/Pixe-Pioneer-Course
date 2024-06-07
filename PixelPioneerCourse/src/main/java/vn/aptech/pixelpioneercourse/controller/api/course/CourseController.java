@@ -86,49 +86,11 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/create")
-    public ResponseEntity<?> create() {
-        try {
-            List<Category> response = categoryService.findAll();
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
-    }
-
-    @PostMapping(value = "/create")
-    public ResponseEntity<?> create(
-            @RequestParam("image") MultipartFile image,
-            @RequestParam("courseData") String courseData) {
-
-        try {
-            // Convert courseData (JSON string) to CourseCreateDto
-            CourseCreateDto courseCreateDto = objectMapper.readValue(courseData, CourseCreateDto.class);
-
-            // Set the image file to the DTO
-
-            BindingResult bindingResult = new BeanPropertyBindingResult(courseCreateDto, "courseCreateDto");
-            validator.validate(courseCreateDto, bindingResult);
-            if(bindingResult.hasErrors()){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
-            }
-            // Save the course
-            Course savedCourse = courseService.save(courseCreateDto, image);
-            if (savedCourse != null) {
-                return ResponseEntity.ok(savedCourse);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating course");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
-    }
-
     @PutMapping("/{id}/update")
     public ResponseEntity<?> update(
             @PathVariable("id") Integer id,
             @RequestParam(value = "image", required = false) MultipartFile image,
-            @RequestParam(value = "courseData", required = false) String courseData) {
+            @RequestParam(value = "courseData") String courseData) {
 
         try {
             // Convert courseData (JSON string) to CourseCreateDto
@@ -136,6 +98,7 @@ public class CourseController {
 
             // Set the image file to the DTO
             BindingResult bindingResult = new BeanPropertyBindingResult(courseCreateDto, "courseCreateDto");
+            validator.validate(courseCreateDto, bindingResult);
             if(bindingResult.hasErrors()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
             }
@@ -211,4 +174,23 @@ public class CourseController {
         }
     }
 
+    @GetMapping("/create-course")
+    public ResponseEntity<?> createNewCourse(){
+        try {
+            Optional<Course> course = Optional.ofNullable(courseService.createNewCourse());
+            return course.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<?> getAllCategories(){
+        try {
+            Optional<List<Category>> result = Optional.ofNullable(categoryService.findAll());
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
 }
