@@ -1,6 +1,5 @@
 package vn.aptech.pixelpioneercourse.controller.admin;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -16,11 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
-import net.sf.jsqlparser.util.validation.metadata.DatabaseException;
 import vn.aptech.pixelpioneercourse.dto.RoleDto;
 import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
-import vn.aptech.pixelpioneercourse.repository.RoleRepository;
 import vn.aptech.pixelpioneercourse.service.RoleService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
@@ -40,9 +37,6 @@ public class UserManagingController {
 	@Autowired
 	private RoleService roleService;
 	
-	@Autowired
-	private RoleRepository roleRepository;
-	
 //	@GetMapping
 //	public String adminIndex(HttpSession session) {
 //		if (session.getAttribute("isAdmin") != null) {
@@ -59,7 +53,7 @@ public class UserManagingController {
 	        model.addAttribute("users", users);
 	        return "admin_view/users/general";
 	    } else {
-	        return "redirect:/app/login";
+	        return "redirect:/app/course";
 	    }
 	}
 

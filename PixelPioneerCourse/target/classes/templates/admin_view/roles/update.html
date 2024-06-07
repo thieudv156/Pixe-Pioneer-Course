@@ -8,7 +8,9 @@
               content="IE=edge">
         <meta name="viewport"
               content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Password Reset</title>
+        <title>Roles - Update</title>
+
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
         <!-- Prevent the demo from appearing in search engines -->
         <meta name="robots"
@@ -49,7 +51,7 @@
 
     </head>
 
-    <body class="layout-app ">
+    <body class="layout-app ui " th:if="${session.isUser == null and session.isAdmin == true and session.isInstructor == null}">
 
         <div class="preloader">
             <div class="sk-chase">
@@ -78,21 +80,26 @@
 
                 <!-- Header -->
 
-                <div class="navbar navbar-expand navbar-light border-bottom-2"
+                <!-- Navbar -->
+
+                <div class="navbar navbar-expand pr-0 navbar-light border-bottom-2"
                      id="default-navbar"
                      data-primary>
 
-                    <!-- Navbar toggler -->
+                    <!-- Navbar Toggler -->
+
                     <button class="navbar-toggler w-auto mr-16pt d-block d-lg-none rounded-0"
                             type="button"
                             data-toggle="sidebar">
                         <span class="material-icons">short_text</span>
                     </button>
 
+                    <!-- // END Navbar Toggler -->
+
                     <!-- Navbar Brand -->
+
                     <a href="index.html"
                        class="navbar-brand mr-16pt d-lg-none">
-                        <!-- <img class="navbar-brand-icon" src="../../public/images/logo/white-100@2x.png" width="30" alt="PIXEL PIONEER COURSE"> -->
 
                         <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
 
@@ -102,11 +109,11 @@
 
                         </span>
 
-                        <span class="d-none d-lg-block">PIXEL PIONEER COURSE</span>
+                        <span class="d-none d-lg-block">Pixel Pioneer Course</span>
                     </a>
-
-                    <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt" style="display: none;">
-                        <li class="nav-item" style="display: none;">
+                    
+                    <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
+                        <li class="nav-item">
                             <a href="index.html"
                                class="nav-link">Home</a>
                         </li>
@@ -141,21 +148,12 @@
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-                            <a href="#"
-                               class="nav-link dropdown-toggle"
+                            <a class="nav-link dropdown-toggle"
                                data-toggle="dropdown"
-                               data-caret="false" style="display: none;">Paths</a>
+                               data-caret="false">Users</a>
                             <div class="dropdown-menu">
-                                <a href="paths.html"
-                                   class="dropdown-item">Browse Paths</a>
-                                <a href="student-path.html"
-                                   class="dropdown-item">Path Details</a>
-                                <a href="student-path-assessment.html"
-                                   class="dropdown-item">Skill Assessment</a>
-                                <a href="student-path-assessment-result.html"
-                                   class="dropdown-item">Skill Result</a>
-                                <a href="student-paths.html"
-                                   class="dropdown-item">My Paths</a>
+                                <a th:href="@{/app/admin/users}"
+                                   class="dropdown-item">General</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -220,25 +218,36 @@
                         </li>
                     </ul>
 
-                    <ul class="nav navbar-nav ml-auto mr-0">
-                        <li class="nav-item active" style="display: none;">
-                            <a href="login.html"
-                               class="nav-link"
-                               data-toggle="tooltip"
-                               data-title="Login"
-                               data-placement="bottom"
-                               data-boundary="window"><i class="material-icons">lock_open</i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/app/register"
-                               class="btn btn-outline-dark">Register</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/app/login"
-                               class="btn btn-outline-dark">LOGIN</a>
-                        </li>
-                    </ul>
+                    <!-- // END Navbar Brand -->
+
+                    <div class="flex"></div>
+
+                        <div class="nav-item dropdown">
+                            <a href="#"
+                               class="nav-link d-flex align-items-center dropdown-toggle"
+                               data-toggle="dropdown"
+                               data-caret="false">
+
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div class="dropdown-header"><strong>Account</strong></div>
+                                <a class="dropdown-item"
+                                   href="edit-account.html">Edit Account</a>
+                                <a class="dropdown-item"
+                                   href="billing.html">Billing</a>
+                                <a class="dropdown-item"
+                                   href="billing-history.html">Payments</a>
+                                <a class="dropdown-item"
+                                   th:href="@{/logout}">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- // END Navbar Menu -->
+
                 </div>
+
+                <!-- // END Navbar -->
 
                 <!-- // END Header -->
 
@@ -248,77 +257,37 @@
 
                 <!-- Page Content -->
 
-                <div class="pt-32pt pt-sm-64pt pb-32pt">
-                    <div class="container page__container">
-                    
-                    	<div th:if="${successCondition}" class="alert alert-danger" role="alert">
-						    <span style="color: red; font-weight: bold;" th:text="${successMessage}"></span>
-						</div>
-						
-						<!-- Multi-Step Form -->
-						<form th:action="@{/app/reset-password/mail}" method="post" class="col-md-5 p-0 mx-auto" th:if="${session.codeShow == false and session.passwordShow == false}">
-						    <!-- Step 1: Ask for Email -->
-						    <div class="form-group">
-					            <label class="form-label" for="email">Email:</label>
-					            <input required id="email" type="email" class="form-control" name="email" placeholder="Enter your email">
-					        	<small class="form-text text-muted">We will email you with info on how to reset your password.</small>
-					        	<button class="btn btn-primary" type="submit">Send Verification Code</button>
+                <div class="container page__container page-section pb-0">
+                    <h1 class="h2 mb-0">Roles information modifying</h1>
+                    <ol class="breadcrumb m-0 p-0">
+                    	<li class="breadcrumb-item">Admin</li>
+                        <li class="breadcrumb-item">Roles</li>
+                        <li class="breadcrumb-item">General</li>
+                        <li class="breadcrumb-item active">Update</li>
+                    </ol>
+                </div>
+
+                <div class="container page__container page-section">
+                	<form th:action="@{/app/admin/role/update/updateCheck}" method="post" id="updateForm" name="updateForm">
+					    <input hidden="" th:value="${roleInfo.id}" id="id" name="id"/>
+					    <div class="col-lg-8 d-flex align-items-center">
+					        <div class="flex" style="max-width: 100%">
+					            <label class="form-label" for="username">Role Name</label>
+					            <input type="text"
+					                   class="form-control form-control-rounded"
+					                   placeholder="Enter the modified role name"
+					                   required
+					                   id="roleName"
+					                   name="roleName"
+					                   th:value="${roleInfo.roleName}">
 					        </div>
-						</form>
-						<br>
-						<!-- Alert for email not found -->
-						<div th:if="${emailNotFoundCondition}" class="alert alert-danger" role="alert">
-						    <span style="color: red; font-weight: bold;" th:text="${emailNotFound}"></span>
-						</div>
-						
-						<!-- Form to ask for Verification Code -->
-						<form th:action="@{/app/reset-password/code}" method="post" class="col-md-5 p-0 mx-auto" th:if="${session.codeShow == true}">
-						    <div class="form-group">
-						        <label class="form-label" for="codeChecker">Verification Code:</label>
-						        <input required id="codeChecker" type="text" class="form-control" name="codeChecker" placeholder="Enter the code you received via email">
-						        <button class="btn btn-primary" type="submit">Verify Code</button>
-						    </div>
-						</form>
-						<form th:action="@{/app/reset-password/cancel}" class="col-md-5 p-0 mx-auto" th:if="${session.codeShow == true}" method="post">
-							<button class="btn btn-secondary" formaction="/app/reset-password/cancel" type="submit">Cancel</button>
-						</form>
-						
-						<!-- Alert for code check failure -->
-						<div th:if="${codeCheckingFailCondition}" class="alert alert-danger" role="alert">
-						    <span style="color: red; font-weight: bold;" th:text="${codeCheckingFail}"></span>
-						</div>
-						
-						<!-- Form to ask for New Password -->
-						<form th:action="@{/app/reset-password/password}" method="post" class="col-md-5 p-0 mx-auto" th:if="${session.passwordShow == true}">
-						    <div class="form-group">
-						        <label class="form-label" for="passwordChanger">New Password:</label>
-						        <input required min="6" id="passwordChanger" type="password" class="form-control" name="passwordChanger" placeholder="Enter new password">
-						        <label class="form-label" for="repasswordChanger">Re-enter new Password:</label>
-						        <input required min="6" id="repasswordChanger" type="password" class="form-control" name="repasswordChanger" placeholder="Re-enter your new password">
-						        <button class="btn btn-primary" type="submit">Change Password</button>
-						    </div>
-						</form>
-						<form th:action="@{/app/reset-password/cancel}" class="col-md-5 p-0 mx-auto" th:if="${session.passwordShow == true}" method="post">
-							<button class="btn btn-secondary" formaction="/app/reset-password/cancel" type="submit">Cancel</button>
-						</form>
-						<br>
-						<div th:if="${loginErrorCondition}" class="alert alert-danger" role="alert">
-						    <span style="color: red; font-weight: bold;" th:text="${loginError}"></span>
-						</div>
-                    </div>
-                </div>
-                <div class="page-separator justify-content-center m-0" style="display: none;">
-                    <div class="page-separator__text">or sign-in with</div>
-                </div>
-                <div class="bg-body pt-32pt pb-32pt pb-md-64pt text-center" style="display: none;">
-                    <div class="container page__container">
-                        <a href="index.html"
-                           class="btn btn-secondary btn-block-xs">Facebook</a>
-                        <a href="index.html"
-                           class="btn btn-secondary btn-block-xs">Twitter</a>
-                        <a href="index.html"
-                           class="btn btn-secondary btn-block-xs">Google+</a>
-                    </div>
+					    </div>
+					    <!-- Submit Button -->
+					    <div class="col-lg-8 d-flex align-items-center mt-2">
+					        <button type="submit" class="btn btn-primary btn-rounded">Update</button>
+					    </div>
+					</form>
+
                 </div>
 
                 <!-- // END Page Content -->
@@ -331,16 +300,16 @@
                             <img class="brand-icon"
                                  src="/public/images/logo/black-70@2x.png"
                                  width="30"
-                                 alt="PIXEL PIONEER COURSE"> PIXEL PIONEER COURSE
+                                 alt="Pixel Pioneer Course"> Pixel Pioneer Course
                         </p>
-                        <p class="measure-lead-max text-50 small mr-8pt">PIXEL PIONEER COURSE is a beautifully crafted user interface for modern Education Platforms, including Courses & Tutorials, Video Lessons, Student and Teacher Dashboard, Curriculum Management, Earnings and Reporting, ERP, HR, CMS, Tasks, Projects, eCommerce and more.</p>
+                        <p class="measure-lead-max text-50 small mr-8pt">Pixel Pioneer Course is a beautifully crafted user interface for modern Education Platforms, including Courses & Tutorials, Video Lessons, Student and Teacher Dashboard, Curriculum Management, Earnings and Reporting, ERP, HR, CMS, Tasks, Projects, eCommerce and more.</p>
                         <p class="mb-8pt d-flex">
                             <a href=""
                                class="text-70 text-underline mr-8pt small">Terms</a>
                             <a href=""
                                class="text-70 text-underline small">Privacy policy</a>
                         </p>
-                        <p class="text-50 small mt-n1 mb-0">Copyright 2024 &copy; All rights reserved.</p>
+                        <p class="text-50 small mt-n1 mb-0">Copyright 2019 &copy; All rights reserved.</p>
                     </div>
                 </div>
 
@@ -361,7 +330,7 @@
                         <!-- Sidebar Content -->
 
                         <div class="d-flex align-items-center navbar-height">
-                            <form action="index.html" style="display: none;"
+                            <form action="index.html"
                                   class="search-form search-form--black mx-16pt pr-0 pl-16pt">
                                 <input type="text"
                                        class="form-control pl-0"
@@ -371,9 +340,9 @@
                             </form>
                         </div>
 
-                        <a href="/app/login"
+                        <a href="index.html"
                            class="sidebar-brand ">
-                            <!-- <img class="sidebar-brand-icon" src="../../public/images/illustration/student/128/white.svg" alt="PIXEL PIONEER COURSE"> -->
+                            <!-- <img class="sidebar-brand-icon" src="/public/images/illustration/student/128/white.svg" alt="Pixel Pioneer Course"> -->
 
                             <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -383,12 +352,11 @@
 
                             </span>
 
-                            <span style="text-align: center;">PIXEL PIONEER COURSE</span>
+                            <span>Pixel Pioneer Course</span>
                         </a>
 
-                        <div class="sidebar-heading" style="display: none;">Applications</div>
-                        <div class="sidebar-heading" style="font-size: large; color: white; align-self: center">Log in to unlock more features :D</div>
-                        <ul class="sidebar-menu" style="display: none;">
+                        <div class="sidebar-heading">Applications</div>
+                        <ul class="sidebar-menu">
 
                             <li class="sidebar-menu-item">
                                 <a class="sidebar-menu-button js-sidebar-collapse"
@@ -794,7 +762,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="sidebar-menu-item active open">
+                            <li class="sidebar-menu-item">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#account_menu">
@@ -802,7 +770,7 @@
                                     Account
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
-                                <ul class="sidebar-submenu collapse show sm-indent"
+                                <ul class="sidebar-submenu collapse sm-indent"
                                     id="account_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
@@ -810,7 +778,7 @@
                                             <span class="sidebar-menu-text">Pricing</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item active">
+                                    <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
                                            href="login.html">
                                             <span class="sidebar-menu-text">Login</span>
@@ -977,9 +945,9 @@
                             </li>
                         </ul>
 
-                        <div class="sidebar-heading" style="display: none;">UI</div>
-                        <ul class="sidebar-menu" style="display: none;">
-                            <li class="sidebar-menu-item">
+                        <div class="sidebar-heading">UI</div>
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-menu-item active open">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#components_menu">
@@ -987,7 +955,7 @@
                                     Components
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
-                                <ul class="sidebar-submenu collapse sm-indent"
+                                <ul class="sidebar-submenu collapse show sm-indent"
                                     id="components_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
@@ -1013,7 +981,7 @@
                                             <span class="sidebar-menu-text">Loaders</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item">
+                                    <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
                                            href="ui-tables.html">
                                             <span class="sidebar-menu-text">Tables</span>
@@ -1207,43 +1175,43 @@
                                     id="layouts_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Compact_App_Layout/login.html">
+                                           href="../Compact_App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Compact</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_App_Layout/login.html">
+                                           href="../Mini_App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Mini</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_Secondary_Layout/login.html">
+                                           href="../Mini_Secondary_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Mini + Secondary</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
-                                           href="../App_Layout/login.html">
+                                           href="../App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">App</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Boxed_App_Layout/login.html">
+                                           href="../Boxed_App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Boxed</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Sticky_App_Layout/login.html">
+                                           href="../Sticky_App_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Sticky</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Fixed_Layout/login.html">
+                                           href="../Fixed_Layout/ui-tables.html">
                                             <span class="sidebar-menu-text">Fixed</span>
                                         </a>
                                     </li>
@@ -1284,6 +1252,14 @@
 
         <!-- Preloader -->
         <script src="/public/js/preloader.js"></script>
+
+        <!-- List.js -->
+        <script src="/public/vendor/list.min.js"></script>
+        <script src="/public/js/list.js"></script>
+
+        <!-- Tables -->
+        <script src="/public/js/toggle-check-all.js"></script>
+        <script src="/public/js/check-selected-row.js"></script>
 
     </body>
 

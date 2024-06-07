@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.exceptions.TemplateInputException;
 
-import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.util.validation.metadata.DatabaseException;
 import vn.aptech.pixelpioneercourse.Provider;
 import vn.aptech.pixelpioneercourse.dto.Authentication;
@@ -33,7 +32,6 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
-@Slf4j
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;

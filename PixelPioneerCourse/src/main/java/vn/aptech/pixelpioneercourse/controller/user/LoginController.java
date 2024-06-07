@@ -53,7 +53,7 @@ public class LoginController {
     @PostMapping("/checkLogin")
     public String checkLogin(@RequestParam("info") String emailorusername, @RequestParam("password") String password, RedirectAttributes redirectAttributes, HttpSession session) {
         User u = userService.checkLogin(emailorusername, password);
-        if (u.getRole().getRoleName().equals("")) {
+        if (u.getRole().getRoleName().equals("") || u.getRole() == null) {
             redirectAttributes.addFlashAttribute("loginErrorCondition", true);
             redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");
             return "redirect:/app/login";

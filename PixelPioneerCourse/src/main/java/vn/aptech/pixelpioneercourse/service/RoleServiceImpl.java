@@ -47,11 +47,8 @@ public class RoleServiceImpl implements RoleService{
     	return a != null;
     }
     
-    public boolean update(String id, RoleCreateDto role) {
-    	Role r = mapper.map(findById(Integer.parseInt(id)).get(), Role.class);
-    	r.setRoleName(role.getName());
-    	Object a = roleRepository.save(r);
-    	return a != null;
+    public void update(String id, RoleCreateDto role) {
+    	roleRepository.updateRoleName(Integer.parseInt(id), role.getName());
     }
     
     public void delete(String rID) {

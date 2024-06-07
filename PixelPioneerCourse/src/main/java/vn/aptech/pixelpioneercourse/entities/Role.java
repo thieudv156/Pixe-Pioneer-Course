@@ -23,7 +23,7 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String roleName; //ROLE_STUDENT, ROLE_ADMIN, ROLE_INSTRUCTOR
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "user-role")
     @JsonIgnoreProperties({"role", "password", "getAuthorities()", "getGrantedAuthorities()"})
     private List<User> users;

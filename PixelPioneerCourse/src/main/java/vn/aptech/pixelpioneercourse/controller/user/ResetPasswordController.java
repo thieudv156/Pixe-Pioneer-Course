@@ -37,19 +37,6 @@ public class ResetPasswordController {
         userService = uService;
         requestedCode = userService.codeGeneratorForEmailVerification();
     }
-	
-    private boolean mailSectionShow = true;
-    private boolean codeSectionShow = false;
-    private boolean passwordSectionShow = false;
-    
-    @GetMapping
-    public String resetPassPage(HttpSession session) {
-    	mailSectionShow = true;
-    	session.setAttribute("emailShow", mailSectionShow);
-        session.setAttribute("codeShow", codeSectionShow);
-        session.setAttribute("passwordShow", passwordSectionShow);
-    	return "guest_view/reset_password";
-    }
     
     private String requestedEmail = null;
     
@@ -66,6 +53,19 @@ public class ResetPasswordController {
                 "Best regards,\n" +
                 "Pixel Pioneer Course Adminstration Team.");
         mailSender.send(message);
+    }
+	
+    private boolean mailSectionShow = true;
+    private boolean codeSectionShow = false;
+    private boolean passwordSectionShow = false;
+    
+    @GetMapping
+    public String resetPassPage(HttpSession session) {
+    	mailSectionShow = true;
+    	session.setAttribute("emailShow", mailSectionShow);
+        session.setAttribute("codeShow", codeSectionShow);
+        session.setAttribute("passwordShow", passwordSectionShow);
+    	return "guest_view/reset_password";
     }
 
     @PostMapping("/mail")
@@ -144,5 +144,20 @@ public class ResetPasswordController {
             session.setAttribute("passwordShow", passwordSectionShow);
         	return "redirect:/app/reset-password";
         }
+    }
+    
+    @PostMapping("/cancel")
+    public String cancelRequest(HttpSession session) {
+        // Reset all sections to initial state
+        mailSectionShow = true;
+        codeSectionShow = false;
+        passwordSectionShow = false;
+
+        // Update session attributes
+        session.setAttribute("emailShow", mailSectionShow);
+        session.setAttribute("codeShow", codeSectionShow);
+        session.setAttribute("passwordShow", passwordSectionShow);
+
+        return "redirect:/app/reset-password";
     }
 }
