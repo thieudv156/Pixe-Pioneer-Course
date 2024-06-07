@@ -1,4 +1,4 @@
-package vn.aptech.pixelpioneercourse.controller.user;
+package vn.aptech.pixelpioneercourse.controller.app.user;
 
 import java.util.InputMismatchException;
 

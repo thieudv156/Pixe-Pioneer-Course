@@ -1,4 +1,4 @@
-package vn.aptech.pixelpioneercourse.controller.user;
+package vn.aptech.pixelpioneercourse.controller.app.user;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
