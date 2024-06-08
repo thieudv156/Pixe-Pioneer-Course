@@ -1,4 +1,4 @@
-package vn.aptech.pixelpioneercourse.controller.admin;
+package vn.aptech.pixelpioneercourse.controller.app.admin;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class UserManagingController {
 	    if (session.getAttribute("isAdmin") != null) {
 	        List<User> users = userService.findAll();
 	        model.addAttribute("users", users);
-	        return "admin_view/users/general";
+	        return "app/admin_view/users/general";
 	    } else {
 	        return "redirect:/app/course";
 	    }
@@ -133,7 +133,7 @@ public class UserManagingController {
 			model.addAttribute("allRoles", allRoles);
 			model.addAttribute("userInfo", u);
 			model.addAttribute("uid", uid);
-			return "admin_view/users/update";
+			return "app/admin_view/users/update";
 		} catch (Exception e) {
 			ra.addFlashAttribute("ErrorCondition", true);
 			ra.addFlashAttribute("ErrorError", e.getMessage());

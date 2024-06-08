@@ -41,7 +41,7 @@ public class LoginController {
                 return "redirect:/app/course";
             }
         }
-        return "guest_view/login";
+        return "app/guest_view/login";
     }
     
     @GetMapping("/loginSuccess")
@@ -52,28 +52,39 @@ public class LoginController {
 
     @PostMapping("/checkLogin")
     public String checkLogin(@RequestParam("info") String emailorusername, @RequestParam("password") String password, RedirectAttributes redirectAttributes, HttpSession session) {
-        User u = userService.checkLogin(emailorusername, password);
-        if (u.getRole().getRoleName().equals("") || u.getRole() == null) {
-            redirectAttributes.addFlashAttribute("loginErrorCondition", true);
-            redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");
-            return "redirect:/app/login";
-        } else if (u.getRole().getRoleName().equals("ROLE_USER") && session.getAttribute("isUser") == null) {
-            session.setAttribute("isUser", true);
-            session.setAttribute("isAdmin", null);
-            session.setAttribute("isInstructor", null);
-            return "redirect:/app/login/loginSuccess";
-        } else if (u.getRole().getRoleName().equals("ROLE_ADMIN") && session.getAttribute("isAdmin") == null) {
-            session.setAttribute("isAdmin", true);
-            session.setAttribute("userId", u.getId());
-            session.setAttribute("isUser", null);
-            session.setAttribute("isInstructor", null);
-            return "redirect:/app/admin/users";
-        } else if (u.getRole().getRoleName().equals("ROLE_INSTRUCTOR") && session.getAttribute("isInstructor") == null) {
-            session.setAttribute("isInstructor", true);
-            session.setAttribute("isAdmin", null);
-            session.setAttribute("isUser", null);
-            return "redirect:/app/login/loginSuccess";
-        } else {
+        try {
+        	User u = userService.checkLogin(emailorusername, password);
+            if (u.getRole() == null || u.getRole().getRoleName() == null) {
+                redirectAttributes.addFlashAttribute("loginErrorCondition", true);
+                redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");
+                return "redirect:/app/login";
+            } else if (u.getRole().getRoleName().equals("ROLE_USER") && session.getAttribute("isUser") == null) {
+            	session.setAttribute("user", u);
+            	session.setAttribute("userId", u.getId());
+                session.setAttribute("isUser", true);
+                session.setAttribute("isAdmin", null);
+                session.setAttribute("isInstructor", null);
+                return "redirect:/app/login/loginSuccess";
+            } else if (u.getRole().getRoleName().equals("ROLE_ADMIN") && session.getAttribute("isAdmin") == null) {
+                session.setAttribute("isAdmin", true);
+                session.setAttribute("userId", u.getId());
+                session.setAttribute("user", u);
+                session.setAttribute("isUser", null);
+                session.setAttribute("isInstructor", null);
+                return "redirect:/app/admin/users";
+            } else if (u.getRole().getRoleName().equals("ROLE_INSTRUCTOR") && session.getAttribute("isInstructor") == null) {
+            	session.setAttribute("user", u);
+            	session.setAttribute("userId", u.getId());
+                session.setAttribute("isInstructor", true);
+                session.setAttribute("isAdmin", null);
+                session.setAttribute("isUser", null);
+                return "redirect:/app/login/loginSuccess";
+            } else {
+            	redirectAttributes.addFlashAttribute("loginErrorCondition", true);
+                redirectAttributes.addFlashAttribute("loginError", "Unknown error occurs");
+                return "redirect:/app/login";
+            }
+        } catch (Exception e) {
         	redirectAttributes.addFlashAttribute("loginErrorCondition", true);
             redirectAttributes.addFlashAttribute("loginError", "Unknown error occurs");
             return "redirect:/app/login";

@@ -65,7 +65,7 @@ public class ResetPasswordController {
     	session.setAttribute("emailShow", mailSectionShow);
         session.setAttribute("codeShow", codeSectionShow);
         session.setAttribute("passwordShow", passwordSectionShow);
-    	return "guest_view/reset_password";
+    	return "app/guest_view/reset_password";
     }
 
     @PostMapping("/mail")

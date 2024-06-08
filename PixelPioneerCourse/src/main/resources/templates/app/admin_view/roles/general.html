@@ -136,8 +136,12 @@
                   </span>
                 </span>
               </a>
-              <div class="dropdown-menu dropdown-menu-right flex">
-                <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+              <div class="dropdown-menu dropdown-menu-right">
+                  <div class="dropdown-header"><strong>MY ACCOUNT</strong></div>
+                  <a class="dropdown-item"
+                     th:href="@{/app/users/profile/edit-my-profile}">Edit My Profile</a>
+                  <a class="dropdown-item"
+                     th:href="@{/logout}">Logout</a>
               </div>
             </div>
           </div>

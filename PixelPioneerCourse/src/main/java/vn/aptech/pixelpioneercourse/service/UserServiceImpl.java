@@ -199,7 +199,11 @@ public class UserServiceImpl implements UserService{
     	User acc = userRepository.findById(uID).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
         acc.setUsername(u.getUsername());
         acc.setEmail(u.getEmail());
-        acc.setPassword(encoder.encode(u.getPassword()));
+        if (u.getPassword().startsWith("$2a$")) {
+        	acc.setPassword(u.getPassword());
+        } else {
+        	acc.setPassword(encoder.encode(u.getPassword()));
+        }
         acc.setFullName(u.getFullName());
         acc.setPhone(u.getPhone());
         userRepository.save(acc);

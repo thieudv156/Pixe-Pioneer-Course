@@ -39,7 +39,7 @@ public class RegisterController {
                 return "redirect:/app/course";
             }
         }
-        return "guest_view/register";
+        return "app/guest_view/register";
     }
 
     @PostMapping

@@ -1,4 +1,4 @@
-package vn.aptech.pixelpioneercourse.controller.admin;
+package vn.aptech.pixelpioneercourse.controller.app.admin;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class RoleController {
 		if (session.getAttribute("isAdmin") != null) {
 			List<RoleDto> listRole = roleService.findAll();
 			model.addAttribute("roles", listRole);
-			return "admin_view/roles/general";
+			return "app/admin_view/roles/general";
 		} else {
 			return "redirect:/app/course";
 		}
@@ -41,7 +41,7 @@ public class RoleController {
 	
 	@GetMapping("/create")
 	public String createPage() {
-		return "admin_view/roles/create";
+		return "app/admin_view/roles/create";
 	}
 	
 	@PostMapping("/create")
@@ -64,7 +64,7 @@ public class RoleController {
 	public String updatePage(@RequestParam("id") String rID, Model model) {
 	    Role r = mapper.map(roleService.findById(Integer.parseInt(rID)).get(), Role.class);
 	    model.addAttribute("roleInfo", r);
-	    return "admin_view/roles/update";
+	    return "app/admin_view/roles/update";
 	}
 	
 	@PostMapping("/update/updateCheck")
