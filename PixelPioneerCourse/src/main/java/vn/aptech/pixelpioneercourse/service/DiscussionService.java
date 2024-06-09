@@ -1,9 +1,9 @@
 package vn.aptech.pixelpioneercourse.service;
 
-import org.springframework.http.ResponseEntity;
 import vn.aptech.pixelpioneercourse.dto.DiscussionCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Discussion;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DiscussionService {
@@ -13,5 +13,5 @@ public interface DiscussionService {
     Discussion updateDiscussion(Integer id, DiscussionCreateDto discussionDetails);
     void deleteById(Integer id);
     List<Discussion> findBySubLessonId(Integer subLessonId);
-    
+    Discussion findByDate(LocalDateTime createDate);
 }

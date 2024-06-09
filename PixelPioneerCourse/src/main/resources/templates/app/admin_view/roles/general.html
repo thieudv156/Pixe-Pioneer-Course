@@ -221,7 +221,7 @@
               </table>
             </div>
             <div class="card-footer p-8pt">
-              <ul class="pagination justify-content-start pagination-xsm m-0">
+            				<ul class="pagination justify-content-start pagination-xsm m-0" id="pagination">
                 <li class="page-item disabled">
                   <a class="page-link" href="#" aria-label="Previous">
                     <span aria-hidden="true" class="material-icons">chevron_left</span>
@@ -247,6 +247,65 @@
               </ul>
             </div>
           </div>
+          <script>
+           	document.addEventListener('DOMContentLoaded', function() {
+                const users = document.querySelectorAll('#users tr');
+                const pagination = document.getElementById('pagination');
+                const itemsPerPage = 5;
+                let currentPage = 1;
+                const pageCount = Math.ceil(users.length / itemsPerPage);
+
+                function showPage(page) {
+                    currentPage = page;
+                    const start = (page - 1) * itemsPerPage;
+                    const end = start + itemsPerPage;
+
+                    users.forEach((user, index) => {
+                        user.style.display = (index >= start && index < end) ? '' : 'none';
+                    });
+
+                    updatePagination();
+                }
+
+                function updatePagination() {
+                    pagination.innerHTML = '';
+
+                    const prevPageItem = document.createElement('li');
+                    prevPageItem.className = 'page-item ' + (currentPage === 1 ? 'disabled' : '');
+                    prevPageItem.innerHTML = `
+                        <a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+                            <span aria-hidden="true" class="material-icons">chevron_left</span>
+                            <span>Prev</span>
+                        </a>`;
+                    pagination.appendChild(prevPageItem);
+
+                    for (let i = 1; i <= pageCount; i++) {
+                        const pageItem = document.createElement('li');
+                        pageItem.className = 'page-item ' + (i === currentPage ? 'active' : '');
+                        pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+                        pagination.appendChild(pageItem);
+                    }
+
+                    const nextPageItem = document.createElement('li');
+                    nextPageItem.className = 'page-item ' + (currentPage === pageCount ? 'disabled' : '');
+                    nextPageItem.innerHTML = `
+                        <a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+                            <span>Next</span>
+                            <span aria-hidden="true" class="material-icons">chevron_right</span>
+                        </a>`;
+                    pagination.appendChild(nextPageItem);
+                }
+
+                pagination.addEventListener('click', function(e) {
+                    const page = e.target.getAttribute('data-page');
+                    if (page) {
+                        showPage(parseInt(page));
+                    }
+                });
+
+                showPage(1);
+            });				
+           </script>
           <!-- // END Page Content -->
           <!-- Footer -->
           <div class="bg-white border-top-2 mt-auto">

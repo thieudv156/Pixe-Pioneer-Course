@@ -10,7 +10,11 @@ public class AdminController {
 
 	@GetMapping
 	public String index() {
-		return "redirect:/app/admin/users";
+		try {
+			return "redirect:/app/admin/users";
+		} catch (Exception e) {
+			return "redirect:/logout";
+		}
 	}
 	
 }

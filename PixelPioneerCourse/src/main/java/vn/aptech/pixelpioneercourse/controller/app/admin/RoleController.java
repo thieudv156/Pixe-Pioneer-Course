@@ -30,12 +30,16 @@ public class RoleController {
 	
 	@GetMapping
 	public String rolePage(Model model, HttpSession session) {
-		if (session.getAttribute("isAdmin") != null) {
-			List<RoleDto> listRole = roleService.findAll();
-			model.addAttribute("roles", listRole);
-			return "app/admin_view/roles/general";
-		} else {
-			return "redirect:/app/course";
+		try {
+			if (session.getAttribute("isAdmin") != null) {
+				List<RoleDto> listRole = roleService.findAll();
+				model.addAttribute("roles", listRole);
+				return "app/admin_view/roles/general";
+			} else {
+				return "redirect:/app/course";
+			}
+		} catch (Exception e) {
+			return "redirect:/logout";
 		}
 	}
 	

@@ -61,11 +61,15 @@ public class ResetPasswordController {
     
     @GetMapping
     public String resetPassPage(HttpSession session) {
-    	mailSectionShow = true;
-    	session.setAttribute("emailShow", mailSectionShow);
-        session.setAttribute("codeShow", codeSectionShow);
-        session.setAttribute("passwordShow", passwordSectionShow);
-    	return "app/guest_view/reset_password";
+    	try {
+    		mailSectionShow = true;
+        	session.setAttribute("emailShow", mailSectionShow);
+            session.setAttribute("codeShow", codeSectionShow);
+            session.setAttribute("passwordShow", passwordSectionShow);
+        	return "app/guest_view/reset_password";
+    	} catch (Exception e) {
+    		return "redirect:/logout";
+    	}
     }
 
     @PostMapping("/mail")

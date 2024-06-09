@@ -57,4 +57,9 @@ public class DiscussionServiceImpl implements DiscussionService {
     public List<Discussion> findBySubLessonId(Integer subLessonId) {
         return discussionRepository.findDiscussionBySubLessonId(subLessonId);
     }
+    
+    @Override
+    public Discussion findByDate(LocalDateTime createDate) {
+    	return discussionRepository.findByCreatedAt(createDate).orElseThrow(()-> new RuntimeException("Discussion not found"));
+    }
 }

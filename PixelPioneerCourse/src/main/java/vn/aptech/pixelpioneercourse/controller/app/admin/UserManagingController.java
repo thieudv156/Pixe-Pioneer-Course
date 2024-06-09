@@ -48,12 +48,16 @@ public class UserManagingController {
 	
 	@GetMapping
 	public String adminIndex(Model model, HttpSession session) {
-	    if (session.getAttribute("isAdmin") != null) {
-	        List<User> users = userService.findAll();
-	        model.addAttribute("users", users);
-	        return "app/admin_view/users/general";
-	    } else {
-	        return "redirect:/app/course";
+	    try {
+	    	if (session.getAttribute("isAdmin") != null) {
+		        List<User> users = userService.findAll();
+		        model.addAttribute("users", users);
+		        return "app/admin_view/users/general";
+		    } else {
+		        return "redirect:/app/course";
+		    }
+	    } catch (Exception e) {
+	    	return "redirect:/logout";
 	    }
 	}
 
@@ -124,6 +128,11 @@ public class UserManagingController {
 		}
 	}
 	
+	@GetMapping("/update") //prevent error
+	public String updatePage() {
+		return "redirect:/app/admin/users";
+	}
+	
 	@PostMapping("/update")
 	public String updatePage(@RequestParam("id") String id, RedirectAttributes ra, Model model) {
 		try {
@@ -164,6 +173,11 @@ public class UserManagingController {
 			ra.addFlashAttribute("ErrorError", e.getMessage());
 			return "redirect:/app/admin/users";
 		}
+	}
+	
+	@GetMapping("/delete")
+	public String deletePage() {
+		return "redirect:/app/admin/users";
 	}
 	
 	@PostMapping("/delete")

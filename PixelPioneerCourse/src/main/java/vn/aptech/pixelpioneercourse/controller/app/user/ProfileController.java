@@ -32,7 +32,11 @@ public class ProfileController {
 	
 	@GetMapping("/profile")
 	public String profilePage() {
-		return "app/user_view/profile";
+		try {
+			return "app/user_view/profile";
+		} catch (Exception e) {
+			return "redirect:/logout";
+		}
 	}
 	
 	@GetMapping("/profile/edit-my-profile")

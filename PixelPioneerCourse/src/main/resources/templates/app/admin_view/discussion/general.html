@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      dir="ltr">
+      dir="ltr" xmlns:th="https://www.thymeleaf.org">
 
     <head>
         <meta charset="utf-8">
@@ -8,7 +8,7 @@
               content="IE=edge">
         <meta name="viewport"
               content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Account</title>
+        <title>Users - General</title>
 
         <!-- Prevent the demo from appearing in search engines -->
         <meta name="robots"
@@ -96,7 +96,7 @@
 
                     <!-- Navbar Brand -->
 
-                    <a href="index.html"
+                    <a th:href="@{/app/admin}"
                        class="navbar-brand mr-16pt d-lg-none">
 
                         <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
@@ -107,216 +107,138 @@
 
                         </span>
 
-                        <span class="d-none d-lg-block">Luma</span>
+                        <span class="d-none d-lg-block">Pixel Pioneer Course</span>
                     </a>
 
                     <!-- // END Navbar Brand -->
 
-                    <span class="d-none d-md-flex align-items-center mr-16pt">
-
-                        <span class="avatar avatar-sm mr-12pt">
-
-                            <span class="avatar-title rounded navbar-avatar"><i class="material-icons">trending_up</i></span>
-
-                        </span>
-
-                        <small class="flex d-flex flex-column">
-                            <strong class="navbar-text-100">Earnings</strong>
-                            <span class="navbar-text-50">&dollar;12.3k</span>
-                        </small>
-                    </span>
-                    <span class="d-none d-md-flex align-items-center mr-16pt">
-
-                        <span class="avatar avatar-sm mr-12pt">
-
-                            <span class="avatar-title rounded navbar-avatar"><i class="material-icons">receipt</i></span>
-
-                        </span>
-
-                        <small class="flex d-flex flex-column">
-                            <strong class="navbar-text-100">Sales</strong>
-                            <span class="navbar-text-50">264</span>
-                        </small>
-                    </span>
-
-                    <div class="flex"></div>
-
-                    <!-- Switch Layout -->
-
-                    <a href="../Compact_App_Layout/edit-account.html"
-                       class="navbar-toggler navbar-toggler-custom align-items-center justify-content-center d-none d-lg-flex"
-                       data-toggle="tooltip"
-                       data-title="Switch to Compact Layout"
-                       data-placement="bottom"
-                       data-boundary="window">
-                        <span class="material-icons">swap_horiz</span>
-                    </a>
-
-                    <!-- // END Switch Layout -->
-
-                    <!-- Navbar Menu -->
-
-                    <div class="nav navbar-nav flex-nowrap d-flex mr-16pt">
-
-                        <!-- Notifications dropdown -->
-                        <div class="nav-item dropdown dropdown-notifications dropdown-xs-down-full"
-                             data-toggle="tooltip"
-                             data-title="Messages"
-                             data-placement="bottom"
-                             data-boundary="window">
-                            <button class="nav-link btn-flush dropdown-toggle"
-                                    type="button"
-                                    data-toggle="dropdown"
-                                    data-caret="false">
-                                <i class="material-icons icon-24pt">mail_outline</i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div data-perfect-scrollbar
-                                     class="position-relative">
-                                    <div class="dropdown-header"><strong>Messages</strong></div>
-                                    <div class="list-group list-group-flush mb-0">
-
-                                        <a href="javascript:void(0);"
-                                           class="list-group-item list-group-item-action unread">
-                                            <span class="d-flex align-items-center mb-1">
-                                                <small class="text-black-50">5 minutes ago</small>
-
-                                                <span class="ml-auto unread-indicator bg-accent"></span>
-
-                                            </span>
-                                            <span class="d-flex">
-                                                <span class="avatar avatar-xs mr-2">
-                                                    <img src="/public/images/people/110/woman-5.jpg"
-                                                         alt="people"
-                                                         class="avatar-img rounded-circle">
-                                                </span>
-                                                <span class="flex d-flex flex-column">
-                                                    <strong class="text-black-100">Michelle</strong>
-                                                    <span class="text-black-70">Clients loved the new design.</span>
-                                                </span>
-                                            </span>
-                                        </a>
-
-                                        <a href="javascript:void(0);"
-                                           class="list-group-item list-group-item-action">
-                                            <span class="d-flex align-items-center mb-1">
-                                                <small class="text-black-50">5 minutes ago</small>
-
-                                            </span>
-                                            <span class="d-flex">
-                                                <span class="avatar avatar-xs mr-2">
-                                                    <img src="/public/images/people/110/woman-5.jpg"
-                                                         alt="people"
-                                                         class="avatar-img rounded-circle">
-                                                </span>
-                                                <span class="flex d-flex flex-column">
-                                                    <strong class="text-black-100">Michelle</strong>
-                                                    <span class="text-black-70">🔥 Superb job..</span>
-                                                </span>
-                                            </span>
-                                        </a>
-
-                                    </div>
-                                </div>
+					<ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
+                        <li class="nav-item">
+                            <a th:href="@{/app/admin}"
+                               class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#"
+                               class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               data-caret="false">Courses</a>
+                            <div class="dropdown-menu">
+                                <a href="courses.html"
+                                   class="dropdown-item">Browse Courses</a>
+                                <a href="student-course.html"
+                                   class="dropdown-item">Preview Course</a>
+                                <a href="student-lesson.html"
+                                   class="dropdown-item">Preview Lesson</a>
+                                <a href="student-take-course.html"
+                                   class="dropdown-item"><span class="mr-16pt">Take Course</span> <span class="badge badge-notifications badge-accent text-uppercase ml-auto">Pro</span></a>
+                                <a href="student-take-lesson.html"
+                                   class="dropdown-item">Take Lesson</a>
+                                <a href="student-take-quiz.html"
+                                   class="dropdown-item">Take Quiz</a>
+                                <a href="student-quiz-result-details.html"
+                                   class="dropdown-item">Quiz Result</a>
+                                <a href="student-dashboard.html"
+                                   class="dropdown-item">Student Dashboard</a>
+                                <a href="student-my-courses.html"
+                                   class="dropdown-item">My Courses</a>
+                                <a href="student-quiz-results.html"
+                                   class="dropdown-item">My Quizzes</a>
+                                <a href="help-center.html"
+                                   class="dropdown-item">Help Center</a>
                             </div>
-                        </div>
-                        <!-- // END Notifications dropdown -->
-
-                        <!-- Notifications dropdown -->
-                        <div class="nav-item ml-16pt dropdown dropdown-notifications dropdown-xs-down-full"
-                             data-toggle="tooltip"
-                             data-title="Notifications"
-                             data-placement="bottom"
-                             data-boundary="window">
-                            <button class="nav-link btn-flush dropdown-toggle"
-                                    type="button"
-                                    data-toggle="dropdown"
-                                    data-caret="false">
-                                <i class="material-icons">notifications_none</i>
-                                <span class="badge badge-notifications badge-accent">2</span>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div data-perfect-scrollbar
-                                     class="position-relative">
-                                    <div class="dropdown-header"><strong>System notifications</strong></div>
-                                    <div class="list-group list-group-flush mb-0">
-
-                                        <a href="javascript:void(0);"
-                                           class="list-group-item list-group-item-action unread">
-                                            <span class="d-flex align-items-center mb-1">
-                                                <small class="text-black-50">3 minutes ago</small>
-
-                                                <span class="ml-auto unread-indicator bg-accent"></span>
-
-                                            </span>
-                                            <span class="d-flex">
-                                                <span class="avatar avatar-xs mr-2">
-                                                    <span class="avatar-title rounded-circle bg-light">
-                                                        <i class="material-icons font-size-16pt text-accent">account_circle</i>
-                                                    </span>
-                                                </span>
-                                                <span class="flex d-flex flex-column">
-
-                                                    <span class="text-black-70">Your profile information has not been synced correctly.</span>
-                                                </span>
-                                            </span>
-                                        </a>
-
-                                        <a href="javascript:void(0);"
-                                           class="list-group-item list-group-item-action">
-                                            <span class="d-flex align-items-center mb-1">
-                                                <small class="text-black-50">5 hours ago</small>
-
-                                            </span>
-                                            <span class="d-flex">
-                                                <span class="avatar avatar-xs mr-2">
-                                                    <span class="avatar-title rounded-circle bg-light">
-                                                        <i class="material-icons font-size-16pt text-primary">group_add</i>
-                                                    </span>
-                                                </span>
-                                                <span class="flex d-flex flex-column">
-                                                    <strong class="text-black-100">Adrian. D</strong>
-                                                    <span class="text-black-70">Wants to join your private group.</span>
-                                                </span>
-                                            </span>
-                                        </a>
-
-                                        <a href="javascript:void(0);"
-                                           class="list-group-item list-group-item-action">
-                                            <span class="d-flex align-items-center mb-1">
-                                                <small class="text-black-50">1 day ago</small>
-
-                                            </span>
-                                            <span class="d-flex">
-                                                <span class="avatar avatar-xs mr-2">
-                                                    <span class="avatar-title rounded-circle bg-light">
-                                                        <i class="material-icons font-size-16pt text-warning">storage</i>
-                                                    </span>
-                                                </span>
-                                                <span class="flex d-flex flex-column">
-
-                                                    <span class="text-black-70">Your deploy was successful.</span>
-                                                </span>
-                                            </span>
-                                        </a>
-
-                                    </div>
-                                </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               data-caret="false">Users</a>
+                            <div class="dropdown-menu">
+                                <a th:href="@{/app/admin/users}"
+                                   class="dropdown-item">General</a>
                             </div>
-                        </div>
-                        <!-- // END Notifications dropdown -->
+                            <div class="dropdown-menu">
+                                <a th:href="@{/app/admin/users/create}"
+                                   class="dropdown-item">Create</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pricing.html"
+                               class="nav-link" style="display: none;">Pricing</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#"
+                               class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               data-caret="false" style="display: none;">Teachers</a>
+                            <div class="dropdown-menu">
+                                <a href="instructor-dashboard.html"
+                                   class="dropdown-item">Instructor Dashboard</a>
+                                <a href="instructor-courses.html"
+                                   class="dropdown-item">Manage Courses</a>
+                                <a href="instructor-quizzes.html"
+                                   class="dropdown-item">Manage Quizzes</a>
+                                <a href="instructor-earnings.html"
+                                   class="dropdown-item">Earnings</a>
+                                <a href="instructor-statement.html"
+                                   class="dropdown-item">Statement</a>
+                                <a href="instructor-edit-course.html"
+                                   class="dropdown-item">Edit Course</a>
+                                <a href="instructor-edit-quiz.html"
+                                   class="dropdown-item">Edit Quiz</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown"
+                            data-toggle="tooltip"
+                            data-title="Community"
+                            data-placement="bottom"
+                            data-boundary="window" style="display: none;">
+                            <a href="#"
+                               class="nav-link dropdown-toggle"
+                               data-toggle="dropdown"
+                               data-caret="false">
+                                <i class="material-icons">people_outline</i>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a href="teachers.html"
+                                   class="dropdown-item">Browse Teachers</a>
+                                <a href="student-profile.html"
+                                   class="dropdown-item">Student Profile</a>
+                                <a href="teacher-profile.html"
+                                   class="dropdown-item">Instructor Profile</a>
+                                <a href="blog.html"
+                                   class="dropdown-item">Blog</a>
+                                <a href="blog-post.html"
+                                   class="dropdown-item">Blog Post</a>
+                                <a href="faq.html"
+                                   class="dropdown-item">FAQ</a>
+                                <a href="help-center.html"
+                                   class="dropdown-item">Help Center</a>
+                                <a href="discussions.html"
+                                   class="dropdown-item">Discussions</a>
+                                <a href="discussion.html"
+                                   class="dropdown-item">Discussion Details</a>
+                                <a href="discussions-ask.html"
+                                   class="dropdown-item">Ask Question</a>
+                            </div>
+                        </li>
+                    </ul>
 
-                        <div class="nav-item dropdown">
+                    <ul class="nav navbar-nav ml-auto mr-0">
+                        <li class="nav-item active" style="display: none;">
+                            <a href="login.html"
+                               class="nav-link"
+                               data-toggle="tooltip"
+                               data-title="Login"
+                               data-placement="bottom"
+                               data-boundary="window"><i class="material-icons">lock_open</i></a>
+                        </li>
+                    </ul>
+					
+                    <div class="flex">
+                    	<div class="nav-item dropdown">
                             <a href="#"
                                class="nav-link d-flex align-items-center dropdown-toggle"
                                data-toggle="dropdown"
                                data-caret="false">
-
-                                <span class="avatar avatar-sm mr-8pt2">
-
-                                    <span class="avatar-title rounded-circle bg-primary"><i class="material-icons">account_box</i></span>
-
-                                </span>
 
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
@@ -338,23 +260,34 @@
                 <!-- // END Header -->
 
                 <div class="pt-32pt">
-				  <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
-				    <div class="flex d-flex flex-column flex-sm-row align-items-center">
-				      <div class="mb-24pt mb-sm-0 mr-sm-24pt">
-				        <h2 class="mb-0">Edit User</h2>
-				        <ol class="breadcrumb p-0 m-0">
-				          <li class="breadcrumb-item">
-				            <a th:href="@{/app/admin}">Home</a>
-				          </li>
-				          <li class="breadcrumb-item">
-				            <a th:href="@{/app/admin/users}">Users</a>
-				          </li>
-				          <li class="breadcrumb-item active">Edit User</li>
-				        </ol>
-				      </div>
-				    </div>
-				  </div>
-				</div>
+                    <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+                        <div class="flex d-flex flex-column flex-sm-row align-items-center">
+
+                            <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                                <h2 class="mb-0">List of discussions</h2>
+
+                                <ol class="breadcrumb p-0 m-0">
+                                    <li class="breadcrumb-item"><a th:href="@{/app/admin}">Admin</a></li>
+
+                                    <li class="breadcrumb-item">
+
+                                        <a th:href="@{/app/admin/discussion}">Discussion</a>
+
+                                    </li>
+
+                                    <li class="breadcrumb-item active">
+
+                                        General
+
+                                    </li>
+
+                                </ol>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
 
                 <!-- BEFORE Page Content -->
 
@@ -363,102 +296,163 @@
                 <!-- Page Content -->
 
                 <div class="container page__container page-section">
-                    <div class="page-separator">
-                        <div class="page-separator__text">User Information</div>
-                    </div>
-                    <div class="p-0">
-                        <form th:action="@{/app/admin/users/update/updateCheck}" method="post" id="updateForm" name="updateForm">
-							<input type="hidden" name="id" th:value="${uid}"/>
-							<!-- Username Field -->
-							<div class="col-lg-8 d-flex align-items-center">
-								<div class="flex" style="max-width: 100%">
-									<label class="form-label" for="username">Username</label>
-									<input type="text"
-										   class="form-control form-control-rounded"
-										   placeholder="Enter the modified username"
-										   required
-										   id="username"
-										   name="username"
-										   th:value="${userInfo.username}">
-								</div>
-							</div>
-							<!-- Password Field -->
-							<div class="col-lg-8 d-flex align-items-center">
-								<div class="flex" style="max-width: 100%">
-									<label class="form-label" for="password">Password</label>
-									<input type="password"
-										   class="form-control form-control-rounded"
-										   placeholder="Enter the modified password"
-										   required
-										   id="password"
-										   name="password">
-								</div>
-							</div>
-							<!-- Email Field -->
-							<div class="col-lg-8 d-flex align-items-center">
-								<div class="flex" style="max-width: 100%">
-									<label class="form-label" for="email">Email</label>
-									<input type="email"
-										   class="form-control form-control-rounded"
-										   placeholder="Enter the modified email"
-										   required
-										   id="email"
-										   name="email"
-										   th:value="${userInfo.email}"
-										   th:readonly="${userInfo.provider != LOCAL or userInfo.provider == GOOGLE}">
-								</div>
-							</div>
-							<!-- Full Name Field -->
-							<div class="col-lg-8 d-flex align-items-center">
-								<div class="flex" style="max-width: 100%">
-									<label class="form-label" for="fullName">Full Name</label>
-									<input type="text"
-										   class="form-control form-control-rounded"
-										   placeholder="Enter the modified full name"
-										   required
-										   id="fullName"
-										   name="fullName"
-										   th:value="${userInfo.fullName}"
-										   th:readonly="${userInfo.provider != LOCAL or userInfo.provider == GOOGLE}">
-								</div>
-							</div>
-							<!-- Phone Field -->
-							<div class="col-lg-8 d-flex align-items-center">
-								<div class="flex" style="max-width: 100%">
-									<label class="form-label" for="phone">Phone</label>
-									<input type="text"
-										   class="form-control form-control-rounded"
-										   placeholder="Enter the modified phone number"
-										   required
-										   id="phone"
-										   name="phone"
-										   th:value="${userInfo.phone}"
-										   pattern="\d{8,10}" 
-										   title="Please enter 8 to 10 digits">
-								</div>
-							</div>
-							<!-- Role Selection -->
-							<div class="col-lg-8 d-flex align-items-center">
-								<div class="flex" style="max-width: 100%">
-									<label class="form-label" for="role">Role</label>
-									<select class="form-control form-control-rounded" 
-										id="select02" 
-										name="role" 
-										required
-										data-toggle="select"
-										data-minimum-results-for-search="-1">
-										<option th:each="role : ${allRoles}"
-												th:value="${role.id}"
-												th:text="${role.roleName}"
-												th:selected="${role.roleName == userInfo.role.roleName}"></option>
-									</select>
-								</div>
-							</div>
-							<!-- Submit Button -->
-							<div class="col-lg-8 d-flex align-items-center mt-2">
-								<button type="submit" class="btn btn-primary btn-rounded">Update</button>
-							</div>
-						</form>
+				    <div class="page-separator">
+				        <div class="page-separator__text">List of discussion</div>
+				    </div>
+				
+				    <div class="card mb-lg-32pt">
+				        <div class="table-responsive"
+				             data-toggle="lists"
+				             data-lists-sort-by="js-lists-values-employee-name"
+				             data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
+				            <!-- Add conditionals for error and success messages -->
+				            <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
+				                <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+				            </div>
+				            <div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
+				                <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
+				            </div>
+				
+				            <table class="table mb-0 thead-border-top-0 table-nowrap">
+				                <thead>
+				                    <tr>
+				                        <th><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">ID</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Username</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Sub-lesson</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Content</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Created at</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Action</a></th>
+				                    </tr>
+				                </thead>
+				                <tbody class="list" id="discussion">
+								    <tr th:each="discussion : ${discussions}" class="selected">
+								    	<td>
+								    		<strong class="js-lists-values-employee-name" th:text="${discussion.id}">ID</strong>
+								    	</td>
+								    	<td>
+								    		<p class="js-lists-values-employee-name" th:text="${discussion.user.username}">Username</p>
+								    	</td>
+								        <td>
+								            <p class="js-lists-values-employee-name" th:text="${discussion.sublesson.title}">Sublesson</p>
+								        </td>
+								        <td>
+								        	<p class="js-lists-values-employee-name" th:text="${discussion.content}">Content</p>
+								        </td>
+								        <td>
+								        	<p class="js-lists-values-employee-name" th:text="${#temporals.format(discussion.createdAt, 'dd-MM-yyyy')}">Create at
+								        </td>
+								        <td>
+								        	<div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+											    <form id="update" th:action="@{/app/admin/discussion/update}" method="post" style="margin: 0;">
+										            <input type="hidden" th:value="${discussion.id}" name="id"/>
+										            <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
+										        </form>
+										        <form id="delete" th:action="@{/app/admin/discussion/delete}" method="post" style="margin: 0;">
+										            <input type="hidden" th:value="${discussion.id}" name="uid"/>
+										            <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+										        </form>
+								        	</div>
+										</td>
+								    </tr>
+								</tbody>
+                            </table>
+                        </div>
+
+                        <div class="card-footer p-8pt">
+            				<ul class="pagination justify-content-start pagination-xsm m-0" id="pagination">
+                                <li class="page-item disabled">
+                                    <a class="page-link"
+                                       href="#"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true"
+                                              class="material-icons">chevron_left</span>
+                                        <span>Prev</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="#"
+                                       aria-label="Page 1">
+                                        <span>1</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="#"
+                                       aria-label="Page 2">
+                                        <span>2</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="#"
+                                       aria-label="Next">
+                                        <span>Next</span>
+                                        <span aria-hidden="true"
+                                              class="material-icons">chevron_right</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <script>
+	                       	document.addEventListener('DOMContentLoaded', function() {
+	                            const users = document.querySelectorAll('#discussion tr');
+	                            const pagination = document.getElementById('pagination');
+	                            const itemsPerPage = 5;
+	                            let currentPage = 1;
+	                            const pageCount = Math.ceil(users.length / itemsPerPage);
+	
+	                            function showPage(page) {
+	                                currentPage = page;
+	                                const start = (page - 1) * itemsPerPage;
+	                                const end = start + itemsPerPage;
+	
+	                                users.forEach((user, index) => {
+	                                    user.style.display = (index >= start && index < end) ? '' : 'none';
+	                                });
+	
+	                                updatePagination();
+	                            }
+	
+	                            function updatePagination() {
+	                                pagination.innerHTML = '';
+	
+	                                const prevPageItem = document.createElement('li');
+	                                prevPageItem.className = 'page-item ' + (currentPage === 1 ? 'disabled' : '');
+	                                prevPageItem.innerHTML = `
+	                                    <a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+	                                        <span aria-hidden="true" class="material-icons">chevron_left</span>
+	                                        <span>Prev</span>
+	                                    </a>`;
+	                                pagination.appendChild(prevPageItem);
+	
+	                                for (let i = 1; i <= pageCount; i++) {
+	                                    const pageItem = document.createElement('li');
+	                                    pageItem.className = 'page-item ' + (i === currentPage ? 'active' : '');
+	                                    pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+	                                    pagination.appendChild(pageItem);
+	                                }
+	
+	                                const nextPageItem = document.createElement('li');
+	                                nextPageItem.className = 'page-item ' + (currentPage === pageCount ? 'disabled' : '');
+	                                nextPageItem.innerHTML = `
+	                                    <a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+	                                        <span>Next</span>
+	                                        <span aria-hidden="true" class="material-icons">chevron_right</span>
+	                                    </a>`;
+	                                pagination.appendChild(nextPageItem);
+	                            }
+	
+	                            pagination.addEventListener('click', function(e) {
+	                                const page = e.target.getAttribute('data-page');
+	                                if (page) {
+	                                    showPage(parseInt(page));
+	                                }
+	                            });
+	
+	                            showPage(1);
+	                        });				
+                        </script>
                     </div>
                 </div>
 
@@ -472,9 +466,9 @@
                             <img class="brand-icon"
                                  src="/public/images/logo/black-70@2x.png"
                                  width="30"
-                                 alt="Luma"> Luma
+                                 alt="Pixel Pioneer Course"> Pixel Pioneer Course
                         </p>
-                        <p class="measure-lead-max text-50 small mr-8pt">Luma is a beautifully crafted user interface for modern Education Platforms, including Courses & Tutorials, Video Lessons, Student and Teacher Dashboard, Curriculum Management, Earnings and Reporting, ERP, HR, CMS, Tasks, Projects, eCommerce and more.</p>
+                        <p class="measure-lead-max text-50 small mr-8pt">Pixel Pioneer Course is a beautifully crafted user interface for modern Education Platforms, including Courses & Tutorials, Video Lessons, Student and Teacher Dashboard, Curriculum Management, Earnings and Reporting, ERP, HR, CMS, Tasks, Projects, eCommerce and more.</p>
                         <p class="mb-8pt d-flex">
                             <a href=""
                                class="text-70 text-underline mr-8pt small">Terms</a>
@@ -512,9 +506,9 @@
                             </form>
                         </div>
 
-                        <a href="index.html"
+                        <a th:href="@{/app/course}"
                            class="sidebar-brand ">
-                            <!-- <img class="sidebar-brand-icon" src="/public/images/illustration/student/128/white.svg" alt="Luma"> -->
+                            <!-- <img class="sidebar-brand-icon" src="/public/images/illustration/student/128/white.svg" alt="Pixel Pioneer Course"> -->
 
                             <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -524,137 +518,36 @@
 
                             </span>
 
-                            <span>Luma</span>
+                            <span>Pixel Pioneer Course</span>
                         </a>
 
-                        <div class="sidebar-heading">Applications</div>
+                        <div class="sidebar-heading">Management</div>
                         <ul class="sidebar-menu">
 
-                            <li class="sidebar-menu-item">
+                            <li class="sidebar-menu-item active">
                                 <a class="sidebar-menu-button js-sidebar-collapse"
                                    data-toggle="collapse"
                                    href="#student_menu">
                                     <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">school</span>
-                                    Student
+                                    Users
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
                                 <ul class="sidebar-submenu collapse sm-indent"
                                     id="student_menu">
 
-                                    <li class="sidebar-menu-item">
+                                    <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
-                                           href="index.html">
-
-                                            <span class="sidebar-menu-text">Home</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="courses.html">
-
-                                            <span class="sidebar-menu-text">Browse Courses</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="paths.html">
-
-                                            <span class="sidebar-menu-text">Browse Paths</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-dashboard.html">
-
-                                            <span class="sidebar-menu-text">Student Dashboard</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-my-courses.html">
-
-                                            <span class="sidebar-menu-text">My Courses</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-paths.html">
-
-                                            <span class="sidebar-menu-text">My Paths</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path.html">
-
-                                            <span class="sidebar-menu-text">Path Details</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-course.html">
-
-                                            <span class="sidebar-menu-text">Course Preview</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-lesson.html">
-
-                                            <span class="sidebar-menu-text">Lesson Preview</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-course.html">
-
-                                            <span class="sidebar-menu-text">Take Course</span>
-                                            <span class="sidebar-menu-badge badge badge-accent badge-notifications ml-auto">PRO</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-lesson.html">
-
-                                            <span class="sidebar-menu-text">Take Lesson</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-quiz.html">
-
-                                            <span class="sidebar-menu-text">Take Quiz</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-quiz-results.html">
-
-                                            <span class="sidebar-menu-text">My Quizzes</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-quiz-result-details.html">
-
-                                            <span class="sidebar-menu-text">Quiz Result</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path-assessment.html">
-
-                                            <span class="sidebar-menu-text">Skill Assessment</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path-assessment-result.html">
-
-                                            <span class="sidebar-menu-text">Skill Result</span>
+                                           th:href="@{/app/admin/users}">
+                                            <span class="sidebar-menu-text">General</span>
                                         </a>
                                     </li>
 
+									<li class="sidebar-menu-item">
+                                        <a class="sidebar-menu-button"
+                                           th:href="@{/app/admin/users/create}">
+                                            <span class="sidebar-menu-text">Create</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="sidebar-menu-item">
@@ -934,7 +827,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="sidebar-menu-item active open">
+                            <li class="sidebar-menu-item open">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#account_menu">
@@ -980,7 +873,7 @@
                                             <span class="sidebar-menu-text">Change Password</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item active">
+                                    <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
                                            href="edit-account.html">
                                             <span class="sidebar-menu-text">Edit Account</span>
@@ -1006,31 +899,31 @@
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing.html">
+                                           href="Users - General.html">
                                             <span class="sidebar-menu-text">Subscription</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-upgrade.html">
+                                           href="Users - General-upgrade.html">
                                             <span class="sidebar-menu-text">Upgrade Account</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-payment.html">
+                                           href="Users - General-payment.html">
                                             <span class="sidebar-menu-text">Payment Information</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-history.html">
+                                           href="Users - General-history.html">
                                             <span class="sidebar-menu-text">Payment History</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-invoice.html">
+                                           href="Users - General-invoice.html">
                                             <span class="sidebar-menu-text">Invoice</span>
                                         </a>
                                     </li>
@@ -1347,43 +1240,43 @@
                                     id="layouts_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Compact_App_Layout/edit-account.html">
+                                           href="../Compact_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Compact</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_App_Layout/edit-account.html">
+                                           href="../Mini_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Mini</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_Secondary_Layout/edit-account.html">
+                                           href="../Mini_Secondary_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Mini + Secondary</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
-                                           href="../App_Layout/edit-account.html">
+                                           href="../App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">App</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Boxed_App_Layout/edit-account.html">
+                                           href="../Boxed_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Boxed</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Sticky_App_Layout/edit-account.html">
+                                           href="../Sticky_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Sticky</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Fixed_Layout/edit-account.html">
+                                           href="../Fixed_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Fixed</span>
                                         </a>
                                     </li>
