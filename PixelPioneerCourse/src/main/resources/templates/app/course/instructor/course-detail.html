@@ -108,17 +108,17 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header text-center">
-                                <a href="#" class="btn btn-accent">Save changes</a>
+                                <button type="submit" class="btn btn-accent">Save changes</button>
                             </div>
                             <div class="list-group list-group-flush">
-                                <div class="list-group-item d-flex">
-                                    <a class="flex" href="#"><strong>Save Draft</strong></a>
-                                    <i class="material-icons text-muted">check</i>
-                                </div>
                                 <div class="list-group-item">
-                                    <a href="#" class="text-danger"><strong>Delete Course</strong></a>
+                                    <a th:href="@{{id}/delete(id=${courseId})}" class="text-danger"><strong>Delete Course</strong></a>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="page-separator">
+                            <div class="page-separator__text">Image</div>
                         </div>
 
                         <div class="page-separator">
@@ -132,9 +132,7 @@
                                 <small class="form-text text-muted">Upload a valid image file.</small>
                             </div>
                             <div th:if="${oldImageUrl}">
-                                <div class="embed-responsive embed-responsive-16by9">
-                                    <img id="image-preview" class="embed-responsive-item" th:src="@{${oldImageUrl}}" alt="Course Image">
-                                </div>
+                                <img id="image-preview" class="img-fluid" th:src="@{${oldImageUrl}}" alt="Course Image" style="display: block;">
                             </div>
                         </div>
 
