@@ -155,6 +155,7 @@ public class UserServiceImpl implements UserService{
                     user.setCreatedAt(LocalDate.now());
                     user.setProvider(Provider.LOCAL);
                     List<RoleDto> listRole = rService.findAll();
+                    user.setRole(null); //incase there is no "ROLE_USER" in db;
                     for (RoleDto role : listRole) {
                         if (role.getRoleName().equals("ROLE_USER")) user.setRole(convertToRoleFromDto(role));
                     }

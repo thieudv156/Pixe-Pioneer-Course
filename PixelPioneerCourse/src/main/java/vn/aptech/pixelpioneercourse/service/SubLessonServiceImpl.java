@@ -37,6 +37,14 @@ public class SubLessonServiceImpl implements SubLessonService {
             throw new RuntimeException("List of SubLessons is null", e);
         }
     }
+    
+    public List<SubLesson> findAllSubLessons() {
+    	try {
+    		return subLessonRepository.findAll();
+    	} catch (Exception e) {
+    		throw new RuntimeException("Empty list");
+    	}
+    }
 
     public SubLesson findById(Integer id) {
         try {

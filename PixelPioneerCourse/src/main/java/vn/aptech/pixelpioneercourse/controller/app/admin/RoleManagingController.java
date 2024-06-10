@@ -20,7 +20,7 @@ import vn.aptech.pixelpioneercourse.service.RoleService;
 
 @Controller
 @RequestMapping("/app/admin/role")
-public class RoleController {
+public class RoleManagingController {
 	
 	@Autowired
 	private RoleService roleService;

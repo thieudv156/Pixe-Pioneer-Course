@@ -19,7 +19,7 @@ import java.util.List;
 public class SubLesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false)
     private String title;
@@ -33,7 +33,7 @@ public class SubLesson {
     private String content;
 
     @Column
-    private boolean completeStatus=false;
+    private Boolean completeStatus=false;
 
     @OneToOne
     @JoinColumn(name = "image_id", referencedColumnName = "id")
@@ -45,4 +45,12 @@ public class SubLesson {
     @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "sublesson-discussion")
     private List<Discussion> discussions;
+    
+    public String getCompleteStatus() {
+    	if (completeStatus == null) {
+    		return "";
+    	} else {
+    		return Boolean.toString(completeStatus);
+    	}
+    }
 }

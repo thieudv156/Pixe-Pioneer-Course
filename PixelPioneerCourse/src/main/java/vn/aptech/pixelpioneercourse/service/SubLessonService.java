@@ -9,6 +9,7 @@ import java.util.List;
 public interface SubLessonService {
     SubLesson toSubLesson(SubLessonCreateDto dto);
     List<SubLesson> findAllSubLessonsByLessonId(Integer lessonId);
+    List<SubLesson> findAllSubLessons();
     SubLesson findById(Integer id);
     SubLesson save(SubLessonCreateDto dto);
     boolean delete(Integer id);

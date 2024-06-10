@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class Lesson {
     private Course course;
 
     @Column
-    private boolean completeStatus=false;
+    private Boolean completeStatus=false;
 
     @OneToOne
     @JoinColumn(name = "image_id", referencedColumnName = "id")
@@ -51,4 +52,11 @@ public class Lesson {
     @JsonManagedReference(value = "lesson-quiz")
     private List<Quiz> quizzes;
 
+    public String getCompleteStatus() {
+    	if (completeStatus == null) {
+    		return "";
+    	} else {
+    		return Boolean.toString(completeStatus);
+    	}
+    }
 }

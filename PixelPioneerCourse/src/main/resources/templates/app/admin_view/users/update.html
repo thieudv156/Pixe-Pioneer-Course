@@ -493,6 +493,8 @@
 
             <!-- Drawer -->
 
+            <!-- Drawer -->
+
             <div class="mdk-drawer js-mdk-drawer"
                  id="default-drawer">
                 <div class="mdk-drawer__content">
@@ -512,9 +514,9 @@
                             </form>
                         </div>
 
-                        <a href="index.html"
+                        <a th:href="@{/app/course}"
                            class="sidebar-brand ">
-                            <!-- <img class="sidebar-brand-icon" src="/public/images/illustration/student/128/white.svg" alt="Luma"> -->
+                            <!-- <img class="sidebar-brand-icon" src="/public/images/illustration/student/128/white.svg" alt="Pixel Pioneer Course"> -->
 
                             <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
@@ -524,137 +526,36 @@
 
                             </span>
 
-                            <span>Luma</span>
+                            <span>Pixel Pioneer Course</span>
                         </a>
 
-                        <div class="sidebar-heading">Applications</div>
+                        <div class="sidebar-heading">Management</div>
                         <ul class="sidebar-menu">
 
-                            <li class="sidebar-menu-item">
+                            <li class="sidebar-menu-item active">
                                 <a class="sidebar-menu-button js-sidebar-collapse"
                                    data-toggle="collapse"
                                    href="#student_menu">
                                     <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">school</span>
-                                    Student
+                                    Users
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
                                 <ul class="sidebar-submenu collapse sm-indent"
                                     id="student_menu">
 
-                                    <li class="sidebar-menu-item">
+                                    <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
-                                           href="index.html">
-
-                                            <span class="sidebar-menu-text">Home</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="courses.html">
-
-                                            <span class="sidebar-menu-text">Browse Courses</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="paths.html">
-
-                                            <span class="sidebar-menu-text">Browse Paths</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-dashboard.html">
-
-                                            <span class="sidebar-menu-text">Student Dashboard</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-my-courses.html">
-
-                                            <span class="sidebar-menu-text">My Courses</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-paths.html">
-
-                                            <span class="sidebar-menu-text">My Paths</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path.html">
-
-                                            <span class="sidebar-menu-text">Path Details</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-course.html">
-
-                                            <span class="sidebar-menu-text">Course Preview</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-lesson.html">
-
-                                            <span class="sidebar-menu-text">Lesson Preview</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-course.html">
-
-                                            <span class="sidebar-menu-text">Take Course</span>
-                                            <span class="sidebar-menu-badge badge badge-accent badge-notifications ml-auto">PRO</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-lesson.html">
-
-                                            <span class="sidebar-menu-text">Take Lesson</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-quiz.html">
-
-                                            <span class="sidebar-menu-text">Take Quiz</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-quiz-results.html">
-
-                                            <span class="sidebar-menu-text">My Quizzes</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-quiz-result-details.html">
-
-                                            <span class="sidebar-menu-text">Quiz Result</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path-assessment.html">
-
-                                            <span class="sidebar-menu-text">Skill Assessment</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path-assessment-result.html">
-
-                                            <span class="sidebar-menu-text">Skill Result</span>
+                                           th:href="@{/app/admin/users}">
+                                            <span class="sidebar-menu-text">General</span>
                                         </a>
                                     </li>
 
+									<li class="sidebar-menu-item">
+                                        <a class="sidebar-menu-button"
+                                           th:href="@{/app/admin/users/create}">
+                                            <span class="sidebar-menu-text">Create</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="sidebar-menu-item">
@@ -934,7 +835,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="sidebar-menu-item active open">
+                            <li class="sidebar-menu-item open">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#account_menu">
@@ -980,7 +881,7 @@
                                             <span class="sidebar-menu-text">Change Password</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item active">
+                                    <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
                                            href="edit-account.html">
                                             <span class="sidebar-menu-text">Edit Account</span>
@@ -1006,31 +907,31 @@
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing.html">
+                                           href="Users - General.html">
                                             <span class="sidebar-menu-text">Subscription</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-upgrade.html">
+                                           href="Users - General-upgrade.html">
                                             <span class="sidebar-menu-text">Upgrade Account</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-payment.html">
+                                           href="Users - General-payment.html">
                                             <span class="sidebar-menu-text">Payment Information</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-history.html">
+                                           href="Users - General-history.html">
                                             <span class="sidebar-menu-text">Payment History</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-invoice.html">
+                                           href="Users - General-invoice.html">
                                             <span class="sidebar-menu-text">Invoice</span>
                                         </a>
                                     </li>
@@ -1347,43 +1248,43 @@
                                     id="layouts_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Compact_App_Layout/edit-account.html">
+                                           href="../Compact_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Compact</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_App_Layout/edit-account.html">
+                                           href="../Mini_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Mini</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_Secondary_Layout/edit-account.html">
+                                           href="../Mini_Secondary_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Mini + Secondary</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
-                                           href="../App_Layout/edit-account.html">
+                                           href="../App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">App</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Boxed_App_Layout/edit-account.html">
+                                           href="../Boxed_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Boxed</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Sticky_App_Layout/edit-account.html">
+                                           href="../Sticky_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Sticky</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Fixed_Layout/edit-account.html">
+                                           href="../Fixed_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Fixed</span>
                                         </a>
                                     </li>

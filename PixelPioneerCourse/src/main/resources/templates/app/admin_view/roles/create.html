@@ -111,10 +111,12 @@
 
                         <span class="d-none d-lg-block">Pixel Pioneer Course</span>
                     </a>
-                    
-                    <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
+
+                    <!-- // END Navbar Brand -->
+
+					<ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
                         <li class="nav-item">
-                            <a href="index.html"
+                            <a th:href="@{/app/admin}"
                                class="nav-link">Home</a>
                         </li>
                         <li class="nav-item dropdown">
@@ -154,6 +156,10 @@
                             <div class="dropdown-menu">
                                 <a th:href="@{/app/admin/users}"
                                    class="dropdown-item">General</a>
+                            </div>
+                            <div class="dropdown-menu">
+                                <a th:href="@{/app/admin/users/create}"
+                                   class="dropdown-item">Create</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -227,32 +233,26 @@
                                data-placement="bottom"
                                data-boundary="window"><i class="material-icons">lock_open</i></a>
                         </li>
-                        <li class="nav-item">
-                            <a href="/app/register"
-                               class="btn btn-outline-dark">Register</a>
-                        </li>
                     </ul>
-
-                    <!-- // END Navbar Brand -->
-
-                    <div class="flex"></div>
-
-                        <div class="nav-item dropdown">
-                            <a href="#"
-                               class="nav-link d-flex align-items-center dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-caret="false">
-
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div class="dropdown-header"><strong>MY ACCOUNT</strong></div>
-                                <a class="dropdown-item"
-                                   th:href="@{/app/users/profile/edit-my-profile}">Edit My Profile</a>
-                                <a class="dropdown-item"
-                                   th:href="@{/logout}">Logout</a>
-                            </div>
-                        </div>
-                    </div>
+					
+                    <div class="flex">
+			            <div class="nav-item dropdown">
+			              <a href="#" style="float: right;" class="nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown" data-caret="false">
+			                <span class="avatar avatar-sm mr-8pt2">
+			                  <span class="avatar-title rounded-circle bg-primary">
+			                    <i class="material-icons">account_box</i>
+			                  </span>
+			                </span>
+			              </a>
+			              <div class="dropdown-menu dropdown-menu-right">
+			                  <div class="dropdown-header"><strong>MY ACCOUNT</strong></div>
+			                  <a class="dropdown-item"
+			                     th:href="@{/app/users/profile/edit-my-profile}">Edit My Profile</a>
+			                  <a class="dropdown-item"
+			                     th:href="@{/logout}">Logout</a>
+			              </div>
+			            </div>
+			          </div>
 
                     <!-- // END Navbar Menu -->
 
@@ -269,7 +269,7 @@
                 <!-- Page Content -->
 
                 <div class="container page__container page-section pb-0">
-                    <h1 class="h2 mb-0">Roles information modifying</h1>
+                    <h1 class="h2 mb-0">Create a new role</h1>
                     <ol class="breadcrumb m-0 p-0">
                     	<li class="breadcrumb-item">Admin</li>
                         <li class="breadcrumb-item">Role</li>

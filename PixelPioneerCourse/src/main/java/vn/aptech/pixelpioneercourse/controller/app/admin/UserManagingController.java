@@ -103,7 +103,7 @@ public class UserManagingController {
 	
 	@GetMapping("/create")
 	public String createPage() {
-		return "admin_view/users/create";
+		return "app/admin_view/users/create";
 	}
 	
 	@PostMapping("/create")
