@@ -21,16 +21,16 @@ import vn.aptech.pixelpioneercourse.entities.SubLesson;
 import vn.aptech.pixelpioneercourse.service.DiscussionService;
 
 @Controller
-@RequestMapping("/app/admin/discussion")
+@RequestMapping("/app/discussion")
 public class DiscussionManagingController {
 	private final DiscussionService discussionService;
 
-	public DiscussionManagingController(DiscussionService discussionService) {
+	public DiscussionManagingController(DiscussionService discussionService, ModelMapper mapper) {
 		this.discussionService = discussionService;
-	}
-	
-	@Autowired
-	private ModelMapper mapper;
+        this.mapper = mapper;
+    }
+
+	private final ModelMapper mapper;
 	
 	@GetMapping
 	public String discussionPage(Model model) {

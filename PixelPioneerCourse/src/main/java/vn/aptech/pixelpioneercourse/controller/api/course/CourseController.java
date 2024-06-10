@@ -174,10 +174,10 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/create-course")
-    public ResponseEntity<?> createNewCourse(){
+    @GetMapping("/create-course/{instructorId}")
+    public ResponseEntity<?> createNewCourse(@PathVariable("instructorId") Integer instructorId){
         try {
-            Optional<Course> course = Optional.ofNullable(courseService.createNewCourse());
+            Optional<Course> course = Optional.ofNullable(courseService.createNewCourse(instructorId));
             return course.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
@@ -193,4 +193,5 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+
 }

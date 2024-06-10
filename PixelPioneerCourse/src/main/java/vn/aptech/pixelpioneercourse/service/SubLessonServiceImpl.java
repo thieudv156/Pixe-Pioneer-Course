@@ -54,16 +54,13 @@ public class SubLessonServiceImpl implements SubLessonService {
         }
     }
 
-    public SubLesson save(SubLessonCreateDto dto) {
+    public SubLesson createNewSublesson(Integer lessonId) {
         try {
-            SubLesson subLesson = toSubLesson(dto);
-            if (dto.getImage() != null && dto.getLessonId() > 0) {
-                Image img = imageService.uploadImageToFileSystem(dto.getImage());
-                subLesson.setFrontPageImage(img);
-                subLesson.setLesson(lessonService.findById(dto.getLessonId()));
-                return subLessonRepository.save(subLesson);
-            }
-            return null;
+            SubLesson subLesson = new SubLesson();
+            subLesson.setLesson(lessonService.findById(lessonId));
+            subLesson.setTitle("New SubLesson");
+            subLesson.setContent("Content");
+            return subLessonRepository.save(subLesson);
         } catch (Exception e) {
             throw new RuntimeException("SubLesson is null", e);
         }

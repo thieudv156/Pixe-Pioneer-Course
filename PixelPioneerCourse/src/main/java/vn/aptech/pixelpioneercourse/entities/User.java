@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDate;
@@ -24,7 +22,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER) //lay role tu findAll
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @JsonBackReference(value = "user-role")
     @JsonIgnoreProperties({"users", "id"})
@@ -53,40 +51,44 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "user-enrollment")
+    @ToString.Exclude
     private List<Enrollment> enrollments;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "user-review")
+    @ToString.Exclude
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "user-discussion")
+    @ToString.Exclude
     private List<Discussion> discussions;
 
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "instructor-course")
+    @ToString.Exclude
     private List<Course> courses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "user-test")
+    @ToString.Exclude
     private List<Test> tests;
 
     public List<String> getAuthorities() {
         return Collections.singletonList(role.getRoleName());
     }
 
-    public SimpleGrantedAuthority getGrantedAuthorities(){
+    public SimpleGrantedAuthority getGrantedAuthorities() {
         return new SimpleGrantedAuthority(role.getRoleName());
     }
 
+    @Getter
+    @Setter
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
-    public Provider getProvider() {
-        return provider;
-    }
-
-    public void setProvider(Provider provider) {
-        this.provider = provider;
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", username='" + username + "', email='" + email + "', fullName='" + fullName + "', phone='" + phone + "', activeStatus=" + activeStatus + ", createdAt=" + createdAt + ", role=" + role.getRoleName() + "}";
     }
 }

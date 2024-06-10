@@ -53,7 +53,7 @@ public class SubLessonController {
     }
 
     @PutMapping("/{subLessonId}/status/complete")
-    public ResponseEntity<?> completeSubLesson(@PathVariable("subLessonId") Integer subLessonId){
+    public ResponseEntity<?> completeSubLesson(@PathVariable("subLessonId") Integer subLessonId) {
         try {
             Optional<SubLesson> result = Optional.ofNullable(subLessonService.completeSubLesson(subLessonId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -71,7 +71,7 @@ public class SubLessonController {
             dto.setImage(image);
             BindingResult bindingResult = new BeanPropertyBindingResult(dto, "subLessonCreateDto");
             validator.validate(dto, bindingResult);
-            if(bindingResult.hasErrors()){
+            if (bindingResult.hasErrors()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
             }
             Optional<SubLesson> result = Optional.ofNullable(subLessonService.update(subLessonId, dto));
@@ -84,7 +84,7 @@ public class SubLessonController {
     }
 
     @DeleteMapping("/{subLessonId}/delete")
-    public ResponseEntity<?> deleteSubLesson(@PathVariable("subLessonId") Integer subLessonId){
+    public ResponseEntity<?> deleteSubLesson(@PathVariable("subLessonId") Integer subLessonId) {
         try {
             Optional<Boolean> result = Optional.of(subLessonService.delete(subLessonId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -93,25 +93,15 @@ public class SubLessonController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createSubLesson(@RequestParam("image") MultipartFile image,
-                                             @RequestPart("subLessonData") String subLessonData) {
+
+    @GetMapping("/{lessonId}/create-sublesson")
+    public ResponseEntity<?> createSubLesson(@PathVariable("lessonId") Integer lessonId) {
         try {
-            SubLessonCreateDto dto = objectMapper.readValue(subLessonData, SubLessonCreateDto.class);
-            dto.setImage(image);
-            BindingResult bindingResult = new BeanPropertyBindingResult(dto, "subLessonCreateDto");
-            validator.validate(dto, bindingResult);
-            if(bindingResult.hasErrors()){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
-            }
-            Optional<SubLesson> result = Optional.ofNullable(subLessonService.save(dto));
+            Optional<SubLesson> result = Optional.ofNullable(subLessonService.createNewSublesson(lessonId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error parsing sub-lesson data: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
-
 
 }

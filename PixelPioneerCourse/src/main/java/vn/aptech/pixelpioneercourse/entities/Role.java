@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -21,10 +22,16 @@ public class Role {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String roleName; //ROLE_STUDENT, ROLE_ADMIN, ROLE_INSTRUCTOR
+    private String roleName; // ROLE_STUDENT, ROLE_ADMIN, ROLE_INSTRUCTOR
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "user-role")
     @JsonIgnoreProperties({"role", "password", "getAuthorities()", "getGrantedAuthorities()"})
+    @ToString.Exclude
     private List<User> users;
+
+    @Override
+    public String toString() {
+        return "Role{id=" + id + ", roleName='" + roleName + "'}";
+    }
 }

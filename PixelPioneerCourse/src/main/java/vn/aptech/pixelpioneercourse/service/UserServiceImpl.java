@@ -139,6 +139,27 @@ public class UserServiceImpl implements UserService{
                     u.getEmail().equals(findByEmail(u.getEmail()).getPhone())) {
                 return false;
             }
+            if (u.getUsername().contains(" ")) {
+            	throw new Exception("Username must not contain spaces");
+            }
+    		if (!u.getEmail().contains("@")) {
+    			throw new Exception("Email must contain @");
+    		}
+        	try {
+            	User user = mapper.map(u, User.class);
+                user.setPassword(encoder.encode(user.getPassword()));
+                user.setActiveStatus(true);
+                user.setCreatedAt(LocalDate.now());
+                user.setProvider(Provider.LOCAL);
+                List<RoleDto> listRole = rService.findAll();
+                user.setRole(null); //incase there is no "ROLE_USER" in db;
+                for (RoleDto role : listRole) {
+                    if (role.getRoleName().equals("ROLE_USER")) user.setRole(convertToRoleFromDto(role));
+                }
+                res = userRepository.save(user);
+            } catch (Exception e2) {
+            	throw new DatabaseException("Register fails, contact us for further support");
+            }
         }
         catch (Exception e) {
         	try {

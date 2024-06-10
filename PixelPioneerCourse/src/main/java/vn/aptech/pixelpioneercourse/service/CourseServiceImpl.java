@@ -3,6 +3,7 @@ package vn.aptech.pixelpioneercourse.service;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
@@ -104,13 +105,13 @@ public class CourseServiceImpl implements CourseService{
         }
     }
 
-    public Course createNewCourse()
+    public Course createNewCourse(Integer userId)
     {
         try{
             Course newCourse = new Course();
             newCourse.setTitle("New Course");
             newCourse.setDescription("Description");
-            newCourse.setInstructor(userService.findById(1));
+            newCourse.setInstructor(userService.findById(userId));
             return courseRepository.save(newCourse);
         } catch (Exception e) {
             throw new RuntimeException("Cannot create new course!: "+ e.getMessage());
@@ -147,6 +148,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     //Delete course
+    @Transactional
     public boolean delete(Integer id){
         try{
             courseRepository.deleteById(id);
