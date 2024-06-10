@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -53,6 +54,12 @@ public class WebConfiguration implements WebMvcConfigurer{
 
         return mailSender;
     }
+
+    @Bean
+    public LayoutDialect layoutDialect() {
+        return new LayoutDialect();
+    }
+
 
 
     @Override
