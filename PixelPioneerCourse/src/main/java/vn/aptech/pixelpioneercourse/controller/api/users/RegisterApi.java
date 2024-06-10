@@ -19,11 +19,15 @@ public class RegisterApi {
 	
 	@PostMapping(value = "/register")
 	public ResponseEntity<String> register(@RequestBody UserCreateDto dto){
-	    boolean isCreated = userService.create(dto);
-	    if (isCreated) {
-	        return ResponseEntity.ok("Account Created Successfully");
-	    } else {
-	        return ResponseEntity.badRequest().body("Registration failed due to an unknown error.");
+	    try {
+	    	boolean isCreated = userService.create(dto);
+		    if (isCreated) {
+		        return ResponseEntity.ok("Account Created Successfully");
+		    } else {
+		        return ResponseEntity.badRequest().body("Account may have existed with these information, please try again.");
+		    }
+	    } catch (Exception e) {
+	    	return ResponseEntity.badRequest().body(e.getMessage());
 	    }
 	}
 }
