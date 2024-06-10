@@ -11,7 +11,7 @@ public interface SubLessonService {
     List<SubLesson> findAllSubLessonsByLessonId(Integer lessonId);
     List<SubLesson> findAllSubLessons();
     SubLesson findById(Integer id);
-    SubLesson save(SubLessonCreateDto dto);
+    SubLesson createNewSublesson(Integer lessonId);
     boolean delete(Integer id);
     SubLesson update(Integer id, SubLessonCreateDto dto);
     SubLesson completeSubLesson(Integer id);

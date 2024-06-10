@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
-import vn.aptech.pixelpioneercourse.entities.Image;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
 
 import java.util.*;
@@ -47,12 +46,13 @@ public class AppCourseController {
 
 
     @GetMapping("")
-    public String index(Model model){
+    public String index(Model model, @SessionAttribute("userId") int userId){
         RestTemplate restTemplate = new RestTemplate();
         Course[] courseArray = restTemplate.getForObject(courseApiUrl, Course[].class);
         List<Course> courseList = Arrays.asList(courseArray);
         model.addAttribute("courses", courseList);
-        return "course/index";
+        System.out.println(userId);
+        return "app/course/index";
     }
 
     @GetMapping("/instructor/{instructorId}")
@@ -63,7 +63,7 @@ public class AppCourseController {
         model.addAttribute("courses", courseList);
         model.addAttribute("imageApiUrl", imageApiUrl);
         model.addAttribute("pageTitle", "My Courses");
-        return "course/instructor/course-dashboard";
+        return "app/course/instructor/course-dashboard";
     }
 
 
@@ -89,7 +89,7 @@ public class AppCourseController {
         model.addAttribute("categories", categoryList);
         model.addAttribute("pageTitle", "Course detail");
         model.addAttribute("lessons", lessons);
-        return "course/instructor/course-detail";
+        return "app/course/instructor/course-detail";
     }
 
     @PostMapping("/{id}/update")
@@ -138,14 +138,14 @@ public class AppCourseController {
     }
 
     @GetMapping("/create-course")
-    public String createCourse(RedirectAttributes redirectAttributes){
+    public String createCourse(RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId){
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Course course = restTemplate.getForObject(courseApiUrl + "/create-course", Course.class);
+            Course course = restTemplate.getForObject(courseApiUrl + "/create-course/"+userId, Course.class);
             if (course == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Error creating course");
-                return "redirect:/app/course/instructor/1";
+                return "redirect:/app/course/instructor/"+userId;
             }
             redirectAttributes.addFlashAttribute("successMessage", "Course created successfully");
             return "redirect:/app/course/" + course.getId();
@@ -155,15 +155,15 @@ public class AppCourseController {
     }
 
     @GetMapping("/{id}/delete")
-    public String deleteCourse(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes){
+    public String deleteCourse(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes,@SessionAttribute("userId") Integer userId){
         try {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.delete(courseApiUrl + "/" + id + "/delete");
             redirectAttributes.addFlashAttribute("successMessage", "Course deleted successfully");
-            return "redirect:/app/course/instructor/1";
+            return "redirect:/app/course/instructor/"+userId;
         } catch (RestClientException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting course: " + e.getMessage());
-            return "redirect:/app/course/instructor/1";
+            return "redirect:/app/course/instructor/"+userId;
         }
     }
 

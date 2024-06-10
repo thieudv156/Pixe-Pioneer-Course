@@ -98,7 +98,7 @@
 
                     <!-- Navbar Brand -->
 
-                    <a href="index.html"
+                    <a th:href="@{/app/admin}"
                        class="navbar-brand mr-16pt d-lg-none">
 
                         <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
@@ -111,10 +111,12 @@
 
                         <span class="d-none d-lg-block">Pixel Pioneer Course</span>
                     </a>
-                    
-                    <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
+
+                    <!-- // END Navbar Brand -->
+
+					<ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
                         <li class="nav-item">
-                            <a href="index.html"
+                            <a th:href="@{/app/admin}"
                                class="nav-link">Home</a>
                         </li>
                         <li class="nav-item dropdown">
@@ -154,6 +156,10 @@
                             <div class="dropdown-menu">
                                 <a th:href="@{/app/admin/users}"
                                    class="dropdown-item">General</a>
+                            </div>
+                            <div class="dropdown-menu">
+                                <a th:href="@{/app/admin/users/create}"
+                                   class="dropdown-item">Create</a>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -218,26 +224,35 @@
                         </li>
                     </ul>
 
-                    <!-- // END Navbar Brand -->
-
-                    <div class="flex"></div>
-
-                        <div class="nav-item dropdown">
-                            <a href="#"
-                               class="nav-link d-flex align-items-center dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-caret="false">
-
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div class="dropdown-header"><strong>MY ACCOUNT</strong></div>
-                                <a class="dropdown-item"
-                                   th:href="@{/app/users/profile/edit-my-profile}">Edit My Profile</a>
-                                <a class="dropdown-item"
-                                   th:href="@{/logout}">Logout</a>
-                            </div>
-                        </div>
-                    </div>
+                    <ul class="nav navbar-nav ml-auto mr-0">
+                        <li class="nav-item active" style="display: none;">
+                            <a href="login.html"
+                               class="nav-link"
+                               data-toggle="tooltip"
+                               data-title="Login"
+                               data-placement="bottom"
+                               data-boundary="window"><i class="material-icons">lock_open</i></a>
+                        </li>
+                    </ul>
+					
+                    <div class="flex">
+			            <div class="nav-item dropdown">
+			              <a href="#" style="float: right;" class="nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown" data-caret="false">
+			                <span class="avatar avatar-sm mr-8pt2">
+			                  <span class="avatar-title rounded-circle bg-primary">
+			                    <i class="material-icons">account_box</i>
+			                  </span>
+			                </span>
+			              </a>
+			              <div class="dropdown-menu dropdown-menu-right">
+			                  <div class="dropdown-header"><strong>MY ACCOUNT</strong></div>
+			                  <a class="dropdown-item"
+			                     th:href="@{/app/users/profile/edit-my-profile}">Edit My Profile</a>
+			                  <a class="dropdown-item"
+			                     th:href="@{/logout}">Logout</a>
+			              </div>
+			            </div>
+			          </div>
 
                     <!-- // END Navbar Menu -->
 
@@ -246,22 +261,42 @@
                 <!-- // END Navbar -->
 
                 <!-- // END Header -->
+                
+                <div class="pt-32pt">
+                    <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+                        <div class="flex d-flex flex-column flex-sm-row align-items-center">
+
+                            <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                                <h2 class="mb-0">Role information modifying</h2>
+
+                                <ol class="breadcrumb p-0 m-0">
+                                    <li class="breadcrumb-item"><a th:href="@{/app/admin}">Admin</a></li>
+
+                                    <li class="breadcrumb-item">
+
+                                        <a th:href="@{/app/admin/role}">Roles</a>
+
+                                    </li>
+
+                                    <li class="breadcrumb-item active">
+
+                                        Update
+
+                                    </li>
+
+                                </ol>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
 
                 <!-- BEFORE Page Content -->
 
                 <!-- // END BEFORE Page Content -->
 
                 <!-- Page Content -->
-
-                <div class="container page__container page-section pb-0">
-                    <h1 class="h2 mb-0">Roles information modifying</h1>
-                    <ol class="breadcrumb m-0 p-0">
-                    	<li class="breadcrumb-item">Admin</li>
-                        <li class="breadcrumb-item">Roles</li>
-                        <li class="breadcrumb-item">General</li>
-                        <li class="breadcrumb-item active">Update</li>
-                    </ol>
-                </div>
 
                 <div class="container page__container page-section">
                 	<form th:action="@{/app/admin/role/update/updateCheck}" method="post" id="updateForm" name="updateForm">
@@ -317,6 +352,8 @@
 
             <!-- Drawer -->
 
+            <!-- Drawer -->
+
             <div class="mdk-drawer js-mdk-drawer"
                  id="default-drawer">
                 <div class="mdk-drawer__content">
@@ -336,7 +373,7 @@
                             </form>
                         </div>
 
-                        <a href="index.html"
+                        <a th:href="@{/app/course}"
                            class="sidebar-brand ">
                             <!-- <img class="sidebar-brand-icon" src="/public/images/illustration/student/128/white.svg" alt="Pixel Pioneer Course"> -->
 
@@ -351,134 +388,33 @@
                             <span>Pixel Pioneer Course</span>
                         </a>
 
-                        <div class="sidebar-heading">Applications</div>
+                        <div class="sidebar-heading">Management</div>
                         <ul class="sidebar-menu">
 
-                            <li class="sidebar-menu-item">
+                            <li class="sidebar-menu-item active">
                                 <a class="sidebar-menu-button js-sidebar-collapse"
                                    data-toggle="collapse"
                                    href="#student_menu">
                                     <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">school</span>
-                                    Student
+                                    Users
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
                                 <ul class="sidebar-submenu collapse sm-indent"
                                     id="student_menu">
 
-                                    <li class="sidebar-menu-item">
+                                    <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
-                                           href="index.html">
-
-                                            <span class="sidebar-menu-text">Home</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="courses.html">
-
-                                            <span class="sidebar-menu-text">Browse Courses</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="paths.html">
-
-                                            <span class="sidebar-menu-text">Browse Paths</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-dashboard.html">
-
-                                            <span class="sidebar-menu-text">Student Dashboard</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-my-courses.html">
-
-                                            <span class="sidebar-menu-text">My Courses</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-paths.html">
-
-                                            <span class="sidebar-menu-text">My Paths</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path.html">
-
-                                            <span class="sidebar-menu-text">Path Details</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-course.html">
-
-                                            <span class="sidebar-menu-text">Course Preview</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-lesson.html">
-
-                                            <span class="sidebar-menu-text">Lesson Preview</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-course.html">
-
-                                            <span class="sidebar-menu-text">Take Course</span>
-                                            <span class="sidebar-menu-badge badge badge-accent badge-notifications ml-auto">PRO</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-lesson.html">
-
-                                            <span class="sidebar-menu-text">Take Lesson</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-take-quiz.html">
-
-                                            <span class="sidebar-menu-text">Take Quiz</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-quiz-results.html">
-
-                                            <span class="sidebar-menu-text">My Quizzes</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-quiz-result-details.html">
-
-                                            <span class="sidebar-menu-text">Quiz Result</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path-assessment.html">
-
-                                            <span class="sidebar-menu-text">Skill Assessment</span>
-                                        </a>
-                                    </li>
-                                    <li class="sidebar-menu-item">
-                                        <a class="sidebar-menu-button"
-                                           href="student-path-assessment-result.html">
-
-                                            <span class="sidebar-menu-text">Skill Result</span>
+                                           th:href="@{/app/admin/users}">
+                                            <span class="sidebar-menu-text">General</span>
                                         </a>
                                     </li>
 
+									<li class="sidebar-menu-item">
+                                        <a class="sidebar-menu-button"
+                                           th:href="@{/app/admin/users/create}">
+                                            <span class="sidebar-menu-text">Create</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="sidebar-menu-item">
@@ -758,7 +694,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="sidebar-menu-item">
+                            <li class="sidebar-menu-item open">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#account_menu">
@@ -766,7 +702,7 @@
                                     Account
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
-                                <ul class="sidebar-submenu collapse sm-indent"
+                                <ul class="sidebar-submenu collapse show sm-indent"
                                     id="account_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
@@ -830,31 +766,31 @@
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing.html">
+                                           href="Users - General.html">
                                             <span class="sidebar-menu-text">Subscription</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-upgrade.html">
+                                           href="Users - General-upgrade.html">
                                             <span class="sidebar-menu-text">Upgrade Account</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-payment.html">
+                                           href="Users - General-payment.html">
                                             <span class="sidebar-menu-text">Payment Information</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-history.html">
+                                           href="Users - General-history.html">
                                             <span class="sidebar-menu-text">Payment History</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="billing-invoice.html">
+                                           href="Users - General-invoice.html">
                                             <span class="sidebar-menu-text">Invoice</span>
                                         </a>
                                     </li>
@@ -943,7 +879,7 @@
 
                         <div class="sidebar-heading">UI</div>
                         <ul class="sidebar-menu">
-                            <li class="sidebar-menu-item active open">
+                            <li class="sidebar-menu-item">
                                 <a class="sidebar-menu-button"
                                    data-toggle="collapse"
                                    href="#components_menu">
@@ -951,7 +887,7 @@
                                     Components
                                     <span class="ml-auto sidebar-menu-toggle-icon"></span>
                                 </a>
-                                <ul class="sidebar-submenu collapse show sm-indent"
+                                <ul class="sidebar-submenu collapse sm-indent"
                                     id="components_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
@@ -977,7 +913,7 @@
                                             <span class="sidebar-menu-text">Loaders</span>
                                         </a>
                                     </li>
-                                    <li class="sidebar-menu-item active">
+                                    <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
                                            href="ui-tables.html">
                                             <span class="sidebar-menu-text">Tables</span>
@@ -1171,43 +1107,43 @@
                                     id="layouts_menu">
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Compact_App_Layout/ui-tables.html">
+                                           href="../Compact_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Compact</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_App_Layout/ui-tables.html">
+                                           href="../Mini_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Mini</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Mini_Secondary_Layout/ui-tables.html">
+                                           href="../Mini_Secondary_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Mini + Secondary</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item active">
                                         <a class="sidebar-menu-button"
-                                           href="../App_Layout/ui-tables.html">
+                                           href="../App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">App</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Boxed_App_Layout/ui-tables.html">
+                                           href="../Boxed_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Boxed</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Sticky_App_Layout/ui-tables.html">
+                                           href="../Sticky_App_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Sticky</span>
                                         </a>
                                     </li>
                                     <li class="sidebar-menu-item">
                                         <a class="sidebar-menu-button"
-                                           href="../Fixed_Layout/ui-tables.html">
+                                           href="../Fixed_Layout/Users - General.html">
                                             <span class="sidebar-menu-text">Fixed</span>
                                         </a>
                                     </li>

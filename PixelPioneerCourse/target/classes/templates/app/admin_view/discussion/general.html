@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Users - General</title>
+    <title>Discussions - General</title>
 
     <!-- Prevent the demo from appearing in search engines -->
     <meta name="robots" content="noindex">
@@ -217,22 +217,23 @@
                     </ul>
 					
                     <div class="flex">
-                    	<div class="nav-item dropdown">
-                            <a href="#"
-                               class="nav-link d-flex align-items-center dropdown-toggle"
-                               data-toggle="dropdown"
-                               data-caret="false">
-
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <div class="dropdown-header"><strong>MY ACCOUNT</strong></div>
-                                <a class="dropdown-item"
-                                   th:href="@{/app/users/profile/edit-my-profile}">Edit My Profile</a>
-                                <a class="dropdown-item"
-                                   th:href="@{/logout}">Logout</a>
-                            </div>
-                        </div>
-                    </div>
+			            <div class="nav-item dropdown">
+			              <a href="#" style="float: right;" class="nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown" data-caret="false">
+			                <span class="avatar avatar-sm mr-8pt2">
+			                  <span class="avatar-title rounded-circle bg-primary">
+			                    <i class="material-icons">account_box</i>
+			                  </span>
+			                </span>
+			              </a>
+			              <div class="dropdown-menu dropdown-menu-right">
+			                  <div class="dropdown-header"><strong>MY ACCOUNT</strong></div>
+			                  <a class="dropdown-item"
+			                     th:href="@{/app/users/profile/edit-my-profile}">Edit My Profile</a>
+			                  <a class="dropdown-item"
+			                     th:href="@{/logout}">Logout</a>
+			              </div>
+			            </div>
+			          </div>
 
                     <!-- // END Navbar Menu -->
 
@@ -300,44 +301,47 @@
 				                <thead>
 				                    <tr>
 				                        <th><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">ID</a></th>
-				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Username</a></th>
-				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Sub-lesson</a></th>
 				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Content</a></th>
-				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Created at</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Username</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">User email</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Sub-lesson</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Sub-lesson ID</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Lesson</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Lesson ID</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Course</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Course ID</a></th>
+				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Posted Date</a></th>
 				                        <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Action</a></th>
 				                    </tr>
 				                </thead>
 				                <tbody class="list" id="discussion">
-								    <tr th:each="discussion : ${discussions}" class="selected">
-								    	<td>
-								    		<strong class="js-lists-values-employee-name" th:text="${discussion.id}">ID</strong>
-								    	</td>
-								    	<td>
-								    		<p class="js-lists-values-employee-name" th:text="${discussion.user.username}">Username</p>
-								    	</td>
+								    <tr th:each="discussionData : ${discussionsData}" class="selected">
+								        <td th:text="${discussionData[0]}">ID</td>
+								        <td th:text="${discussionData[1]}">Content</td>
+								        <td th:text="${discussionData[2]}">Username</td>
+								        <td th:text="${discussionData[3]}">User email</td>
+								        <td th:text="${discussionData[4]}">Sub-lesson</td>
+								        <td th:text="${discussionData[5]}">Sub-lesson ID</td>
+								        <td th:text="${discussionData[6]}">Lesson</td>
+								        <td th:text="${discussionData[7]}">Lesson ID</td>
+								        <td th:text="${discussionData[8]}">Course</td>
+								        <td th:text="${discussionData[9]}">Course ID</td>
+								        <td th:text="${discussionData[10]}">Posted Date</td>
 								        <td>
-								            <p class="js-lists-values-employee-name" th:text="${discussion.sublesson.title}">Sublesson</p>
+								            <div style="display: flex;">
+											    <form id="update" th:action="@{/app/admin/discussion/update}" method="post" style="margin: 0; padding-right: 1vh;">
+											      <input type="hidden" th:value="${discussionData[0]}" name="id" />
+											      <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
+											    </form>
+											    <form id="delete" th:action="@{/app/admin/discussion/delete}" method="post" style="margin: 0;">
+											      <input type="hidden" th:value="${discussionData[0]}" name="id" />
+											      <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+											    </form>
+										  </div>
 								        </td>
-								        <td>
-								        	<p class="js-lists-values-employee-name" th:text="${discussion.content}">Content</p>
-								        </td>
-								        <td>
-								        	<p class="js-lists-values-employee-name" th:text="${#temporals.format(discussion.createdAt, 'dd-MM-yyyy')}">Create at
-								        </td>
-								        <td>
-								        	<div style="display: flex; flex-wrap: nowrap; gap: 10px;">
-											    <form id="update" th:action="@{/app/admin/discussion/update}" method="post" style="margin: 0;">
-										            <input type="hidden" th:value="${discussion.id}" name="id"/>
-										            <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
-										        </form>
-										        <form id="delete" th:action="@{/app/admin/discussion/delete}" method="post" style="margin: 0;">
-										            <input type="hidden" th:value="${discussion.id}" name="uid"/>
-										            <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
-										        </form>
-								        	</div>
-										</td>
 								    </tr>
 								</tbody>
+
                             </table>
                         </div>
 
