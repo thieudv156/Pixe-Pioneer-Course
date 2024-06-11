@@ -52,16 +52,6 @@ public class SubLessonController {
         }
     }
 
-    @PutMapping("/{subLessonId}/status/complete")
-    public ResponseEntity<?> completeSubLesson(@PathVariable("subLessonId") Integer subLessonId) {
-        try {
-            Optional<SubLesson> result = Optional.ofNullable(subLessonService.completeSubLesson(subLessonId));
-            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
-    }
-
     @PutMapping("/{subLessonId}/update")
     public ResponseEntity<?> updateSubLesson(@PathVariable("subLessonId") Integer subLessonId,
                                              @RequestParam("image") MultipartFile image,

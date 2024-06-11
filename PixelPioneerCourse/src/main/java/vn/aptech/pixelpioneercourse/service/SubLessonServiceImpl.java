@@ -97,17 +97,4 @@ public class SubLessonServiceImpl implements SubLessonService {
             throw new RuntimeException("SubLesson is null", e);
         }
     }
-
-    public SubLesson completeSubLesson(Integer id) {
-        try {
-            SubLesson subLesson = subLessonRepository.findById(id).orElse(null);
-            if (subLesson == null) {
-                throw new RuntimeException("SubLesson is null");
-            }
-            subLesson.setCompleteStatus(true);
-            return subLessonRepository.save(subLesson);
-        } catch (Exception e) {
-            throw new RuntimeException("SubLesson is null", e);
-        }
-    }
 }

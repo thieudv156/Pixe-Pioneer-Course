@@ -28,16 +28,6 @@ public class TestController {
         }
     }
 
-    @PostMapping("/{testId}/complete-test")
-    public ResponseEntity<?> completeTest(@PathVariable("testId") Integer testId, @RequestBody List<String> userAnswers){
-        try{
-            Optional<Boolean> result = Optional.of(testService.completeTest(testId, userAnswers));
-            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
-    }
-
     @GetMapping("/{testId}")
     public ResponseEntity<?> findTestById(@PathVariable("testId") Integer testId){
         try {

@@ -75,19 +75,6 @@ public class LessonServiceImpl implements LessonService {
         }
     }
 
-    public Lesson completeLesson(Integer id) {
-        try {
-            Lesson lesson = lessonRepository.findById(id).orElse(null);
-            if (lesson == null) {
-                throw new RuntimeException("Lesson is null");
-            }
-            lesson.setCompleteStatus(true);
-            return lessonRepository.save(lesson);
-        } catch (Exception e) {
-            throw new RuntimeException("Lesson is null");
-        }
-    }
-
     public Lesson createNewLesson(Integer courseId)
     {
         try {

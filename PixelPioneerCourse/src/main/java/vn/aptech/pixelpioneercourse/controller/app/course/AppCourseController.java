@@ -82,7 +82,7 @@ public class AppCourseController {
         } else {
             model.addAttribute("oldImageUrl", imageApiUrl + "/" + course.get().getFrontPageImage().getImageName());
         }
-
+        courseCreateDto.setCategoryId(course.get().getCategory().getId());
         List<Lesson> lessons = course.get().getLessons();
         model.addAttribute("courseCreateDto", courseCreateDto);
         model.addAttribute("courseId", course.get().getId());

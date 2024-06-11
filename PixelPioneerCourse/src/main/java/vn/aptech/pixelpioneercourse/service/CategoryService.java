@@ -2,6 +2,7 @@ package vn.aptech.pixelpioneercourse.service;
 
 import vn.aptech.pixelpioneercourse.dto.CategoryCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
+import vn.aptech.pixelpioneercourse.entities.Course;
 
 import java.util.List;
 
