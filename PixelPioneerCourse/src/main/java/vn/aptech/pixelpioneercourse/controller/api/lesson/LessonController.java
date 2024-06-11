@@ -85,7 +85,7 @@ public class LessonController {
         }
     }
 
-    @GetMapping("/course/{courseId}/create-lesson")
+    @GetMapping("/{courseId}/create-lesson")
     public ResponseEntity<?> createLesson(@PathVariable("courseId") Integer courseId){
         try {
             Optional<Lesson> lesson = Optional.ofNullable(lessonService.createNewLesson(courseId));

@@ -64,13 +64,18 @@
                                     <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
                                 </a>
                                 <div class="accordion__menu collapse" th:id="'course-toc-' + ${lesson.id}">
-                                    <div class="accordion__menu-link">
+                                    <div th:if="${#lists.isEmpty(lesson.subLessons)}" class="accordion__menu-link">
+                                        <i class="material-icons text-70 icon-16pt icon--left">info</i>
+                                        <span class="flex">There is no sub-lesson</span>
+                                    </div>
+                                    <div th:each="subLesson : ${lesson.subLessons}" class="accordion__menu-link">
                                         <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
-                                        <a class="flex" th:href="@{/app/lesson/edit/{id}(id=${lesson.id})}" th:text="${lesson.title}">Lesson Detail</a>
+                                        <a class="flex" th:href="@{/app/sub-lesson/{id}(id=${subLesson.id})}" th:text="${subLesson.title}">Sub-Lesson Detail</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="form-group">
                             <button type="button" class="btn btn-outline-secondary mb-24pt mb-sm-0" id="addLessonBtn">Add Lesson</button>
@@ -149,7 +154,7 @@
                 console.log('Add Lesson button clicked'); // Debugging step
                 $.ajax({
                     type: 'GET',
-                    url: '/api/lesson/course/' + [[${courseId}]] + '/create-lesson',
+                    url: '/api/lesson/' + [[${courseId}]] + '/create-lesson',
                     success: function (response) {
                         console.log('Ajax request successful'); // Debugging step
                         console.log(response); // Debugging step: Log the response to inspect it
