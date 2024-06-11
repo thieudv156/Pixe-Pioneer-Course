@@ -11,6 +11,7 @@
         <!-- Prevent the demo from appearing in search engines -->
         <meta name="robots" content="noindex">
 
+
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CRoboto:400,500%7CExo+2:600&display=swap"
               rel="stylesheet">
 
@@ -931,7 +932,7 @@
         <!-- // END Drawer -->
 
         <!-- jQuery -->
-        <script th:src="@{/public/vendor/jquery.min.js}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <!-- Bootstrap -->
         <script th:src="@{/public/vendor/popper.min.js}"></script>
@@ -959,23 +960,7 @@
         <!-- Select2 -->
         <script th:src="@{/public/vendor/select2/select2.min.js}"></script>
         <script th:src="@{/public/js/select2.js}"></script>
-
-
-        <script>
-            (function () {
-                'use strict';
-                var headerNode = document.querySelector('.mdk-header')
-                var layoutNode = document.querySelector('.mdk-header-layout')
-                var componentNode = layoutNode ? layoutNode : headerNode
-                componentNode.addEventListener('domfactory-component-upgraded', function () {
-                    headerNode.mdkHeader.eventTarget.addEventListener('scroll', function () {
-                        var progress = headerNode.mdkHeader.getScrollState().progress
-                        var navbarNode = headerNode.querySelector('#default-navbar')
-                        navbarNode.classList.toggle('bg-transparent', progress <= 0.2)
-                    })
-                })
-            })()
-        </script>
+        <th:block layout:fragment="script"></th:block>
 
     </body>
 </html>

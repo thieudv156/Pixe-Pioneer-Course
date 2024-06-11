@@ -8,12 +8,17 @@
         }
         #image-preview {
             margin-top: 10px;
-            display: none;
+            display: block;
         }
         .accordion__toggle {
             cursor: pointer;
         }
     </style>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+    <!-- Defer loading of other scripts -->
+    <script src="http://localhost:8080/public/vendor/material-design-kit.js" defer></script>
+    <script src="http://localhost:8080/public/vendor/dom-factory.js" defer></script>
 </head>
 <body>
 <div layout:fragment="contents">
@@ -54,7 +59,8 @@
                         <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
                             <div th:each="lesson : ${lessons}" class="accordion__item">
                                 <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${lesson.id}" data-parent="#parent">
-                                    <span class="flex" th:text="${lesson.title}">Lesson Title</span>
+                                    <span class="btn" th:text="${lesson.title}" th:onclick="'window.location.href=\'/app/lesson/' + ${lesson.id} + '\''">Lesson Title</span>
+                                    <span class="flex"></span>
                                     <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
                                 </a>
                                 <div class="accordion__menu collapse" th:id="'course-toc-' + ${lesson.id}">
@@ -65,7 +71,10 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#" id="addLessonBtn" class="btn btn-outline-secondary mb-24pt mb-sm-0">Add Section</a>
+
+                        <div class="form-group">
+                            <button type="button" class="btn btn-outline-secondary mb-24pt mb-sm-0" id="addLessonBtn">Add Lesson</button>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card">
@@ -83,12 +92,12 @@
                         </div>
                         <div class="card">
                             <div class="card-body">
-                                <label class="form-label">Upload Image</label>
-                                <input type="file" class="form-control-file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
-                                <small class="form-text text-muted">Upload a valid image file.</small>
-                            </div>
-                            <div>
-                                <img id="current-image-preview" class="img-fluid" th:src="@{${oldImageUrl}}" alt="Current Course Image" style="display: block;">
+                                <div class="form-group">
+                                    <label for="image" class="form-label">Upload Image</label>
+                                    <input type="file" class="form-control-file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+                                    <small class="form-text text-muted">Upload an image for the course.</small>
+                                </div>
+                                <img id="image-preview" th:if="${oldImageUrl}" th:src="${oldImageUrl}" alt="Old Image" style="max-width: 100%; max-height: 200px;">
                             </div>
                         </div>
                         <div class="page-separator">
@@ -127,42 +136,51 @@
         </div>
     </div>
 </div>
-<script th:inline="javascript">
-    function previewImage(event) {
-        var input = event.target;
-        var reader = new FileReader();
-        reader.onload = function() {
-            var newImage = new Image();
-            newImage.onload = function() {
-                var currentImagePreview = document.getElementById('current-image-preview');
-                currentImagePreview.parentNode.replaceChild(newImage, currentImagePreview);
-            };
-            newImage.src = reader.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        function previewImage(event) {
+            var image = document.getElementById('image-preview');
+            image.src = URL.createObjectURL(event.target.files[0]);
+            image.style.display = 'block';
+        }
 
-    $(document).ready(function () {
-        $('#addLessonBtn').click(function (e) {
-            e.preventDefault();
-            console.log('Add Lesson button clicked');
-            $.ajax({
-                type: 'GET',
-                url: '/api/lesson/course/' + [[${courseId}]] + '/create-lesson',
-                success: function (response) {
-                    console.log('Ajax request successful');
-                    console.log(response);
-                    var newLesson = $('<div class="accordion__item"><a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-' + response.id + '" data-parent="#parent"><span class="flex">' + response.title + '</span><span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span></a><div id="course-toc-' + response.id + '" class="accordion__menu collapse"><div class="accordion__menu-link"><i class="material-icons text-70 icon-16pt icon--left">drag_handle</i><a class="flex" href="/app/lesson/edit/' + response.id + '">' + response.title + '</a></div></div></div>');
-                    $('#parent').append(newLesson);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Ajax request failed:');
-                    console.error('Status:', status);
-                    console.error('Error:', error);
-                }
+        $(document).ready(function () {
+            $('#addLessonBtn').click(function () {
+                console.log('Add Lesson button clicked'); // Debugging step
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/lesson/course/' + [[${courseId}]] + '/create-lesson',
+                    success: function (response) {
+                        console.log('Ajax request successful'); // Debugging step
+                        console.log(response); // Debugging step: Log the response to inspect it
+
+                        // Create the new lesson accordion item
+                        var newLesson = $(
+                            '<div class="accordion__item">' +
+                                '<a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-' + response.id + '" data-parent="#parent">' +
+                                    '<span class="btn" onclick="window.location.href=\'/app/lesson/' + response.id + '\'">' + response.title + '</span>' +
+                                    '<span class="flex"></span>' +
+                                    '<span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>' +
+                                '</a>' +
+                                '<div class="accordion__menu collapse" id="course-toc-' + response.id + '">' +
+                                    '<div class="accordion__menu-link">' +
+                                        '<i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>' +
+                                        '<a class="flex" href="/app/lesson/edit/' + response.id + '">' + response.title + '</a>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>'
+                        );
+                        $('#parent').append(newLesson);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Ajax request failed:'); // Debugging step
+                        console.error('Status:', status); // Debugging step
+                        console.error('Error:', error); // Debugging step
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
+</th:block>
 </body>
 </html>
