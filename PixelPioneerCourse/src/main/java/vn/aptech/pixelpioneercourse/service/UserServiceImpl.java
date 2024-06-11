@@ -132,13 +132,15 @@ public class UserServiceImpl implements UserService{
     public boolean create(UserCreateDto u){
         Object res = null;
         try
-        {
-            if (u.getUsername().equals(findByUsername(u.getUsername()).getUsername()) ||
-                    u.getEmail().equals(findByEmail(u.getEmail()).getEmail()) ||
-                    u.getPhone().equals(findByUsername(u.getUsername()).getPhone()) ||
-                    u.getEmail().equals(findByEmail(u.getEmail()).getPhone())) {
-                return false;
-            }
+        {   
+            if (u.getUsername().equals(findByUsername(u.getUsername()).getUsername())) return false;
+            
+            if (u.getEmail().equals(findByEmail(u.getEmail()).getEmail())) return false;
+            
+            if (u.getPhone().equals(findByUsername(u.getUsername()).getPhone())) return false;
+            
+            if (u.getPhone().equals(findByEmail(u.getEmail()).getPhone())) return false;
+            
             if (u.getUsername().contains(" ")) {
             	throw new Exception("Username must not contain spaces");
             }
