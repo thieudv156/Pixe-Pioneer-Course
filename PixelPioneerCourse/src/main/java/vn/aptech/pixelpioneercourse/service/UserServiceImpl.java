@@ -78,6 +78,10 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
     
+    public List<User> searchByQuery(String query) {
+        return userRepository.searchByKeyword(query);
+    }
+    
     public boolean checkPhone(String phone) {
     	try {
     		userRepository.findByPhone(phone).get();

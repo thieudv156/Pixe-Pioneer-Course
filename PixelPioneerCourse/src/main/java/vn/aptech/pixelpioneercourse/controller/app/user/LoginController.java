@@ -54,7 +54,6 @@ public class LoginController {
     public String checkLogin(@RequestParam("info") String emailorusername, @RequestParam("password") String password, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
         	User u = userService.checkLogin(emailorusername, password);
-            System.out.println(u);
             if (u.getRole() == null || u.getRole().getRoleName() == null) {
                 redirectAttributes.addFlashAttribute("loginErrorCondition", true);
                 redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");
