@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import vn.aptech.pixelpioneercourse.entities.Role;
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,4 +20,7 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
     @Transactional
     @Query("UPDATE Role r SET r.roleName = :roleName WHERE r.id = :id")
     void updateRoleName(@Param("id") Integer id, @Param("roleName") String roleName);
+	
+	@Query("SELECT u FROM Role u WHERE u.roleName LIKE %:keyword%")
+	List<Role> findByroleName(@Param("keyword") String keyword);
 }

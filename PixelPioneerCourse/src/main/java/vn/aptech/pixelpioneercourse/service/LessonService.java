@@ -11,7 +11,6 @@ public interface LessonService {
     Lesson findById(Integer id);
     boolean delete(Integer id);
     Lesson update(Integer id, LessonCreateDto dto, MultipartFile image);
-    Lesson completeLesson(Integer id);
     Lesson createNewLesson(Integer courseId);
 }
 

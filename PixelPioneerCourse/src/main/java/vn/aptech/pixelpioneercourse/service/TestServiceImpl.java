@@ -60,26 +60,7 @@ public class TestServiceImpl implements TestService {
         return score;
     }
 
-    public boolean completeTest(Integer testId, List<String> userAnswers) {
-        try{
-            Test test = findById(testId);
-            if(test == null)
-            {
-                throw new RuntimeException("Test not found!");
-            }
-            test.setScore(checkTest(test, userAnswers));
-            boolean isCompleted = test.getScore() >= 60;
-            if (isCompleted) {
-                lessonService.completeLesson(test.getLesson().getId());
-            }
-            testRepository.save(test);
-            return isCompleted;
-        }
-        catch (Exception e){
-            throw new RuntimeException("Error processing Test: ", e);
-        }
 
-    }
 
 }
 

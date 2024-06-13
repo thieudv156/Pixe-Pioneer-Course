@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.RoleCreateDto;
 import vn.aptech.pixelpioneercourse.dto.RoleDto;
 import vn.aptech.pixelpioneercourse.entities.Role;
+import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.repository.RoleRepository;
 
 import java.util.List;
@@ -38,6 +39,10 @@ public class RoleServiceImpl implements RoleService{
     public Optional<RoleDto> findByRoleName(String roleName) {
     	Optional<Role> result = roleRepository.findByRoleName(roleName);
     	return result.map(o->mapper.map(o, RoleDto.class));
+    }
+    
+    public List<Role> searchByQuery(String query) {
+        return roleRepository.findByroleName(query);
     }
     
     public boolean create(RoleCreateDto role) {

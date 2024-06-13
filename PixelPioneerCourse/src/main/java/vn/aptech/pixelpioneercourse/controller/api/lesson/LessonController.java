@@ -53,16 +53,6 @@ public class LessonController {
         }
     }
 
-    @PutMapping("/{lessonId}/status/complete")
-    public ResponseEntity<?> completeLesson(@PathVariable("lessonId") Integer lessonId){
-        try {
-            Optional<Lesson> result = Optional.ofNullable(lessonService.completeLesson(lessonId));
-            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
-    }
-
     @PutMapping("/{lessonId}/update")
     public ResponseEntity<?> updateLesson(@PathVariable("lessonId") Integer lessonId,
                                           @RequestParam(value = "image",required = false) MultipartFile image,
@@ -95,7 +85,7 @@ public class LessonController {
         }
     }
 
-    @GetMapping("/course/{courseId}/create-lesson")
+    @GetMapping("/{courseId}/create-lesson")
     public ResponseEntity<?> createLesson(@PathVariable("courseId") Integer courseId){
         try {
             Optional<Lesson> lesson = Optional.ofNullable(lessonService.createNewLesson(courseId));

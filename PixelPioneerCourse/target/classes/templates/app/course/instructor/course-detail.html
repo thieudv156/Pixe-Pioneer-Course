@@ -1,56 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org", dir="auto">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Course Dashboard</title>
     <style>
         .form-group.card {
             margin-bottom: 20px;
         }
-
         #image-preview {
             margin-top: 10px;
-            display: none; /* Initially hide the image preview */
+            display: block;
         }
-
         .accordion__toggle {
             cursor: pointer;
         }
     </style>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <meta name="robots" content="noindex">
-
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CRoboto:400,500%7CExo+2:600&display=swap" rel="stylesheet">
-
-    <link type="text/css" th:href="@{/public/vendor/spinkit.css}" rel="stylesheet">
-
-    <!-- Perfect Scrollbar -->
-    <link type="text/css" th:href="@{/public/vendor/perfect-scrollbar.css}" rel="stylesheet">
-
-    <!-- Material Design Icons -->
-    <link type="text/css" th:href="@{/public/css/material-icons.css}" rel="stylesheet">
-
-    <!-- Font Awesome Icons -->
-    <link type="text/css" th:href="@{/public/css/fontawesome.css}" rel="stylesheet">
-
-    <!-- Preloader -->
-    <link type="text/css" th:href="@{/public/css/preloader.css}" rel="stylesheet">
-
-    <!-- App CSS -->
-    <link type="text/css" th:href="@{/public/css/app.css}" rel="stylesheet">
-
-    <!-- Quill Theme -->
-    <link type="text/css" th:href="@{/public/css/quill.css}" rel="stylesheet">
-
-    <!-- Select2 -->
-    <link type="text/css" th:href="@{/public/vendor/select2/select2.min.css}" rel="stylesheet">
-    <link type="text/css" th:href="@{/public/css/select2.css}" rel="stylesheet">
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+    <!-- Defer loading of other scripts -->
+    <script src="http://localhost:8080/public/vendor/material-design-kit.js" defer></script>
+    <script src="http://localhost:8080/public/vendor/dom-factory.js" defer></script>
 </head>
 <body>
-<header th:replace="layout/header :: header"></header>
-<div class="mdk-header-layout__content page-content">
+<div layout:fragment="contents">
     <div class="pt-32pt">
         <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
             <div class="flex d-flex flex-column flex-sm-row align-items-center">
@@ -77,33 +48,38 @@
                             <input type="text" th:field="*{title}" class="form-control form-control-lg" placeholder="Course title">
                             <small class="form-text text-muted">Please see our <a href="">course title guideline</a></small>
                         </div>
-
                         <div class="form-group mb-32pt">
                             <label class="form-label">Description</label>
                             <textarea th:field="*{description}" class="form-control" rows="3" placeholder="Course description"></textarea>
                             <small class="form-text text-muted">Shortly describe this course.</small>
                         </div>
-
                         <div class="page-separator">
                             <div class="page-separator__text">Sections</div>
                         </div>
-
                         <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
                             <div th:each="lesson : ${lessons}" class="accordion__item">
                                 <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${lesson.id}" data-parent="#parent">
-                                    <span class="flex" th:text="${lesson.title}">Lesson Title</span>
+                                    <span class="btn" th:text="${lesson.title}" th:onclick="'window.location.href=\'/app/lesson/' + ${lesson.id} + '\''">Lesson Title</span>
+                                    <span class="flex"></span>
                                     <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
                                 </a>
                                 <div class="accordion__menu collapse" th:id="'course-toc-' + ${lesson.id}">
-                                    <div class="accordion__menu-link">
+                                    <div th:if="${#lists.isEmpty(lesson.subLessons)}" class="accordion__menu-link">
+                                        <i class="material-icons text-70 icon-16pt icon--left">info</i>
+                                        <span class="flex">There is no sub-lesson</span>
+                                    </div>
+                                    <div th:each="subLesson : ${lesson.subLessons}" class="accordion__menu-link">
                                         <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
-                                        <a class="flex" th:href="@{/app/lesson/edit/{id}(id=${lesson.id})}" th:text="${lesson.title}">Lesson Detail</a>
+                                        <a class="flex" th:href="@{/app/sub-lesson/{id}(id=${subLesson.id})}" th:text="${subLesson.title}">Sub-Lesson Detail</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <a href="#" id="addLessonBtn" class="btn btn-outline-secondary mb-24pt mb-sm-0">Add Section</a>
+
+                        <div class="form-group">
+                            <button type="button" class="btn btn-outline-secondary mb-24pt mb-sm-0" id="addLessonBtn">Add Lesson</button>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card">
@@ -116,36 +92,32 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="page-separator">
                             <div class="page-separator__text">Image</div>
                         </div>
-
-                        <div class="page-separator">
-                            <div class="page-separator__text">Image</div>
-                        </div>
-
                         <div class="card">
                             <div class="card-body">
-                                <label class="form-label">Upload Image</label>
-                                <input type="file" class="form-control-file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
-                                <small class="form-text text-muted">Upload a valid image file.</small>
-                            </div>
-                            <div th:if="${oldImageUrl}">
-                                <img id="image-preview" class="img-fluid" th:src="@{${oldImageUrl}}" alt="Course Image" style="display: block;">
+                                <div class="form-group">
+                                    <label for="image" class="form-label">Upload Image</label>
+                                    <input type="file" class="form-control-file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+                                    <small class="form-text text-muted">Upload an image for the course.</small>
+                                </div>
+                                <img id="image-preview" th:if="${oldImageUrl}" th:src="${oldImageUrl}" alt="Old Image" style="max-width: 100%; max-height: 200px;">
                             </div>
                         </div>
-
                         <div class="page-separator">
                             <div class="page-separator__text">Options</div>
                         </div>
-
                         <div class="card">
                             <div class="card-body">
                                 <div class="form-group">
                                     <label class="form-label">Category</label>
                                     <select th:field="*{categoryId}" class="form-control custom-select">
-                                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                                        <option th:each="category : ${categories}"
+                                                th:value="${category.id}"
+                                                th:text="${category.name}"
+                                                th:selected="${courseCreateDto.categoryId == category.id}">
+                                        </option>
                                     </select>
                                     <small class="form-text text-muted">Select a category.</small>
                                 </div>
@@ -163,76 +135,57 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<footer th:replace="layout/footer :: footer"></footer>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery -->
-<script th:src="@{/public/vendor/jquery.min.js}"></script>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        function previewImage(event) {
+            var image = document.getElementById('image-preview');
+            image.src = URL.createObjectURL(event.target.files[0]);
+            image.style.display = 'block';
+        }
 
-<!-- Bootstrap -->
-<script th:src="@{/public/vendor/popper.min.js}"></script>
-<script th:src="@{/public/vendor/bootstrap.min.js}"></script>
+        $(document).ready(function () {
+            $('#addLessonBtn').click(function () {
+                console.log('Add Lesson button clicked'); // Debugging step
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/lesson/' + [[${courseId}]] + '/create-lesson',
+                    success: function (response) {
+                        console.log('Ajax request successful'); // Debugging step
+                        console.log(response); // Debugging step: Log the response to inspect it
 
-<!-- Perfect Scrollbar -->
-<script th:src="@{/public/vendor/perfect-scrollbar.min.js}"></script>
-
-<!-- DOM Factory -->
-<script th:src="@{/public/vendor/dom-factory.js}"></script>
-
-<!-- MDK -->
-<script th:src="@{/public/vendor/material-design-kit.js}"></script>
-
-<!-- App JS -->
-<script th:src="@{/public/js/app.js}"></script>
-
-<!-- Preloader -->
-<script th:src="@{/public/js/preloader.js}"></script>
-<!-- Quill -->
-<script th:src="@{/public/vendor/quill.min.js}"></script>
-<script th:src="@{/public/js/quill.js}"></script>
-<!-- Select2 -->
-<script th:src="@{/public/vendor/select2/select2.min.js}"></script>
-<script th:src="@{/public/js/select2.js}"></script>
-
-
-<!-- JavaScript for Ajax request -->
-<script th:inline="javascript">
-    $(document).ready(function () {
-        $('#addLessonBtn').click(function (e) {
-            e.preventDefault();
-            console.log('Add Lesson button clicked'); // Debugging step
-            $.ajax({
-                type: 'GET',
-                url: '/api/lesson/course/' + [[${courseId}]] + '/create-lesson',
-                success: function (response) {
-                    console.log('Ajax request successful'); // Debugging step
-                    console.log(response); // Debugging step: Log the response to inspect it
-
-                    // Assuming the response contains the new lesson's details
-                    var newLesson = $('<div class="accordion__item"><a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-' + response.id + '" data-parent="#parent"><span class="flex">' + response.title + '</span><span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span></a><div id="course-toc-' + response.id + '" class="accordion__menu collapse"><div class="accordion__menu-link"><i class="material-icons text-70 icon-16pt icon--left">drag_handle</i><a class="flex" href="/app/lesson/edit/' + response.id + '">' + response.title + '</a></div></div></div>');
-                    $('#parent').append(newLesson);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Ajax request failed:'); // Debugging step
-                    console.error('Status:', status); // Debugging step
-                    console.error('Error:', error); // Debugging step
-                }
+                        // Create the new lesson accordion item
+                        var newLesson = $(
+                            '<div class="accordion__item">' +
+                                '<a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-' + response.id + '" data-parent="#parent">' +
+                                    '<span class="btn" onclick="window.location.href=\'/app/lesson/' + response.id + '\'">' + response.title + '</span>' +
+                                    '<span class="flex"></span>' +
+                                    '<span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>' +
+                                '</a>' +
+                                '<div class="accordion__menu collapse" id="course-toc-' + response.id + '">' +
+                                    '<div class="accordion__menu-link">' +
+                                        '<i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>' +
+                                        '<a class="flex" href="/app/lesson/edit/' + response.id + '">' + response.title + '</a>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>'
+                        );
+                        $('#parent').append(newLesson);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Ajax request failed:'); // Debugging step
+                        console.error('Status:', status); // Debugging step
+                        console.error('Error:', error); // Debugging step
+                    }
+                });
             });
         });
-    });
-
-    function previewImage(event) {
-        var image = document.getElementById('image-preview');
-        image.src = URL.createObjectURL(event.target.files[0]);
-        image.style.display = 'block';
-    }
-</script>
+    </script>
+</th:block>
 </body>
 </html>

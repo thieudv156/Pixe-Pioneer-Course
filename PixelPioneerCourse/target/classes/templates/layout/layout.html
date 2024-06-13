@@ -11,6 +11,7 @@
         <!-- Prevent the demo from appearing in search engines -->
         <meta name="robots" content="noindex">
 
+
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CRoboto:400,500%7CExo+2:600&display=swap"
               rel="stylesheet">
 
@@ -32,6 +33,14 @@
         <!-- App CSS -->
         <link th:href="@{/public/css/app.css}" rel="stylesheet">
 
+        <!-- Quill Theme -->
+        <link th:href="@{/public/css/quill.css}" rel="stylesheet">
+
+        <!-- Select2 -->
+        <link th:href="@{/public/vendor/select2/select2.min.css}" rel="stylesheet">
+        <link th:href="@{/public/css/select2.css}" rel="stylesheet">
+
+
     </head>
 
     <body class="layout-sticky-subnav layout-default ">
@@ -48,7 +57,7 @@
         </div>
 
         <!-- Header Layout -->
-        <div class="mdk-header-layout js-mdk-header-layout">
+        <div class="mdk-header js-mdk-header mb-0">
 
             <!-- Header -->
             <div id="header"
@@ -63,13 +72,13 @@
             </div>
             <div class="mdk-header__content justify-content-center">
 
-                <div class="navbar navbar-expand navbar-dark-pickled-bluewood bg-transparent will-fade-background"
+                <div class="navbar navbar-expand navbar-dark-pickled-bluewood will-fade-background"
                      id="default-navbar"
                      data-primary>
 
                     <!-- Navbar toggler -->
                     <button class="navbar-toggler w-auto mr-16pt d-block rounded-0"
-                            type="button"
+                            type="button"Ư
                             data-toggle="sidebar">
                         <span class="material-icons">short_text</span>
                     </button>
@@ -923,7 +932,7 @@
         <!-- // END Drawer -->
 
         <!-- jQuery -->
-        <script th:src="@{/public/vendor/jquery.min.js}"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <!-- Bootstrap -->
         <script th:src="@{/public/vendor/popper.min.js}"></script>
@@ -944,21 +953,14 @@
         <!-- Preloader -->
         <script th:src="@{/public/js/preloader.js}"></script>
 
-        <script>
-            (function () {
-                'use strict';
-                var headerNode = document.querySelector('.mdk-header')
-                var layoutNode = document.querySelector('.mdk-header-layout')
-                var componentNode = layoutNode ? layoutNode : headerNode
-                componentNode.addEventListener('domfactory-component-upgraded', function () {
-                    headerNode.mdkHeader.eventTarget.addEventListener('scroll', function () {
-                        var progress = headerNode.mdkHeader.getScrollState().progress
-                        var navbarNode = headerNode.querySelector('#default-navbar')
-                        navbarNode.classList.toggle('bg-transparent', progress <= 0.2)
-                    })
-                })
-            })()
-        </script>
+        <!-- Quill -->
+        <script th:src="@{/public/vendor/quill.min.js}"></script>
+        <script th:src="@{/public/js/quill.js}"></script>
+
+        <!-- Select2 -->
+        <script th:src="@{/public/vendor/select2/select2.min.js}"></script>
+        <script th:src="@{/public/js/select2.js}"></script>
+        <th:block layout:fragment="script"></th:block>
 
     </body>
 </html>

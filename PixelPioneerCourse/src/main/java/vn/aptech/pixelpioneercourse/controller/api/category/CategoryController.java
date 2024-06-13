@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.aptech.pixelpioneercourse.dto.CategoryCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
+import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.service.CategoryService;
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +61,20 @@ public class CategoryController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/courses")
+    public ResponseEntity<?> getCourses(@PathVariable("id") int id) {
+        try {
+            Optional<Category> category = Optional.ofNullable(categoryService.findById(id));
+            if(category.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
+            }
+            Optional<List<Course>> result = Optional.ofNullable(category.get().getCourses());
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }

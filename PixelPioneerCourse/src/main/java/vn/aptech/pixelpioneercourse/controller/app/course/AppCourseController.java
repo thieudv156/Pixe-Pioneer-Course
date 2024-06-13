@@ -18,6 +18,7 @@ import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
+import vn.aptech.pixelpioneercourse.entities.SubLesson;
 
 import java.util.*;
 
@@ -82,8 +83,15 @@ public class AppCourseController {
         } else {
             model.addAttribute("oldImageUrl", imageApiUrl + "/" + course.get().getFrontPageImage().getImageName());
         }
-
+        courseCreateDto.setCategoryId(course.get().getCategory().getId());
         List<Lesson> lessons = course.get().getLessons();
+        HashMap<Integer,SubLesson> subLessonHashMap = new HashMap<>();
+        for (Lesson lesson : lessons) {
+            for (SubLesson subLesson : lesson.getSubLessons()) {
+                subLessonHashMap.put(subLesson.getId(),subLesson);
+            }
+        }
+        model.addAttribute("subLessonHashMap",subLessonHashMap);
         model.addAttribute("courseCreateDto", courseCreateDto);
         model.addAttribute("courseId", course.get().getId());
         model.addAttribute("categories", categoryList);
