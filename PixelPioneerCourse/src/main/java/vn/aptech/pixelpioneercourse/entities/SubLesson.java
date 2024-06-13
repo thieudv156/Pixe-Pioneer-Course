@@ -28,6 +28,10 @@ public class SubLesson {
     @JoinColumn(name = "lesson_id", nullable = false)
     @JsonBackReference(value = "lesson-sublesson")
     private Lesson lesson;
+    
+    @ManyToOne
+    @JoinColumn(name = "enrollment_id")
+    private Enrollment enrollment;
 
     @Column
     private String content;

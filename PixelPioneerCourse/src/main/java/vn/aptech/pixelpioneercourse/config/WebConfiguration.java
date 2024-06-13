@@ -61,7 +61,6 @@ public class WebConfiguration implements WebMvcConfigurer{
     }
 
 
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String staticFolder = "file:///" + System.getProperty("user.dir") + "/static/";

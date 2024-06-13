@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Enrollments</title>
+</head>
+<body>
+<h1>Manage Enrollments</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Status</th>
+        <th>Enroll at</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="enrollment : ${enrollments}">
+        <td th:text="${enrollment.id}">1</td>
+        <td th:text="${enrollment.user.getId()}">username</td>
+        <td th:text="${enrollment.enrolledAt}">status</td>
+        <td>
+            <form th:action="@{/admin/enrollments/delete/{enrollmentId}(enrollmentId=${enrollment.id})}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+            <form th:action="@{/admin/enrollments/update/{enrollmentId}(enrollmentId=${enrollment.id})}" method="post">
+                <input type="text" name="status" placeholder="Update Status">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

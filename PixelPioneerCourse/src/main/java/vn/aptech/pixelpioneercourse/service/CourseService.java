@@ -21,4 +21,6 @@ public interface  CourseService {
     Course publishCourse(Integer courseId);
     Course unpublishCourse(Integer courseId);
     Course createNewCourse(Integer userId);
+
+    public boolean canAccessCourse(Integer userId, Integer courseId);
 }

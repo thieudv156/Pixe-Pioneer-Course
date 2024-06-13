@@ -1,71 +1,54 @@
 package vn.aptech.pixelpioneercourse.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.aptech.pixelpioneercourse.dto.EnrollmentCreateDto;
-import vn.aptech.pixelpioneercourse.entities.Course;
+import org.springframework.transaction.annotation.Transactional;
 import vn.aptech.pixelpioneercourse.entities.Enrollment;
+import vn.aptech.pixelpioneercourse.entities.PaymentMethod;
+import vn.aptech.pixelpioneercourse.entities.SubscriptionType;
 import vn.aptech.pixelpioneercourse.entities.User;
-import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 import vn.aptech.pixelpioneercourse.repository.EnrollmentRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
 
-import java.util.List;
+import java.time.LocalDateTime;
+
 @Service
-public class EnrollmentServiceImpl implements EnrollmentService{
-    
-    private final EnrollmentRepository enrollmentRepository;
-    
-    private final UserRepository userRepository;
-    
-    private final CourseRepository courseRepository;
+public class EnrollmentServiceImpl implements EnrollmentService {
 
-    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, UserRepository userRepository, CourseRepository courseRepository) {
-        this.enrollmentRepository = enrollmentRepository;
-        this.userRepository = userRepository;
-        this.courseRepository = courseRepository;
-    }
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Transactional
     @Override
-    public List<Enrollment> findAll() {
-        return enrollmentRepository.findAll();
-    }
+    public Enrollment enrollUser(Integer userId, SubscriptionType subscriptionType, PaymentMethod paymentMethod) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-    @Override
-    public Enrollment findById(Integer id) {
-        return enrollmentRepository.findById(id).orElseThrow(()-> new RuntimeException("Enrollment not found"));
-    }
-
-    @Override
-    public Enrollment createEnrollment(EnrollmentCreateDto enrollmentCreateDto) {
-        User user = userRepository.findById(enrollmentCreateDto.getUserId()).orElseThrow(()-> new RuntimeException("User not found"));
-        Course course = courseRepository.findById(enrollmentCreateDto.getCourseId()).orElseThrow(()-> new RuntimeException("Course not found"));
-        if(user == null || course == null) {
-            return null;
+        LocalDateTime subscriptionEndDate;
+        switch (subscriptionType) {
+            case MONTHLY:
+                subscriptionEndDate = LocalDateTime.now().plusMonths(1);
+                break;
+            case YEARLY:
+                subscriptionEndDate = LocalDateTime.now().plusYears(1);
+                break;
+            case UNLIMITED:
+                subscriptionEndDate = null; // Unlimited access
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid subscription type");
         }
-        
+
         Enrollment enrollment = new Enrollment();
         enrollment.setUser(user);
-        enrollment.setCourse(course);
-        enrollment.setEnrolledAt(enrollmentCreateDto.getEnrolledAt());
+        enrollment.setPaymentDate(LocalDateTime.now());
+        enrollment.setPaymentMethod(paymentMethod);
+        enrollment.setPaymentStatus(true);
+        enrollment.setSubscriptionStatus(true);
+        enrollment.setSubscriptionType(subscriptionType);
+        enrollment.setSubscriptionEndDate(subscriptionEndDate);
         return enrollmentRepository.save(enrollment);
-    }
-
-    @Override
-    public Enrollment updateEnrollment(Integer id, EnrollmentCreateDto enrollmentDetails) {
-        Enrollment existingEnrollment = enrollmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Enrollment not found"));
-        if(existingEnrollment == null) {
-            return null;
-        }
-        User user = userRepository.findById(enrollmentDetails.getUserId()).orElseThrow(()-> new RuntimeException("User not found"));
-        Course course = courseRepository.findById(enrollmentDetails.getCourseId()).orElseThrow(()-> new RuntimeException("Course not found"));
-        existingEnrollment.setUser(user);
-        existingEnrollment.setCourse(course);
-        existingEnrollment.setEnrolledAt(enrollmentDetails.getEnrolledAt());
-        return enrollmentRepository.save(existingEnrollment);
-    }
-
-    @Override
-    public void deleteById(Integer id) {
-        enrollmentRepository.deleteById(id);
     }
 }
