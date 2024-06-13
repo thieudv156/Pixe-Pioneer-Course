@@ -13,7 +13,7 @@ public class AdminController {
 		try {
 			return "redirect:/app/admin/users";
 		} catch (Exception e) {
-			return "redirect:/logout";
+			return "redirect:/";
 		}
 	}
 	

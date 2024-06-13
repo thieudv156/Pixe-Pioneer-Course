@@ -31,11 +31,13 @@ public class ProfileController {
 	private ResetPasswordController mailer;
 	
 	@GetMapping("/profile")
-	public String profilePage() {
+	public String profilePage(RedirectAttributes ra) {
 		try {
 			return "app/user_view/profile";
 		} catch (Exception e) {
-			return "redirect:/logout";
+			ra.addFlashAttribute("ErrorCondition",true);
+			ra.addFlashAttribute("ErrorError", "Something is wrong with your profile, contact us for further support.");
+			return "redirect:/";
 		}
 	}
 	

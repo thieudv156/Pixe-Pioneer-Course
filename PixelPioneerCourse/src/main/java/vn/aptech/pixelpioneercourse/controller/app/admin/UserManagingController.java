@@ -54,7 +54,7 @@ public class UserManagingController {
 		        model.addAttribute("users", users);
 		        return "app/admin_view/users/general";
 		    } else {
-		        return "redirect:/app/course";
+		        return "redirect:/";
 		    }
 	    } catch (Exception e) {
 	    	return "redirect:/logout";

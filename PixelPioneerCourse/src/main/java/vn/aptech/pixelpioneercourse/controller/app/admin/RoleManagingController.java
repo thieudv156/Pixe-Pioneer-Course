@@ -36,7 +36,7 @@ public class RoleManagingController {
 				model.addAttribute("roles", listRole);
 				return "app/admin_view/roles/general";
 			} else {
-				return "redirect:/app/course";
+				return "redirect:/";
 			}
 		} catch (Exception e) {
 			return "redirect:/logout";

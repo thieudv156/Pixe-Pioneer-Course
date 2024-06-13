@@ -24,7 +24,7 @@ public class AdminDiscussionController {
 			model.addAttribute("discussions", discussions);
 			return "app/admin_view/discussion/general";
 		} catch (Exception e) {
-			return "redirect:/app/course";
+			return "redirect:/";
 		}
 	}
 }

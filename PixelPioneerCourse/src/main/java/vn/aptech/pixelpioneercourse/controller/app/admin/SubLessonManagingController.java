@@ -43,7 +43,7 @@ public class SubLessonManagingController {
 	        model.addAttribute("sublessons", sublessonsData);
 	        return "app/admin_view/sublesson/general";
 	    } catch (Exception e) {
-	        return "redirect:/app/course";
+	        return "redirect:/";
 	    }
 	}
 	
