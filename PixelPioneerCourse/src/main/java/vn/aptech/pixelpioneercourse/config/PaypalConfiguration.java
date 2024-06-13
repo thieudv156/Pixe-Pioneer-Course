@@ -38,6 +38,4 @@ public class PaypalConfiguration {
         context.setConfigurationMap(paypalSdkConfig());
         return context;
     }
-
-    
 }

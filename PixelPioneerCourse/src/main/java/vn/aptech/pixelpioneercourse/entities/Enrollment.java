@@ -1,6 +1,5 @@
 package vn.aptech.pixelpioneercourse.entities;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,26 +19,29 @@ public class Enrollment {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
-    @JsonBackReference(value = "course-enrollment")
-    private Course course;
-
-    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference(value = "user-enrollment")
     private User user;
 
-
-    @Column(name="progress")
-    private Integer progress = 0;
-
     @Column(nullable = false)
-    private LocalDateTime enrolledAt;
+    private LocalDateTime enrolledAt = LocalDateTime.now();
 
     @Column
     private LocalDateTime paymentDate;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private PaymentMethod paymentMethod;
+
+    @Column(nullable = false)
+    private Boolean paymentStatus = false; // Indicates if payment is successful
+
+    @Column(nullable = false)
+    private Boolean subscriptionStatus = false; // Indicates if subscription is active
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SubscriptionType subscriptionType; // Monthly, Yearly, Unlimited
+
+    @Column
+    private LocalDateTime subscriptionEndDate; // Subscription end date
 }

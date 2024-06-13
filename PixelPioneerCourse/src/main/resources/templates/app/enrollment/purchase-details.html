@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Payment Details</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function processPayment() {
+            const subscriptionType = document.getElementById("subscriptionType").value;
+            const price = document.getElementById("price").value;
+            const paymentMethod = document.getElementById("paymentMethod").value;
+
+            $.ajax({
+                url: '/api/enrollments/process-payment',
+                type: 'POST',
+                data: {
+                    subscriptionType: subscriptionType,
+                    price: price,
+                    paymentMethod: paymentMethod
+                },
+                success: function(response) {
+                    window.location.href = response;
+                },
+                error: function(error) {
+                    document.getElementById("error").innerText = "Subscription failed: " + error.responseText;
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>Payment Details</h1>
+<form onsubmit="event.preventDefault(); processPayment();">
+    <p>Subscription Type: <span th:text="${subscriptionType}"></span></p>
+    <p>Price: <span th:text="${price}"></span> USD</p>
+    <input type="hidden" id="subscriptionType" th:value="${subscriptionType}">
+    <input type="hidden" id="price" th:value="${price}">
+    <label for="paymentMethod">Payment Method:</label>
+    <select id="paymentMethod" name="paymentMethod">
+        <option value="PAYPAL">PayPal</option>
+        <option value="CREDIT_CARD">Credit Card</option>
+    </select>
+    <button type="submit">Pay</button>
+</form>
+<div id="error" style="color:red;" th:if="${error}"></div>
+</body>
+</html>

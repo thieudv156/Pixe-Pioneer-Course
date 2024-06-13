@@ -9,10 +9,16 @@ import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
+import vn.aptech.pixelpioneercourse.entities.Enrollment;
 import vn.aptech.pixelpioneercourse.entities.Image;
+import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
+import vn.aptech.pixelpioneercourse.repository.EnrollmentRepository;
+import vn.aptech.pixelpioneercourse.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService{
@@ -22,13 +28,17 @@ public class CourseServiceImpl implements CourseService{
     final private CategoryService categoryService;
     final private UserService userService;
     final private ImageService imageService;
+    private final UserRepository userRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService, UserRepository userRepository, EnrollmentRepository enrollmentRepository) {
         this.courseRepository = courseRepository;
         this.mapper = mapper;
         this.categoryService = categoryService;
         this.userService = userService;
         this.imageService = imageService;
+        this.userRepository = userRepository;
+        this.enrollmentRepository = enrollmentRepository;
     }
 
     //from CourseCreateDto to Course
@@ -116,6 +126,21 @@ public class CourseServiceImpl implements CourseService{
         } catch (Exception e) {
             throw new RuntimeException("Cannot create new course!: "+ e.getMessage());
         }
+    }
+
+    @Override
+    public boolean canAccessCourse(Integer userId, Integer courseId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Enrollment enrollment = enrollmentRepository.findFirstByUserOrderByEnrolledAtDesc(user);
+            if (enrollment != null) {
+                if (enrollment.getSubscriptionEndDate() == null || enrollment.getSubscriptionEndDate().isAfter(LocalDateTime.now())) {
+                    return true; // User has an active subscription
+                }
+            }
+        }
+        return false; // User does not have an active subscription
     }
 
 

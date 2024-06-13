@@ -1,14 +1,11 @@
 package vn.aptech.pixelpioneercourse.service;
 
-import vn.aptech.pixelpioneercourse.dto.EnrollmentCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Enrollment;
+import vn.aptech.pixelpioneercourse.entities.PaymentMethod;
+import vn.aptech.pixelpioneercourse.entities.SubscriptionType;
 
 import java.util.List;
 
 public interface EnrollmentService {
-    List<Enrollment> findAll();
-    Enrollment findById(Integer id);
-    Enrollment createEnrollment(EnrollmentCreateDto enrollmentCreateDto);
-    Enrollment updateEnrollment(Integer id, EnrollmentCreateDto enrollmentDetails);
-    void deleteById(Integer id);
+    Enrollment enrollUser(Integer userId, SubscriptionType subscriptionType, PaymentMethod paymentMethod);
 }

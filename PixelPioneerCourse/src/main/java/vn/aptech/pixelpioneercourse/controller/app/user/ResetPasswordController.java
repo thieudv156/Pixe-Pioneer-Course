@@ -68,7 +68,7 @@ public class ResetPasswordController {
             session.setAttribute("passwordShow", passwordSectionShow);
         	return "app/guest_view/reset_password";
     	} catch (Exception e) {
-    		return "redirect:/logout";
+    		return "redirect:/";
     	}
     }
 
