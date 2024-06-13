@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    private final Path FOLDER_PATH = Path.of(Paths.get(System.getProperty("user.dir")) + "/PixelPioneerCourse/src/main/resources/static/public/images/upload_images");
+    private final Path FOLDER_PATH = Path.of(Paths.get(System.getProperty("user.dir")) + "/PixelPioneerCourse/src/main/resources/static/public/images/content_images");
     private final ImageRepository imageRepository;
 
     public ImageServiceImpl(ImageRepository imageRepository) {
@@ -84,5 +84,34 @@ public class ImageServiceImpl implements ImageService {
         } catch (IOException e) {
             throw new RuntimeException("Could not read the file. Error: " + e.getMessage());
         }
+    }
+
+    public String uploadImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File cannot be null or empty");
+        }
+
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || originalFilename.isEmpty()) {
+            throw new IllegalArgumentException("Original filename cannot be null or empty");
+        }
+
+        String filePath = FOLDER_PATH + "/" + System.currentTimeMillis()+"_"+originalFilename;
+
+        Image img = Image.builder()
+                .imageName(System.currentTimeMillis()+"_"+originalFilename )
+                .imageType(file.getContentType())
+                .imageUrl(filePath)
+                .build();
+
+        imageRepository.save(img);
+
+        try {
+            file.transferTo(new File(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+        }
+        String fileUrl = "http://localhost:8080/api/image/" + img.getImageName();
+        return "{\"uploaded\": true, \"url\": \"" + fileUrl + "\"}";
     }
 }

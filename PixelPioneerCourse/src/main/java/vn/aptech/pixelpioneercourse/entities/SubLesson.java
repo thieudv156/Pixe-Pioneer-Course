@@ -1,6 +1,7 @@
 package vn.aptech.pixelpioneercourse.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,31 +27,20 @@ public class SubLesson {
 
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
-    @JsonBackReference(value = "lesson-sublesson")
+    @JsonIgnoreProperties({"subLessons", "tests", "quizzes", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","orderNumber","course"})
     private Lesson lesson;
 
     @Column
     private String content;
 
-    @Column
-    private Boolean completeStatus=false;
+    @Column()
+    private Integer orderNumber;
 
-    @OneToOne
-    @JoinColumn(name = "image_id", referencedColumnName = "id")
-    private Image frontPageImage;
-
-    @Column
+    @Column(name="created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "sublesson-discussion")
     private List<Discussion> discussions;
-    
-    public String getCompleteStatus() {
-    	if (completeStatus == null) {
-    		return "";
-    	} else {
-    		return Boolean.toString(completeStatus);
-    	}
-    }
+
 }

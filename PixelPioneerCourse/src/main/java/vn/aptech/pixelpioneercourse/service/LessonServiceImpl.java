@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.LessonCreateDto;
+import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Image;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
 import vn.aptech.pixelpioneercourse.repository.LessonRepository;
@@ -30,7 +31,7 @@ public class LessonServiceImpl implements LessonService {
 
     public List<Lesson> findAllLessonByCourseId(Integer courseId) {
         try {
-            return lessonRepository.findByCourseId(courseId);
+            return lessonRepository.findByCourseIdOrderByOrderNumber(courseId);
         } catch (Exception e) {
             throw new RuntimeException("List of Lesson is null");
         }
@@ -53,22 +54,13 @@ public class LessonServiceImpl implements LessonService {
         }
     }
 
-   public Lesson update(Integer id, LessonCreateDto dto, MultipartFile image) {
+   public Lesson update(Integer id, LessonCreateDto dto) {
         try {
             Lesson lesson = lessonRepository.findById(id).orElse(null);
             if (lesson == null) {
                 throw new RuntimeException("Lesson is null");
             }
             lesson.setTitle(dto.getTitle());
-            if (image != null) {
-                String newImageName = image.getOriginalFilename();
-                Image frontPageImage = lesson.getFrontPageImage();
-
-                if (frontPageImage == null || !frontPageImage.getImageName().equals(newImageName)) {
-                    Image uploadedImage = imageService.uploadImageToFileSystem(image);
-                    lesson.setFrontPageImage(uploadedImage);
-                }
-            }
             return lessonRepository.save(lesson);
         } catch (Exception e) {
             throw new RuntimeException("Lesson is null: "+e.getMessage());
@@ -79,8 +71,14 @@ public class LessonServiceImpl implements LessonService {
     {
         try {
             Lesson lesson = new Lesson();
-            lesson.setCourse(courseService.findById(courseId));
+            Course course = courseService.findById(courseId);
+            if(Objects.isNull(course))
+            {
+                throw new RuntimeException("Course not found");
+            }
+            lesson.setCourse(course);
             lesson.setTitle("New Lesson");
+            lesson.setOrderNumber(course.getLessons().size()+1);
             return lessonRepository.save(lesson);
         } catch (Exception e) {
             throw new RuntimeException("Cannot create new lesson!: " + e.getMessage());

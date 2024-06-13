@@ -2,27 +2,22 @@ package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.SubLessonCreateDto;
-import vn.aptech.pixelpioneercourse.entities.Image;
+import vn.aptech.pixelpioneercourse.entities.Lesson;
 import vn.aptech.pixelpioneercourse.entities.SubLesson;
 import vn.aptech.pixelpioneercourse.repository.SubLessonRepository;
-
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class SubLessonServiceImpl implements SubLessonService {
 
     final private SubLessonRepository subLessonRepository;
     final private ModelMapper modelMapper;
-    final private ImageService imageService;
     final private LessonService lessonService;
 
-    public SubLessonServiceImpl(SubLessonRepository subLessonRepository, ModelMapper modelMapper, ImageService imageService, LessonService lessonService) {
+    public SubLessonServiceImpl(SubLessonRepository subLessonRepository, ModelMapper modelMapper, LessonService lessonService) {
         this.subLessonRepository = subLessonRepository;
         this.modelMapper = modelMapper;
-        this.imageService = imageService;
         this.lessonService = lessonService;
     }
 
@@ -32,7 +27,7 @@ public class SubLessonServiceImpl implements SubLessonService {
 
     public List<SubLesson> findAllSubLessonsByLessonId(Integer lessonId) {
         try {
-            return subLessonRepository.findByLessonId(lessonId);
+            return subLessonRepository.findByLessonIdOrderByOrderNumber(lessonId);
         } catch (Exception e) {
             throw new RuntimeException("List of SubLessons is null", e);
         }
@@ -57,9 +52,11 @@ public class SubLessonServiceImpl implements SubLessonService {
     public SubLesson createNewSublesson(Integer lessonId) {
         try {
             SubLesson subLesson = new SubLesson();
-            subLesson.setLesson(lessonService.findById(lessonId));
-            subLesson.setTitle("New SubLesson");
+            Lesson lesson = lessonService.findById(lessonId);
+            subLesson.setLesson(lesson);
+            subLesson.setTitle("New Sub-Lesson");
             subLesson.setContent("Content");
+            subLesson.setOrderNumber(lesson.getSubLessons().size() + 1);
             return subLessonRepository.save(subLesson);
         } catch (Exception e) {
             throw new RuntimeException("SubLesson is null", e);
@@ -83,15 +80,6 @@ public class SubLessonServiceImpl implements SubLessonService {
             }
             subLesson.setTitle(dto.getTitle());
             subLesson.setContent(dto.getContent());
-            if (dto.getImage() != null) {
-                String oldImageName = subLesson.getFrontPageImage().getImageName();
-                String newImageName = dto.getImage().getOriginalFilename();
-
-                if (!Objects.equals(newImageName, oldImageName)) {
-                    Image img = imageService.uploadImageToFileSystem(dto.getImage());
-                    subLesson.setFrontPageImage(img);
-                }
-            }
             return subLessonRepository.save(subLesson);
         } catch (Exception e) {
             throw new RuntimeException("SubLesson is null", e);

@@ -54,22 +54,10 @@ public class LessonController {
     }
 
     @PutMapping("/{lessonId}/update")
-    public ResponseEntity<?> updateLesson(@PathVariable("lessonId") Integer lessonId,
-                                          @RequestParam(value = "image",required = false) MultipartFile image,
-                                          @RequestPart("lessonData") String lessonData) {
+    public ResponseEntity<?> updateLesson(@PathVariable("lessonId") Integer lessonId, @RequestBody LessonCreateDto dto){
         try {
-            LessonCreateDto dto = objectMapper.readValue(lessonData, LessonCreateDto.class);
-            BindingResult bindingResult = new BeanPropertyBindingResult(dto, "lessonCreateDto");
-            validator.validate(dto, bindingResult);
-
-            // Check for validation errors
-            if(bindingResult.hasErrors()){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
-            }
-            Optional<Lesson> result = Optional.ofNullable(lessonService.update(lessonId, dto,image));
+            Optional<Lesson> result = Optional.ofNullable(lessonService.update(lessonId, dto));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error parsing lesson data: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }

@@ -1,6 +1,7 @@
 package vn.aptech.pixelpioneercourse.controller.api.subLesson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -53,22 +54,12 @@ public class SubLessonController {
     }
 
     @PutMapping("/{subLessonId}/update")
-    public ResponseEntity<?> updateSubLesson(@PathVariable("subLessonId") Integer subLessonId,
-                                             @RequestParam("image") MultipartFile image,
-                                             @RequestPart("subLessonData") String subLessonData) {
+    public ResponseEntity<?> updateSubLesson(@PathVariable("subLessonId") Integer subLessonId, @Valid @RequestBody SubLessonCreateDto subLessonCreateDto) {
         try {
-            SubLessonCreateDto dto = objectMapper.readValue(subLessonData, SubLessonCreateDto.class);
-            dto.setImage(image);
-            BindingResult bindingResult = new BeanPropertyBindingResult(dto, "subLessonCreateDto");
-            validator.validate(dto, bindingResult);
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
-            }
-            Optional<SubLesson> result = Optional.ofNullable(subLessonService.update(subLessonId, dto));
+            Optional<SubLesson> result = Optional.ofNullable(subLessonService.update(subLessonId, subLessonCreateDto));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error parsing sub-lesson data: " + e.getMessage());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
@@ -84,7 +75,7 @@ public class SubLessonController {
     }
 
 
-    @GetMapping("/{lessonId}/create-sublesson")
+    @GetMapping("/{lessonId}/create-sub-lesson")
     public ResponseEntity<?> createSubLesson(@PathVariable("lessonId") Integer lessonId) {
         try {
             Optional<SubLesson> result = Optional.ofNullable(subLessonService.createNewSublesson(lessonId));

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <title>Course Dashboard</title>
+    <style>
+        .form-group.card {
+            margin-bottom: 20px;
+        }
+        #image-preview {
+            margin-top: 10px;
+            display: block;
+        }
+        .accordion__toggle {
+            cursor: pointer;
+        }
+        .img-container {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .img-fluid {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+    <!-- Defer loading of other scripts -->
+    <script src="http://localhost:8080/public/vendor/material-design-kit.js" defer></script>
+    <script src="http://localhost:8080/public/vendor/dom-factory.js" defer></script>
+</head>
+<body>
+<div layout:fragment="contents">
+    <div class="pt-32pt">
+        <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+            <div class="flex d-flex flex-column flex-sm-row align-items-center">
+                <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                    <h2 class="mb-0">Edit Course</h2>
+                    <ol class="breadcrumb p-0 m-0">
+                        <li class="breadcrumb-item"><a th:href="@{/index.html}">Home</a></li>
+                        <li class="breadcrumb-item active"><a th:href="@{/app/course/instructor/courses/{instructorId}(instructorId=${session.userId})}">My Courses</a></li>
+                        <li class="breadcrumb-item active">Edit Course</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-section border-bottom-2">
+        <div class="container page__container">
+            <form th:action="@{/templates/app/user_view/course/{id}/update(id=${courseId})}" method="post" enctype="multipart/form-data" th:object="${courseCreateDto}">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="page-separator">
+                            <div class="page-separator__text">Basic information</div>
+                        </div>
+                        <label class="form-label">Course title</label>
+                        <div class="form-group mb-24pt">
+                            <input type="text" th:field="*{title}" class="form-control form-control-lg" placeholder="Course title">
+                            <small class="form-text text-muted">Please see our <a href="">course title guideline</a></small>
+                        </div>
+                        <div class="form-group mb-32pt">
+                            <label class="form-label">Description</label>
+                            <textarea th:field="*{description}" class="form-control" rows="3" placeholder="Course description"></textarea>
+                            <small class="form-text text-muted">Shortly describe this course.</small>
+                        </div>
+                        <div class="page-separator">
+                            <div class="page-separator__text">Sections</div>
+                        </div>
+                        <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
+                            <div th:each="lesson : ${lessons}" class="accordion__item">
+                                <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${lesson.id}" data-parent="#parent">
+                                    <span class="btn" th:text="${lesson.title}" th:onclick="'window.location.href=\'/app/lesson/instructor/view/' + ${lesson.id} + '\''">Lesson Title</span>
+                                    <span class="flex"></span>
+                                    <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
+                                </a>
+                                <div class="accordion__menu collapse" th:id="'course-toc-' + ${lesson.id}">
+                                    <div th:if="${#lists.isEmpty(lesson.subLessons)}" class="accordion__menu-link">
+                                        <i class="material-icons text-70 icon-16pt icon--left">info</i>
+                                        <span class="flex">There is no sub-lesson</span>
+                                    </div>
+                                    <div th:each="subLesson : ${lesson.subLessons}" class="accordion__menu-link">
+                                        <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
+                                        <a class="flex" th:href="@{/app/lesson/instructor/view/{id}(id=${lesson.id})}" th:text="${subLesson.title}">Sub-Lesson Detail</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <button type="button" class="btn btn-outline-secondary mb-24pt mb-sm-0" id="addLessonBtn">Add Lesson</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="page-separator">
+                            <div class="page-separator__text">Image</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="image" class="form-label">Upload Image</label>
+                                    <input type="file" class="form-control-file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+                                    <small class="form-text text-muted">Upload an image for the course.</small>
+                                </div>
+                                <div class="page-separator"></div>
+                                <div class="img-container">
+                                    <img class="img-fluid" id="image-preview" th:if="${oldImageUrl}" th:src="${oldImageUrl}" alt="Old Image">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="page-separator">
+                            <div class="page-separator__text">Extra Information</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select th:field="*{categoryId}" class="form-control custom-select">
+                                        <option th:if="${courseCreateDto.categoryId == null}"
+                                                th:each="category : ${categories}"
+                                                th:value="${category.id}"
+                                                th:text="${category.name}">
+                                        </option>
+                                        <option th:if="${courseCreateDto.categoryId!=null}"
+                                                th:each="category : ${categories}"
+                                                th:value="${category.id}"
+                                                th:text="${category.name}"
+                                                th:selected="${courseCreateDto.categoryId == category.id}">
+                                        </option>
+                                    </select>
+                                    <small class="form-text text-muted">Select a category.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Price</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group form-inline">
+                                                <span class="input-group-prepend"><span class="input-group-text">$</span></span>
+                                                <input type="text" th:field="*{price}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">The recommended price is between $2.99 and $99.99</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="page-separator">
+                            <div class="page-separator__text">Option</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <button type="submit" class="btn btn-outline-primary-purple">Save changes</button>
+                            </div>
+                            <div class="list-group list-group-flush text-center">
+                                <div class="list-group-item">
+                                    <a th:href="@{{id}/delete(id=${courseId})}" class="btn btn-outline-accent-dodger-blue"><strong>Published Course</strong></a>
+                                </div>
+                            </div>
+                            <div class="list-group list-group-flush text-center">
+                                <div class="list-group-item">
+                                    <a th:href="@{{id}/delete(id=${courseId})}" class="btn btn-outline-accent"><strong>Delete Course</strong></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        function previewImage(event) {
+            var image = document.getElementById('image-preview');
+            image.src = URL.createObjectURL(event.target.files[0]);
+            image.style.display = 'block';
+        }
+
+        $(document).ready(function () {
+            $('#addLessonBtn').click(function () {
+                console.log('Add Lesson button clicked'); // Debugging step
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/lesson/' + [[${courseId}]] + '/create-lesson',
+                    success: function (response) {
+                        console.log('Ajax request successful'); // Debugging step
+                        console.log(response); // Debugging step: Log the response to inspect it
+
+                        // Create the new lesson accordion item
+                        var newLesson = $(
+                            '<div class="accordion__item">' +
+                                '<a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-' + response.id + '" data-parent="#parent">' +
+                                    '<span class="btn" onclick="window.location.href=\'/app/lesson/instructor/view/' + response.id + '\'">' + response.title + '</span>' +
+                                    '<span class="flex"></span>' +
+                                    '<span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>' +
+                                '</a>' +
+                                '<div class="accordion__menu collapse" id="course-toc-' + response.id + '">' +
+                                    '<div class="accordion__menu-link">' +
+                                        '<i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>' +
+                                        '<a class="flex" href="/app/lesson/edit/' + response.id + '">' + response.title + '</a>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>'
+                        );
+                        $('#parent').append(newLesson);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Ajax request failed:'); // Debugging step
+                        console.error('Status:', status); // Debugging step
+                        console.error('Error:', error); // Debugging step
+                    }
+                });
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

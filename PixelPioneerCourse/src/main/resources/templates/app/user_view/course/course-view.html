@@ -1,0 +1,194 @@
+<!-- src/main/resources/templates/course-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <title th:text="${pageTitle}">Course Dashboard</title>
+    <style>
+        .sidebar {
+            height: 100vh;
+            overflow-y: auto;
+            padding: 0; /* Ensure no extra padding */
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .accordion__toggle-icon {
+            transition: transform 0.2s;
+        }
+        .accordion__toggle.collapsed .accordion__toggle-icon {
+            transform: rotate(0deg);
+        }
+        .accordion__toggle .accordion__toggle-icon {
+            transform: rotate(180deg);
+        }
+        .accordion__item {
+            border-bottom: 1px solid #ddd;
+            background-color: #fff;
+        }
+        .accordion__toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #fff;
+            border: none;
+            text-decoration: none;
+            color: #000;
+        }
+        .accordion__menu {
+            padding: 10px;
+            background-color: #fff;
+        }
+        .accordion__menu-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .accordion__menu-link a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .accordion__menu-link.active a {
+            font-weight: bold;
+        }
+        .icon-holder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flex {
+            flex: 1;
+        }
+        .text-muted {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="contents">
+    <div class="pt-32pt">
+        <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+            <div class="flex d-flex flex-column flex-sm-row align-items-center">
+                <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                    <h2 class="mb-0">Course</h2>
+                    <ol class="breadcrumb p-0 m-0">
+                        <li class="breadcrumb-item"><a th:href="@{/templates/app/user_view/course/index.html}">Home</a></li>
+                        <li class="breadcrumb-item active">Course</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row px-3">
+            <aside class="col-3 sidebar">
+                <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+                    <div class="flex d-flex flex-column flex-sm-row align-items-center">
+                        <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                            <h2 class="mb-0">Lesson</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion js-accordion accordion--boxed list-group-flush" id="parent">
+                    <div class="accordion__item">
+                        <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-1" data-parent="#parent">
+                            <span class="flex">Course Overview</span>
+                            <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
+                        </a>
+                        <div class="accordion__menu collapse" id="course-toc-1">
+                            <div class="accordion__menu-link">
+                                <span class="icon-holder icon-holder--small icon-holder--dark rounded-circle d-inline-flex icon--left">
+                                    <i class="material-icons icon-16pt">play_circle_outline</i>
+                                </span>
+                                <a class="flex" href="student-lesson.html">Watch Trailer</a>
+                                <span class="text-muted">1m 10s</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion__item open">
+                        <a href="#" class="accordion__toggle" data-toggle="collapse" data-target="#course-toc-2" data-parent="#parent">
+                            <span class="flex">Getting Started with Angular</span>
+                            <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
+                        </a>
+                        <div class="accordion__menu collapse show" id="course-toc-2">
+                            <div class="accordion__menu-link">
+                                <span class="icon-holder icon-holder--small icon-holder--dark rounded-circle d-inline-flex icon--left">
+                                    <i class="material-icons icon-16pt">check_circle</i>
+                                </span>
+                                <a class="flex" href="student-lesson.html">Introduction</a>
+                                <span class="text-muted">8m 42s</span>
+                            </div>
+                            <div class="accordion__menu-link active">
+                                <span class="icon-holder icon-holder--small icon-holder--primary rounded-circle d-inline-flex icon--left">
+                                    <i class="material-icons icon-16pt">play_circle_outline</i>
+                                </span>
+                                <a class="flex" href="student-lesson.html">Introduction to TypeScript</a>
+                                <span class="text-muted">50m 13s</span>
+                            </div>
+                            <div class="accordion__menu-link">
+                                <span class="icon-holder icon-holder--small icon-holder--light rounded-circle d-inline-flex icon--left">
+                                    <i class="material-icons icon-16pt">lock</i>
+                                </span>
+                                <a class="flex" href="student-lesson.html">Comparing Angular to AngularJS</a>
+                                <span class="text-muted">12m 10s</span>
+                            </div>
+                            <div class="accordion__menu-link">
+                                <span class="icon-holder icon-holder--small icon-holder--light rounded-circle d-inline-flex icon--left">
+                                    <i class="material-icons icon-16pt">hourglass_empty</i>
+                                </span>
+                                <a class="flex" href="student-take-quiz.html">Quiz: Getting Started With Angular</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion__item">
+                        <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-3" data-parent="#parent">
+                            <span class="flex">Creating and Communicating Between Angular Components</span>
+                            <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
+                        </a>
+                        <div class="accordion__menu collapse" id="course-toc-3">
+                            <div class="accordion__menu-link">
+                                <span class="icon-holder icon-holder--small icon-holder--light rounded-circle d-inline-flex icon--left">
+                                    <i class="material-icons icon-16pt">lock</i>
+                                </span>
+                                <a class="flex" href="student-lesson.html">Angular Components</a>
+                                <span class="text-muted">04:23</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion__item">
+                        <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-4" data-parent="#parent">
+                            <span class="flex">Exploring the Angular Template Syntax</span>
+                            <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
+                        </a>
+                        <div class="accordion__menu collapse" id="course-toc-4">
+                            <div class="accordion__menu-link">
+                                <span class="icon-holder icon-holder--small icon-holder--light rounded-circle d-inline-flex icon--left">
+                                    <i class="material-icons icon-16pt">lock</i>
+                                </span>
+                                <a class="flex" href="student-lesson.html">Template Syntax</a>
+                                <span class="text-muted">04:23</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <main class="col-9 main-content">
+                <article>
+                    <div class="page-separator">
+                        <div class="page-separator__text">
+                            <h1></h1>
+                        </div>
+                    </div>
+                    <p>This is the main content of the page. It will be displayed in the middle of the page, while the accordion menu is on the left side.</p>
+                    <div id="editor">
+                        <p>Write something...</p>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+</div>
+</body>
+</html>

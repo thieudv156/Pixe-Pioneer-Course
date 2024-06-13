@@ -30,13 +30,5 @@ public class Image {
     private String imageUrl;
 
     @OneToOne(mappedBy = "frontPageImage", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference(value = "lesson-image")
-    private Lesson lesson;
-
-    @OneToOne(mappedBy = "frontPageImage", cascade = CascadeType.ALL, orphanRemoval = true)
     private Course course;
-
-    @OneToOne(mappedBy = "frontPageImage", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference(value = "sublesson-image")
-    private SubLesson subLesson;
 }

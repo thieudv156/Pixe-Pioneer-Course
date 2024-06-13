@@ -24,7 +24,7 @@ import java.util.*;
 
 @Controller("clientCourseController")
 @RequestMapping("/app/course")
-public class AppCourseController {
+public class AppCourseController{
     @Value("${api.base.url}")
     private String apiBaseUrl;
 
@@ -56,7 +56,7 @@ public class AppCourseController {
         return "app/course/index";
     }
 
-    @GetMapping("/instructor/{instructorId}")
+    @GetMapping("/instructor/courses/{instructorId}")
     public String showCourseByInstructorId(Model model, @PathVariable("instructorId") Integer instructorId){
         RestTemplate restTemplate = new RestTemplate();
         Course[] courseArray = restTemplate.getForObject(courseApiUrl + "/instructor/" + instructorId, Course[].class);
@@ -64,11 +64,11 @@ public class AppCourseController {
         model.addAttribute("courses", courseList);
         model.addAttribute("imageApiUrl", imageApiUrl);
         model.addAttribute("pageTitle", "My Courses");
-        return "app/course/instructor/course-dashboard";
+        return "app/instructor_view/course/course-dashboard";
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/instructor/view/{id}")
         public String showCourseById(Model model, @PathVariable("id") Integer id){
         RestTemplate restTemplate = new RestTemplate();
         Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
@@ -83,7 +83,9 @@ public class AppCourseController {
         } else {
             model.addAttribute("oldImageUrl", imageApiUrl + "/" + course.get().getFrontPageImage().getImageName());
         }
-        courseCreateDto.setCategoryId(course.get().getCategory().getId());
+        if((course.get().getCategory()) != null){
+            model.addAttribute("categoryId", course.get().getCategory().getId());
+        }
         List<Lesson> lessons = course.get().getLessons();
         HashMap<Integer,SubLesson> subLessonHashMap = new HashMap<>();
         for (Lesson lesson : lessons) {
@@ -97,10 +99,10 @@ public class AppCourseController {
         model.addAttribute("categories", categoryList);
         model.addAttribute("pageTitle", "Course detail");
         model.addAttribute("lessons", lessons);
-        return "app/course/instructor/course-detail";
+        return "app/instructor_view/course/course-detail";
     }
 
-    @PostMapping("/{id}/update")
+    @PostMapping("/instructor/{id}/update")
     public String updateCourse(@ModelAttribute CourseCreateDto courseCreateDto,
                                @RequestParam(value = "image",required = false) MultipartFile image,
                                @PathVariable("id") Integer id,
@@ -145,7 +147,7 @@ public class AppCourseController {
         }
     }
 
-    @GetMapping("/create-course")
+    @GetMapping("/instructor/create-course")
     public String createCourse(RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId){
 
         try {
@@ -156,13 +158,13 @@ public class AppCourseController {
                 return "redirect:/app/course/instructor/"+userId;
             }
             redirectAttributes.addFlashAttribute("successMessage", "Course created successfully");
-            return "redirect:/app/course/" + course.getId();
+            return "redirect:/app/course/instructor/view/" + course.getId();
         } catch (RestClientException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @GetMapping("/{id}/delete")
+    @GetMapping("/instructor/{id}/delete")
     public String deleteCourse(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes,@SessionAttribute("userId") Integer userId){
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -173,6 +175,11 @@ public class AppCourseController {
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting course: " + e.getMessage());
             return "redirect:/app/course/instructor/"+userId;
         }
+    }
+
+    @GetMapping("/view")
+    public String viewCourse(){
+        return "app/course/course-view";
     }
 
 }

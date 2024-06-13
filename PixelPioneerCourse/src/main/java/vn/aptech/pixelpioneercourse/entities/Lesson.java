@@ -1,8 +1,6 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "lessons")
+@JsonIgnoreProperties({"tests", "quizzes"})
 public class Lesson {
 
     @Id
@@ -29,36 +28,23 @@ public class Lesson {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    @JsonIgnoreProperties({"lessons", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews"})
+    @JsonIgnoreProperties({"lessons", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","price","description","isPublished"})
     private Course course;
 
     @Column
-    private Boolean completeStatus=false;
-
-    @OneToOne
-    @JoinColumn(name = "image_id", referencedColumnName = "id")
-    private Image frontPageImage;
+    private LocalDateTime createdAt=LocalDateTime.now();
 
     @Column
-    private LocalDateTime createdAt=LocalDateTime.now();
+    private Integer orderNumber;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "lesson-test")
     private List<Test> tests;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "lesson-sublesson")
     private List<SubLesson> subLessons;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "lesson-quiz")
     private List<Quiz> quizzes;
-
-    public String getCompleteStatus() {
-    	if (completeStatus == null) {
-    		return "";
-    	} else {
-    		return Boolean.toString(completeStatus);
-    	}
-    }
 }

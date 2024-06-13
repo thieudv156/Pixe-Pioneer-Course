@@ -10,7 +10,7 @@ public interface LessonService {
     List<Lesson> findAllLessonByCourseId(Integer courseId);
     Lesson findById(Integer id);
     boolean delete(Integer id);
-    Lesson update(Integer id, LessonCreateDto dto, MultipartFile image);
+    Lesson update(Integer id, LessonCreateDto dto);
     Lesson createNewLesson(Integer courseId);
 }
 

@@ -17,14 +17,8 @@ public class SubLessonCreateDto {
     @NotBlank(message = "Title is required")
     private String title;
 
-    @NotNull(message = "Lesson ID is required")
     private Integer lessonId;
 
+    @NotBlank(message = "Content is required")
     private String content;
-
-    @NotNull(message = "Image cannot be empty")
-    private MultipartFile image;
-
-    @NotNull(message = "Created at date is required")
-    private LocalDateTime createdAt;
 }

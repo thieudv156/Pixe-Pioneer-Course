@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Sub-Lesson</title>
+    <!-- Bootstrap CSS -->
+    <style>
+        .form-group.card {
+            margin-bottom: 20px;
+        }
+        .ck-editor__editable_inline {
+            background-color: white;
+            padding: 10px;
+            border-radius: 0.25rem;
+        }
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 420px); /* Adjust height as needed */
+            border-radius: 0.25rem;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            overflow-y: auto; /* Make CKEditor container scrollable */
+        }
+        .page-section {
+            height: calc(100vh - 120px); /* Adjust based on your header height */
+        }
+        .scrollable-content {
+            height: calc(100vh - 420px); /* Adjust based on your header height */
+            overflow-y: auto;
+            position: relative; /* To contain the absolute positioning of the button */
+            padding-bottom: 60px; /* Make space for the fixed button */
+        }
+
+        .fixed-bottom-btn {
+            bottom: 10px;
+            width: 100%;
+        }
+    </style>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/decoupled-document/ckeditor.js"></script>
+</head>
+<body>
+<div layout:fragment="contents">
+    <div class="pt-32pt">
+        <div class="container align-items-center text-center text-sm-left">
+            <div class="flex d-flex flex-column flex-sm-row align-items-center">
+                <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                    <h2 class="mb-0">Edit Sub-Lesson</h2>
+                    <ol class="breadcrumb p-0 m-0">
+                        <li class="breadcrumb-item"><a th:href="@{/index.html}">Home</a></li>
+                        <li class="breadcrumb-item active"><a th:href="@{/app/course/instructor/courses/{instructorId}(instructorId=${session.userId})}">My Courses</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/app/course/instructor/view/{courseId}(courseId = ${lesson.course.id})}">Edit Course</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/app/lesson/instructor/view/{lessonId}(lessonId = ${lessonId})}">Edit Lesson</a></li>
+                        <li class="breadcrumb-item active"><a th:href="@{#}">Edit Sub-Lesson</a></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-section border-bottom-2">
+        <div class="container-fluid">
+            <div class="row" style="height: 100%;">
+                <div class="col-md-3">
+                </div>
+                <div class="col-md-9">
+                    <form class="row" th:action="@{'/app/sub-lesson/instructor/' + ${subLessonId} + '/update'}" th:object="${subLessonCreateDto}" method="post" enctype="multipart/form-data">
+                        <div class="col-md-8">
+                            <div class="form-group mb-24pt">
+                                <div class="page-separator">
+                                    <div class="page-separator__text">Sub-Lesson Title</div>
+                                </div>
+                                <input type="text" class="form-control form-control-lg" placeholder="Sub-Lesson title" th:field="*{title}" required>
+                            </div>
+                            <div class="page-separator">
+                                <div class="page-separator__text">Content</div>
+                            </div>
+                            <div class="scrollable-content editor-container">
+                                <div id="toolbar-container"></div>
+                                <div id="editor" class="editor" th:text="${subLessonCreateDto.content}"></div>
+                                <textarea name="content" th:field="*{content}" hidden></textarea>
+                            </div>
+                            <div class="fixed-bottom-btn">
+                                <button type="submit" class="btn btn-outline-primary-purple">Save changes</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="page-separator">
+                                <div class="page-separator__text">Options</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <button type="submit" class="btn btn-outline-primary-purple">Save changes</button>
+                                </div>
+                                <div class="list-group list-group-flush text-center">
+                                    <div class="list-group-item">
+                                        <a th:href="@{{id}/delete(id=${subLessonId})}" class="btn btn-outline-accent"><strong>Delete Sub-Lesson</strong></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/decoupled-document/ckeditor.js"></script>
+    <script th:inline="javascript">
+        let editorInstance;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            DecoupledEditor
+                .create(document.querySelector('#editor'), {
+                    ckfinder: {
+                        uploadUrl: "/api/image/upload-content-image"
+                    }
+                })
+                .then(editor => {
+                    const toolbarContainer = document.querySelector('#toolbar-container');
+                    toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+                    editorInstance = editor;
+
+                    // Set initial content
+                    const initialContent = [[${subLessonCreateDto.content}]];
+                    editor.setData(initialContent);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            document.querySelector('form').onsubmit = function() {
+                const editorContent = editorInstance.getData();
+                document.querySelector('textarea[name="content"]').value = editorContent;
+            };
+        });
+    </script>
+</th:block>
+</body>
+</html>

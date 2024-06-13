@@ -40,4 +40,14 @@ public class ImageController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @PostMapping("/upload-content-image")
+    public ResponseEntity<?> uploadContentImage(@RequestParam("upload") MultipartFile file) {
+        try {
+            String result = imageService.uploadImage(file);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }

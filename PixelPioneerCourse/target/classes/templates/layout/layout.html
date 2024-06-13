@@ -194,7 +194,41 @@
 
         <!-- Header Layout Content -->
         <div class="mdk-header-layout__content page-content ">
-            <div class="container" layout:fragment="contents">
+            <div>
+                <!-- Success Message -->
+                <div th:if="${successMessage}" class="alert bg-accent text-white border-0 alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="d-flex flex-wrap align-items-start">
+                        <div class="mr-8pt">
+                            <i class="material-icons">check_circle</i>
+                        </div>
+                        <div class="flex" style="min-width: 180px">
+                            <small>
+                                <strong>Success - </strong> <span th:text="${successMessage}"></span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <!-- Error Message -->
+                <div th:if="${errorMessage}" class="alert bg-accent text-white border-0 alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="d-flex flex-wrap align-items-start">
+                        <div class="mr-8pt">
+                            <i class="material-icons">error</i>
+                        </div>
+                        <div class="flex" style="min-width: 180px">
+                            <small>
+                                <strong>Error - </strong> <span th:text="${errorMessage}"></span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid" layout:fragment="contents">
                 <!--                    Insert contents-->
             </div>
         </div>
@@ -222,8 +256,6 @@
 
         </div>
         <!-- // END Header Layout -->
-
-        <!-- Drawer -->
         <div class="mdk-drawer js-mdk-drawer" id="default-drawer">
             <div class="mdk-drawer__content">
                 <div class="sidebar sidebar-dark-pickled-bluewood sidebar-left" data-perfect-scrollbar>
@@ -961,6 +993,14 @@
         <script th:src="@{/public/vendor/select2/select2.min.js}"></script>
         <script th:src="@{/public/js/select2.js}"></script>
         <th:block layout:fragment="script"></th:block>
-
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Close the alert when the close button is clicked
+                document.querySelectorAll('.btn-close').forEach(button => {
+                    button.addEventListener('click', function() {
+                        this.closest('.alert').style.display = 'none';
+                    });
+                });
+        </script>
     </body>
 </html>

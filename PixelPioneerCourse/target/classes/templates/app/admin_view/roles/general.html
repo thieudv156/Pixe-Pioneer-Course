@@ -114,7 +114,7 @@
 
 					<ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
                         <li class="nav-item">
-                            <a th:href="@{/app/course}"
+                            <a th:href="@{/templates/app/user_view/course}"
                                class="nav-link">Home</a>
                         </li>
                         <li class="nav-item dropdown">
@@ -265,14 +265,14 @@
                         <div class="flex d-flex flex-column flex-sm-row align-items-center">
 
                             <div class="mb-24pt mb-sm-0 mr-sm-24pt">
-                                <h2 class="mb-0">List of users</h2>
+                                <h2 class="mb-0">List of roles</h2>
 
                                 <ol class="breadcrumb p-0 m-0">
                                     <li class="breadcrumb-item"><a th:href="@{/app/admin}">Admin</a></li>
 
                                     <li class="breadcrumb-item">
 
-                                        <a href="">Users</a>
+                                        <a href="">Roles</a>
 
                                     </li>
 
@@ -296,142 +296,172 @@
 
                 <!-- Page Content -->
 
-                <div class="container page__container page-section">
-				  <div class="page-separator">
-				    <div class="page-separator__text">Roles</div>
+                <div class="pt-32pt">
+                	<div class="container page__container page-section">
+					  <div class="page-separator">
+					    <div class="page-separator__text">Roles</div>
+					  </div>
+					  <div class="d-flex align-items-center navbar-height">
+					    <form id="search-form" class="search-form search-form--black mx-16pt pr-0 pl-16pt" style="color: white;">
+					      <input type="text" id="search-input" style="color: white;" name="query" class="form-control pl-0" placeholder="Search roles">
+					    </form>
+					    <a class="btn btn-accent btn-rounded" th:href="@{/app/admin/role/create}">
+					      <span>Add a new role</span>
+					    </a>
+					  </div>
+					  <br>
+					  <br>
+					  <div class="card mb-lg-32pt">
+					    <div class="table-responsive" data-toggle="lists" data-lists-sort-by="js-lists-values-employee-name" data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
+					      <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
+					        <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+					      </div>
+					      <div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
+					        <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
+					      </div>
+					      <table class="table mb-0 thead-border-top-0 table-nowrap">
+					        <thead>
+					          <tr>
+					            <th><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-id">ID</a></th>
+					            <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-id">Role Name</a></th>
+					            <th>Action</th>
+					            <th style="width: 24px;" class="pl-0"></th>
+					          </tr>
+					        </thead>
+					        <tbody class="list" id="rolesList">
+					          <tr th:each="role : ${roles}" class="selected">
+					            <td><strong class="js-lists-values-id" th:text="${role.id}">ID</strong></td>
+					            <td><p class="js-lists-values-employee-name" th:text="${role.roleName}">Role Name</p></td>
+					            <td>
+					              <div style="display: flex;">
+					                <form id="update" th:action="@{/app/admin/role/update}" method="post" style="margin: 0; padding-right: 1vh;">
+					                  <input type="hidden" th:value="${role.id}" name="id" />
+					                  <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
+					                </form>
+					                <form id="delete" th:action="@{/app/admin/role/delete}" method="post" style="margin: 0;">
+					                  <input type="hidden" th:value="${role.id}" name="id" />
+					                  <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+					                </form>
+					              </div>
+					            </td>
+					          </tr>
+					        </tbody>
+					      </table>
+					    </div>
+					    <div class="card-footer p-8pt">
+					      <ul class="pagination justify-content-start pagination-xsm m-0" id="pagination">
+					        <li class="page-item disabled">
+					          <a class="page-link" href="#" aria-label="Previous">
+					            <span aria-hidden="true" class="material-icons">chevron_left</span>
+					            <span>Prev</span>
+					          </a>
+					        </li>
+					        <li class="page-item">
+					          <a class="page-link" href="#" aria-label="Page 1"><span>1</span></a>
+					        </li>
+					        <li class="page-item">
+					          <a class="page-link" href="#" aria-label="Page 2"><span>2</span></a>
+					        </li>
+					        <li class="page-item">
+					          <a class="page-link" href="#" aria-label="Next">
+					            <span>Next</span>
+					            <span aria-hidden="true" class="material-icons">chevron_right</span>
+					          </a>
+					        </li>
+					      </ul>
+					    </div>
+					    <script>
+					      document.addEventListener('DOMContentLoaded', function() {
+					        const searchInput = document.getElementById('search-input');
+					        searchInput.addEventListener('keyup', function() {
+					          const query = searchInput.value;
+					          fetch(`/app/admin/role/search?query=${query}`)
+					            .then(response => response.json())
+					            .then(data => {
+					              const rolesList = document.getElementById('rolesList');
+					              rolesList.innerHTML = '';
+					              data.forEach(role => {
+					                const roleRow = document.createElement('tr');
+					                roleRow.innerHTML = `
+					                  <td><strong class="js-lists-values-id">${role.id}</strong></td>
+					                  <td><p class="js-lists-values-employee-name">${role.roleName}</p></td>
+					                  <td>
+					                    <div style="display: flex;">
+					                      <form id="update" action="/app/admin/role/update" method="post" style="margin: 0; padding-right: 1vh;">
+					                        <input type="hidden" name="id" value="${role.id}" />
+					                        <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
+					                      </form>
+					                      <form id="delete" action="/app/admin/role/delete" method="post" style="margin: 0;">
+					                        <input type="hidden" name="id" value="${role.id}" />
+					                        <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+					                      </form>
+					                    </div>
+					                  </td>
+					                `;
+					                rolesList.appendChild(roleRow);
+					              });
+					            })
+					            .catch(error => {
+					              console.error('Error fetching role data:', error);
+					            });
+					        });
+					
+					        const roles = document.querySelectorAll('#rolesList tr');
+					        const pagination = document.getElementById('pagination');
+					        const itemsPerPage = 5;
+					        let currentPage = 1;
+					        const pageCount = Math.ceil(roles.length / itemsPerPage);
+					
+					        function showPage(page) {
+					          currentPage = page;
+					          const start = (page - 1) * itemsPerPage;
+					          const end = start + itemsPerPage;
+					          roles.forEach((role, index) => {
+					            role.style.display = (index >= start && index < end) ? '' : 'none';
+					          });
+					          updatePagination();
+					        }
+					
+					        function updatePagination() {
+					          pagination.innerHTML = '';
+					          const prevPageItem = document.createElement('li');
+					          prevPageItem.className = 'page-item ' + (currentPage === 1 ? 'disabled' : '');
+					          prevPageItem.innerHTML = `
+					            <a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+					              <span aria-hidden="true" class="material-icons">chevron_left</span>
+					              <span>Prev</span>
+					            </a>`;
+					          pagination.appendChild(prevPageItem);
+					
+					          for (let i = 1; i <= pageCount; i++) {
+					            const pageItem = document.createElement('li');
+					            pageItem.className = 'page-item ' + (i === currentPage ? 'active' : '');
+					            pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+					            pagination.appendChild(pageItem);
+					          }
+					
+					          const nextPageItem = document.createElement('li');
+					          nextPageItem.className = 'page-item ' + (currentPage === pageCount ? 'disabled' : '');
+					          nextPageItem.innerHTML = `
+					            <a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+					              <span>Next</span>
+					              <span aria-hidden="true" class="material-icons">chevron_right</span>
+					            </a>`;
+					          pagination.appendChild(nextPageItem);
+					        }
+					
+					        pagination.addEventListener('click', function(e) {
+					          const page = e.target.getAttribute('data-page');
+					          if (page) {
+					            showPage(parseInt(page));
+					          }
+					        });
+					
+					        showPage(1);
+					      });
+					    </script>
+					  </div>
 				  </div>
-				  <a class="btn btn-accent btn-rounded" th:href="@{/app/admin/role/create}">
-				    <span>Create</span>
-				  </a>
-				  <br>
-				  <br>
-				  <div class="card mb-lg-32pt">
-				    <div class="table-responsive" data-toggle="lists" data-lists-sort-by="js-lists-values-employee-name" data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
-				      <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
-				        <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
-				      </div>
-				      <div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
-				        <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
-				      </div>
-				      <table class="table mb-0 thead-border-top-0 table-nowrap">
-				        <thead>
-				          <tr>
-				            <th>
-				              <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-id">ID</a>
-				            </th>
-				            <th style="width: 150px;">
-				              <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-id">Role Name</a>
-				            </th>
-				            <th> Action </th>
-				            <th style="width: 24px;" class="pl-0"></th>
-				          </tr>
-				        </thead>
-				        <tbody class="list" id="users">
-				          <tr th:each="role : ${roles}" class="selected">
-				            <td>
-				              <strong class="js-lists-values-id" th:text="${role.id}">ID</strong>
-				            </td>
-				            <td>
-				              <p class="js-lists-values-employee-name" th:text="${role.roleName}">Role Name</p>
-				            </td>
-				            <td>
-							  <div style="display: flex;">
-							    <form id="update" th:action="@{/app/admin/role/update}" method="post" style="margin: 0; padding-right: 1vh;">
-							      <input type="hidden" th:value="${role.id}" name="id" />
-							      <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
-							    </form>
-							    <form id="delete" th:action="@{/app/admin/role/delete}" method="post" style="margin: 0;">
-							      <input type="hidden" th:value="${role.id}" name="id" />
-							      <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
-							    </form>
-							  </div>
-							</td>
-				          </tr>
-				        </tbody>
-				      </table>
-				    </div>
-				    <div class="card-footer p-8pt">
-				      <ul class="pagination justify-content-start pagination-xsm m-0" id="pagination">
-				        <li class="page-item disabled">
-				          <a class="page-link" href="#" aria-label="Previous">
-				            <span aria-hidden="true" class="material-icons">chevron_left</span>
-				            <span>Prev</span>
-				          </a>
-				        </li>
-				        <li class="page-item">
-				          <a class="page-link" href="#" aria-label="Page 1">
-				            <span>1</span>
-				          </a>
-				        </li>
-				        <li class="page-item">
-				          <a class="page-link" href="#" aria-label="Page 2">
-				            <span>2</span>
-				          </a>
-				        </li>
-				        <li class="page-item">
-				          <a class="page-link" href="#" aria-label="Next">
-				            <span>Next</span>
-				            <span aria-hidden="true" class="material-icons">chevron_right</span>
-				          </a>
-				        </li>
-				      </ul>
-				    </div>
-				  </div>
-				  <script>
-				    document.addEventListener('DOMContentLoaded', function() {
-				      const users = document.querySelectorAll('#users tr');
-				      const pagination = document.getElementById('pagination');
-				      const itemsPerPage = 5;
-				      let currentPage = 1;
-				      const pageCount = Math.ceil(users.length / itemsPerPage);
-				
-				      function showPage(page) {
-				        currentPage = page;
-				        const start = (page - 1) * itemsPerPage;
-				        const end = start + itemsPerPage;
-				        users.forEach((user, index) => {
-				          user.style.display = (index >= start && index < end) ? '' : 'none';
-				        });
-				        updatePagination();
-				      }
-				
-				      function updatePagination() {
-				        pagination.innerHTML = '';
-				        const prevPageItem = document.createElement('li');
-				        prevPageItem.className = 'page-item ' + (currentPage === 1 ? 'disabled' : '');
-				        prevPageItem.innerHTML = `
-				                        
-								<a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
-									<span aria-hidden="true" class="material-icons">chevron_left</span>
-									<span>Prev</span>
-								</a>`;
-				        pagination.appendChild(prevPageItem);
-				        for (let i = 1; i <= pageCount; i++) {
-				          const pageItem = document.createElement('li');
-				          pageItem.className = 'page-item ' + (i === currentPage ? 'active' : '');
-				          pageItem.innerHTML = `
-								<a class="page-link" href="#" data-page="${i}">${i}</a>`;
-				          pagination.appendChild(pageItem);
-				        }
-				        const nextPageItem = document.createElement('li');
-				        nextPageItem.className = 'page-item ' + (currentPage === pageCount ? 'disabled' : '');
-				        nextPageItem.innerHTML = `
-				                        
-								<a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
-									<span>Next</span>
-									<span aria-hidden="true" class="material-icons">chevron_right</span>
-								</a>`;
-				        pagination.appendChild(nextPageItem);
-				      }
-				      pagination.addEventListener('click', function(e) {
-				        const page = e.target.getAttribute('data-page');
-				        if (page) {
-				          showPage(parseInt(page));
-				        }
-				      });
-				      showPage(1);
-				    });
-				  </script>
 				  <!-- // END Page Content -->
 				  <!-- Footer -->
 				  <div class="bg-white border-top-2 mt-auto">
@@ -477,7 +507,7 @@
                             </form>
                         </div>
 
-                        <a th:href="@{/app/course}"
+                        <a th:href="@{/templates/app/user_view/course}"
                            class="sidebar-brand ">
                             <!-- <img class="sidebar-brand-icon" src="../../public/images/illustration/student/128/white.svg" alt="Pixel Pioneer Course"> -->
 

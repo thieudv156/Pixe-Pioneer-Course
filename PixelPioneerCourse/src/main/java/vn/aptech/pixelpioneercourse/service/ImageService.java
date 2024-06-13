@@ -8,4 +8,5 @@ public interface ImageService {
     Image findByImageName(String name);
     Image uploadImageToFileSystem(MultipartFile file);
     Pair<byte[], String> downloadImageFromFileSystem(String fileName);
+    String uploadImage(MultipartFile file);
 }

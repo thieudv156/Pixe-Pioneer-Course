@@ -35,7 +35,6 @@ public class SubLessonManagingController {
 	            data.add(sublesson.getContent());
 	            data.add(sublesson.getLesson().getTitle());
 	            data.add(sublesson.getLesson().getId().toString());
-	            data.add(sublesson.getFrontPageImage().getImageUrl());
 	            data.add(sublesson.getLesson().getCourse().getInstructor().getEmail());
 	            data.add(sublesson.getCreatedAt().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 	            sublessonsData.add(data);
