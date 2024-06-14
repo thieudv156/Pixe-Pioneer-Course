@@ -3,15 +3,16 @@ package vn.aptech.pixelpioneercourse.service;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
+
     @Value("${paypal.success.url}")
     private String successUrl;
 
@@ -21,7 +22,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private APIContext apiContext;
 
-    // Process PayPal Payment
     public String createPayPalPayment(double total, String currency, String method, String intent, String description, HttpSession session, String subscriptionType) throws PayPalRESTException {
         Amount amount = new Amount();
         amount.setCurrency(currency);
@@ -54,10 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
         return null;
     }
 
-    // Process Credit Card Payment
     public boolean processCreditCardPayment(String cardNumber, String expiration, String cvv, double total, String currency) {
-        // Mock implementation of credit card payment
-        // In a real application, use a service like Stripe or Braintree
         // Here, we assume the payment is always successful for demonstration purposes
         return true;
     }

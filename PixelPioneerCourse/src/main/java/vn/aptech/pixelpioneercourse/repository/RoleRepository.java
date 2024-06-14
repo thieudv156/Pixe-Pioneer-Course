@@ -13,14 +13,18 @@ import java.util.Optional;
 
 
 public interface RoleRepository extends JpaRepository<Role, Integer> {
-	Optional<Role> findByRoleName(String roleName);
-	Optional<Role> findById(int id);
-	
-	@Modifying
+    Optional<Role> findByRoleName(String roleName);
+
+    Optional<Role> findById(int id);
+
+    @Modifying
     @Transactional
     @Query("UPDATE Role r SET r.roleName = :roleName WHERE r.id = :id")
     void updateRoleName(@Param("id") Integer id, @Param("roleName") String roleName);
-	
-	@Query("SELECT u FROM Role u WHERE u.roleName LIKE %:keyword%")
-	List<Role> findByroleName(@Param("keyword") String keyword);
+
+    @Query("SELECT u FROM Role u WHERE u.roleName LIKE %:keyword%")
+    List<Role> findByroleName(@Param("keyword") String keyword);
+
+//    @Query("SELECT r FROM Role r JOIN r.users u WHERE u.id = :userId")
+//    Role findRoleByUsersId(@Param("userId") Integer userId);
 }

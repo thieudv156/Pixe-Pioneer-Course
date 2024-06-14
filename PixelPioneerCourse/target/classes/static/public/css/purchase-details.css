@@ -1,0 +1,29 @@
+.payment-method {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.payment-method input {
+    margin-right: 10px;
+}
+.payment-method label {
+    margin: 0;
+}
+.visa-logo {
+    width: 70px;
+}
+.paypal-logo {
+    width: 100px;
+}
+.pay-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.pay-button button {
+    font-size: 1.5rem;
+    padding: 10px 40px;
+}
+.credit-card-details {
+    display: none;
+}

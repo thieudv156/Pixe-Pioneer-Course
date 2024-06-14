@@ -21,24 +21,42 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PaymentService paymentService;
+
     @Transactional
     @Override
     public Enrollment enrollUser(Integer userId, SubscriptionType subscriptionType, PaymentMethod paymentMethod) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        double amount;
         LocalDateTime subscriptionEndDate;
         switch (subscriptionType) {
             case MONTHLY:
+                amount = 9.0;
                 subscriptionEndDate = LocalDateTime.now().plusMonths(1);
                 break;
             case YEARLY:
+                amount = 99.0;
                 subscriptionEndDate = LocalDateTime.now().plusYears(1);
                 break;
             case UNLIMITED:
+                amount = 999.0;
                 subscriptionEndDate = null; // Unlimited access
                 break;
             default:
                 throw new IllegalArgumentException("Invalid subscription type");
+        }
+
+        boolean paymentSuccessful = false;
+        if (paymentMethod == PaymentMethod.PAYPAL) {
+            paymentSuccessful = true; // PayPal payment is already processed in the controller
+        } else if (paymentMethod == PaymentMethod.CREDIT_CARD) {
+            paymentSuccessful = paymentService.processCreditCardPayment("mockCardNumber", "12/2025", "123", amount, "USD"); // Mock card details
+        }
+
+        if (!paymentSuccessful) {
+            throw new RuntimeException("Payment failed");
         }
 
         Enrollment enrollment = new Enrollment();
@@ -50,5 +68,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollment.setSubscriptionType(subscriptionType);
         enrollment.setSubscriptionEndDate(subscriptionEndDate);
         return enrollmentRepository.save(enrollment);
+    }
+
+    @Override
+    public boolean isUserEnrolledAndPaid(Integer userId) {
+        return enrollmentRepository.existsByUserIdAndPaymentStatusTrue(userId);
     }
 }

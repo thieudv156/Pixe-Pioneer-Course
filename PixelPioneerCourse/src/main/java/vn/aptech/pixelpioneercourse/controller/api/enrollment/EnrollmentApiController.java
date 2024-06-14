@@ -1,47 +1,47 @@
 package vn.aptech.pixelpioneercourse.controller.api.enrollment;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import vn.aptech.pixelpioneercourse.dto.PaymentRequest;
 import vn.aptech.pixelpioneercourse.entities.PaymentMethod;
 import vn.aptech.pixelpioneercourse.entities.SubscriptionType;
 import vn.aptech.pixelpioneercourse.service.EnrollmentService;
-import vn.aptech.pixelpioneercourse.service.PaymentServiceImpl;
+import vn.aptech.pixelpioneercourse.service.PaymentService;
 
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
-@RestController("enrollmentApiController")
+@RestController
 @RequestMapping("/api/enrollments")
+@Validated
 public class EnrollmentApiController {
 
     @Autowired
     private EnrollmentService enrollmentService;
 
     @Autowired
-    private PaymentServiceImpl paymentService;
+    private PaymentService paymentService;
 
     @PostMapping("/process-payment")
-    public ResponseEntity<?> processPayment(HttpSession session,
-                                            @RequestParam String subscriptionType,
-                                            @RequestParam double price,
-                                            @RequestParam PaymentMethod paymentMethod) {
-        Integer userId = (Integer) session.getAttribute("userId");
+    public ResponseEntity<?> processPayment(@SessionAttribute("userId") Integer userId, @Valid @RequestBody PaymentRequest paymentRequest, HttpSession session) {
         if (userId == null) {
             return ResponseEntity.status(401).body("User not authenticated");
         }
 
         try {
-            if (paymentMethod == PaymentMethod.PAYPAL) {
-                String approvalUrl = paymentService.createPayPalPayment(price, "USD", "paypal", "sale", "Course subscription", session, subscriptionType);
+            if (paymentRequest.getPaymentMethod() == PaymentMethod.PAYPAL) {
+                String approvalUrl = paymentService.createPayPalPayment(paymentRequest.getPrice(), "USD", "paypal", "sale", "Course subscription", session, paymentRequest.getSubscriptionType());
                 if (approvalUrl != null) {
                     return ResponseEntity.ok(approvalUrl);
                 } else {
-                    throw new RuntimeException("Error creating PayPal payment");
+                    throw new RuntimeException("PayPal payment creation failed");
                 }
-            } else if (paymentMethod == PaymentMethod.CREDIT_CARD) {
-                boolean paymentSuccessful = paymentService.processCreditCardPayment("mockCardNumber", "12/2025", "123", price, "USD"); // Mock card details
+            } else if (paymentRequest.getPaymentMethod() == PaymentMethod.CREDIT_CARD) {
+                boolean paymentSuccessful = paymentService.processCreditCardPayment(paymentRequest.getCardNumber(), paymentRequest.getExpiration(), paymentRequest.getCvv(), paymentRequest.getPrice(), "USD");
                 if (paymentSuccessful) {
-                    enrollmentService.enrollUser(userId, SubscriptionType.valueOf(subscriptionType), paymentMethod);
+                    enrollmentService.enrollUser(userId, SubscriptionType.valueOf(paymentRequest.getSubscriptionType()), paymentRequest.getPaymentMethod());
                     return ResponseEntity.ok("Payment successful");
                 } else {
                     throw new RuntimeException("Credit card payment failed");
@@ -52,5 +52,15 @@ public class EnrollmentApiController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Subscription failed: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/check-enrollment")
+    public ResponseEntity<?> checkEnrollment(@SessionAttribute("userId") Integer userId) {
+        if (userId == null) {
+            return ResponseEntity.status(401).body("User not authenticated");
+        }
+
+        boolean isEnrolledAndPaid = enrollmentService.isUserEnrolledAndPaid(userId);
+        return ResponseEntity.ok(isEnrolledAndPaid);
     }
 }
