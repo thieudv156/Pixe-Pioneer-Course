@@ -24,4 +24,9 @@ public class Category {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Course> courses;
+    
+    @JsonProperty("courseCount")
+    public int getCourseCount() {
+        return courses != null ? courses.size() : 0;
+    }
 }

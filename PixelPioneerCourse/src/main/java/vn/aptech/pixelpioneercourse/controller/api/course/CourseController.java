@@ -1,7 +1,14 @@
 package vn.aptech.pixelpioneercourse.controller.api.course;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.oauth2.sdk.Role;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.validation.Validator;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -9,10 +16,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
+import vn.aptech.pixelpioneercourse.dto.CourseDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
+import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.service.CategoryService;
 import vn.aptech.pixelpioneercourse.service.CourseService;
+import vn.aptech.pixelpioneercourse.service.UserService;
 import vn.aptech.pixelpioneercourse.until.ControllerUtils;
 
 import java.io.IOException;
@@ -20,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/course")
@@ -35,12 +46,35 @@ public class CourseController {
         this.categoryService = categoryService;
         this.validator = validator;
     }
+    
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("")
-    public ResponseEntity<?> index(){
+    public ResponseEntity<?> index() {
         try {
-            Optional<List<Course>> result = Optional.ofNullable(courseService.findAllPublishedCourses());
-            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+            List<Course> courses = courseService.findAllPublishedCourses();
+            List<CourseDto> courseDtos = courses.stream()
+                    .map(CourseDto::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(courseDtos);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/instructors")
+    public ResponseEntity<?> getAllInstructors() {
+        try {
+            List<User> instructors = userService.findAll();
+            for (int i = 0; i < instructors.size(); i++) {
+            	if (!instructors.get(i).getRole().equals(modelMapper.map("ROLE_INSTRUCTOR", Role.class))) {
+            		instructors.remove(i);
+            	}
+            }
+            return ResponseEntity.ok(instructors);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
@@ -61,6 +95,19 @@ public class CourseController {
         try {
             Optional<List<Course>> result = Optional.ofNullable(courseService.findByCategoryId(categoryId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/categoryDto/{categoryId}")
+    public ResponseEntity<?> findCourseByCategoryDtoId(@PathVariable("categoryId") Integer categoryId){
+        try {
+        	List<Course> courses = courseService.findByCategoryId(categoryId);
+        	List<CourseDto> courseDtos = courses.stream()
+                    .map(CourseDto::new)
+                    .collect(Collectors.toList());
+        	return ResponseEntity.ok(courseDtos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
@@ -193,5 +240,4 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
-
 }

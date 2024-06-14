@@ -60,4 +60,12 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lesson> lessons;
+    
+    public String getImageUrl() {
+        if (this.frontPageImage != null) {
+            return this.frontPageImage.getImageUrl();
+        } else {
+            return "https://th.bing.com/th/id/R.26ff8f39241b3a8a90817f04f86d2214?rik=7UPym3r1dnBKIA&pid=ImgRaw&r=0";
+        }
+    }
 }
