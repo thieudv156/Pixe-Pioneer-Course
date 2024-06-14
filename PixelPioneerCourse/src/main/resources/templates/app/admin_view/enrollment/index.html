@@ -1,36 +1,58 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.cz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
-    <title>Manage Enrollments</title>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" th:href="@{https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css}">
+
+    <!-- jQuery -->
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" th:src="@{https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js}"></script>
+    
 </head>
 <body>
-<h1>Manage Enrollments</h1>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>User</th>
-        <th>Status</th>
-        <th>Enroll at</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="enrollment : ${enrollments}">
-        <td th:text="${enrollment.id}">1</td>
-        <td th:text="${enrollment.user.getId()}">username</td>
-        <td th:text="${enrollment.enrolledAt}">status</td>
-        <td>
-            <form th:action="@{/admin/enrollments/delete/{enrollmentId}(enrollmentId=${enrollment.id})}" method="post">
-                <button type="submit">Delete</button>
-            </form>
-            <form th:action="@{/admin/enrollments/update/{enrollmentId}(enrollmentId=${enrollment.id})}" method="post">
-                <input type="text" name="status" placeholder="Update Status">
-                <button type="submit">Update</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="content-wrapper" layout:fragment="contents">
+    <div class="container">
+        <h1>Enrollments</h1>
+        <table id="enrollmentsTable" class="display">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Subscription Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="enrollment : ${enrollments}">
+                <td th:text="${enrollment.id}">1</td>
+                <td th:text="${enrollment.user.fullName}">John Doe</td>
+                <td th:text="${enrollment.subscriptionType}">Monthly</td>
+                <td th:text="${enrollment.subscriptionStatus ? 'Active' : 'Inactive'}">Active</td>
+                <td>
+                    <a th:href="@{/admin/enrollments/details/{id}(id=${enrollment.id})}">View</a>
+                    <a th:href="@{/admin/enrollments/edit/{id}(id=${enrollment.id})}">Edit</a>
+                    <a th:href="@{/admin/enrollments/delete/{id}(id=${enrollment.id})}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- /.content -->
+</div>
+<script>
+    $(document).ready(function() {
+        $('#enrollmentsTable').DataTable();
+    });
+</script>
 </body>
 </html>

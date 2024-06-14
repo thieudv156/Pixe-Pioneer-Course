@@ -11,6 +11,7 @@ import vn.aptech.pixelpioneercourse.repository.EnrollmentRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
@@ -73,5 +74,22 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public boolean isUserEnrolledAndPaid(Integer userId) {
         return enrollmentRepository.existsByUserIdAndPaymentStatusTrue(userId);
+    }
+
+    public List<Enrollment> findAll() {
+        return enrollmentRepository.findAll();
+    }
+
+    public Enrollment findById(Integer id) {
+        return enrollmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+    }
+
+    public Enrollment save(Enrollment enrollment) {
+        return enrollmentRepository.save(enrollment);
+    }
+
+    public void deleteById(Integer id) {
+        enrollmentRepository.deleteById(id);
     }
 }
