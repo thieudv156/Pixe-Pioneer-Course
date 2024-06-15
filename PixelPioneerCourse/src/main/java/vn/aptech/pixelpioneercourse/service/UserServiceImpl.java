@@ -24,6 +24,7 @@ import vn.aptech.pixelpioneercourse.jwt.JWT;
 import vn.aptech.pixelpioneercourse.repository.RefreshTokenRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -227,7 +228,7 @@ public class UserServiceImpl implements UserService{
     	User acc = userRepository.findById(uID).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
         acc.setUsername(u.getUsername());
         acc.setEmail(u.getEmail());
-        if (u.getPassword().startsWith("$2a$")) {
+        if (u.getPassword().startsWith("$2a$") && u.getPassword() != null) {
         	acc.setPassword(u.getPassword());
         } else {
         	acc.setPassword(encoder.encode(u.getPassword()));
@@ -242,10 +243,23 @@ public class UserServiceImpl implements UserService{
     	User acc = userRepository.findById(uID).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
         acc.setUsername(u.getUsername());
         acc.setEmail(u.getEmail());
-        acc.setPassword(u.getPassword());
+        try {
+        	if (u.getPassword() == null) throw new Exception("Password null");
+        	acc.setPassword(u.getPassword());
+        } catch (Exception e) {
+        	acc.setPassword(acc.getPassword());
+        }
         acc.setFullName(u.getFullName());
         acc.setPhone(u.getPhone());
-        acc.setRole(u.getRole());
+        try {
+        	if (u.getRole() == null) {
+        		throw new Exception("Role does not exist");
+        	}
+        	acc.setRole(u.getRole());
+        } catch (Exception e) {
+        	System.out.println("check");
+        	acc.setRole(acc.getRole());
+        }
         userRepository.save(acc);
         return true;
     }

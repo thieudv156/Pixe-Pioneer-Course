@@ -11,7 +11,6 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer> {
     Enrollment findFirstByUserOrderByEnrolledAtDesc(User user);
     List<Enrollment> findEnrollmentsByUserId(Integer userId);
-
     Enrollment findByUserId(Integer userId);
 
     boolean existsByUserIdAndPaymentStatusTrue(Integer userId);

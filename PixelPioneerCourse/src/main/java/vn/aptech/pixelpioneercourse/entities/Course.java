@@ -42,6 +42,11 @@ public class Course {
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
     @JsonBackReference(value = "instructor-course")
     private User instructor;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonBackReference(value = "user-course")
+    private User user;
 
     @Column(nullable = false)
     private Boolean isPublished = false;

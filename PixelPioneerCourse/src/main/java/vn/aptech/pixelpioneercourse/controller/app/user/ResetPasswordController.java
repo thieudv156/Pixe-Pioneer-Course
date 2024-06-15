@@ -150,6 +150,10 @@ public class ResetPasswordController {
         }
     }
     
+    public String getCode() {
+    	return requestedCode;
+    }
+    
     @PostMapping("/cancel")
     public String cancelRequest(HttpSession session) {
         // Reset all sections to initial state

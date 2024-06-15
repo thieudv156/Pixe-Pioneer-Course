@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
+import vn.aptech.pixelpioneercourse.dto.UserInformation;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
@@ -22,9 +23,9 @@ public class LoginApi {
     private UserService service;
     
     @PostMapping(value = "/login")
-    public ResponseEntity<Authentication> login(@RequestBody LoginDto body){
+    public ResponseEntity<UserInformation> login(@RequestBody LoginDto body){
         var session = service.processLogin(body);
-        return ResponseEntity.ok(session);
+        return ResponseEntity.ok(session.getUserInformation());
     }
     
     @GetMapping(value = "/accounts")
