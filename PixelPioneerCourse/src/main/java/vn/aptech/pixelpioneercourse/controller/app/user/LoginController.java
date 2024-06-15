@@ -34,11 +34,11 @@ public class LoginController {
         if (session.getAttribute("isUser") != null || session.getAttribute("isAdmin") != null || session.getAttribute("isInstructor") != null) {
             // Redirect based on the role
             if (session.getAttribute("isUser") != null) {
-                return "redirect:/app/course";
+                return "redirect:/app/course/";
             } else if (session.getAttribute("isAdmin") != null) {
                 return "redirect:/app/admin";
             } else if (session.getAttribute("isInstructor") != null) {
-                return "redirect:/app/course";
+                return "redirect:/app/course/instructor/";
             }
         }
         return "app/guest_view/login";
@@ -47,7 +47,7 @@ public class LoginController {
     @GetMapping("/loginSuccess")
     public String loginSuccess() {
         // Use customUser here
-        return "redirect:/app/course";
+        return "redirect:/app/course/";
     }
 
     @PostMapping("/checkLogin")

@@ -14,27 +14,10 @@
             border-radius: 0.25rem;
         }
         .editor-container {
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 420px); /* Adjust height as needed */
+            min-height: calc(100vh - 420px); /* Adjust height as needed */
             border-radius: 0.25rem;
             border: 1px solid #ced4da;
             padding: 10px;
-            overflow-y: auto; /* Make CKEditor container scrollable */
-        }
-        .page-section {
-            height: calc(100vh - 120px); /* Adjust based on your header height */
-        }
-        .scrollable-content {
-            height: calc(100vh - 420px); /* Adjust based on your header height */
-            overflow-y: auto;
-            position: relative; /* To contain the absolute positioning of the button */
-            padding-bottom: 60px; /* Make space for the fixed button */
-        }
-
-        .fixed-bottom-btn {
-            bottom: 10px;
-            width: 100%;
         }
     </style>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/decoupled-document/ckeditor.js"></script>
@@ -58,7 +41,7 @@
         </div>
     </div>
     <div class="page-section border-bottom-2">
-        <div class="container-fluid">
+        <div class="container-fluid page__container">
             <div class="row" style="height: 100%;">
                 <div class="col-md-3">
                 </div>
@@ -74,13 +57,12 @@
                             <div class="page-separator">
                                 <div class="page-separator__text">Content</div>
                             </div>
-                            <div class="scrollable-content editor-container">
-                                <div id="toolbar-container"></div>
-                                <div id="editor" class="editor" th:text="${subLessonCreateDto.content}"></div>
-                                <textarea name="content" th:field="*{content}" hidden></textarea>
-                            </div>
-                            <div class="fixed-bottom-btn">
-                                <button type="submit" class="btn btn-outline-primary-purple">Save changes</button>
+                            <div class="content-container card">
+                                <div class="editor-container">
+                                    <div id="toolbar-container"></div>
+                                    <div id="editor" class="editor" th:text="${subLessonCreateDto.content}"></div>
+                                    <textarea name="content" th:field="*{content}" hidden></textarea>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">

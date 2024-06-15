@@ -97,10 +97,11 @@ public class AppSublessonController {
 
 	@PostMapping("/instructor/{subLessonId}/update")
 	public String updateSubLesson(@ModelAttribute SubLessonCreateDto subLessonCreateDto,
-			@PathVariable Long subLessonId, RedirectAttributes redirectAttributes) {
+			@PathVariable Integer subLessonId, RedirectAttributes redirectAttributes) {
 		try {
 			// Create HttpEntity with the SubLessonCreateDto
 			HttpEntity<SubLessonCreateDto> requestEntity = new HttpEntity<>(subLessonCreateDto);
+			System.out.println("subLessonCreateDto: " + subLessonCreateDto);
 
 			// Make the API call to update the sub-lesson
 			RestTemplate restTemplate = new RestTemplate();

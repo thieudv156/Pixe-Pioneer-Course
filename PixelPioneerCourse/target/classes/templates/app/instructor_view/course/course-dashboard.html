@@ -51,16 +51,6 @@
                 </div>
             </div>
         </div>
-        <div th:fragment="flashMessages">
-            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Success!</strong> <span th:text="${successMessage}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> <span th:text="${errorMessage}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
         <div class="container page__container page-section">
             <div class="page-separator">
                 <div class="page-separator__text">Development Courses</div>
@@ -95,7 +85,6 @@
                                                 <span class="material-icons" th:text="${star <= course.reviews.size() ? 'star' : 'star_border'}"></span>
                                             </span>
                                     </div>
-                                    <small class="text-50" th:text="${course.enrollments.size() + ' students'}">6 students</small>
                                 </div>
                             </div>
                         </div>

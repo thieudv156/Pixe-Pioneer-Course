@@ -45,10 +45,15 @@ public class LessonServiceImpl implements LessonService {
         }
     }
 
-    public boolean delete(Integer id) {
+    public Integer delete(Integer id) {
         try {
+            Lesson lesson = lessonRepository.findById(id).orElse(null);
+            if (lesson == null) {
+                throw new RuntimeException("Lesson is null");
+            }
+            Integer course_id = lesson.getCourse().getId();
             lessonRepository.deleteById(id);
-            return true;
+            return course_id;
         } catch (Exception e) {
             throw new RuntimeException("Lesson is null");
         }

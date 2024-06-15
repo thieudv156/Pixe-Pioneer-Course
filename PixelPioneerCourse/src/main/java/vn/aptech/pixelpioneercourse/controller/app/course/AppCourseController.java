@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ import vn.aptech.pixelpioneercourse.entities.Lesson;
 import vn.aptech.pixelpioneercourse.entities.SubLesson;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller("clientCourseController")
 @RequestMapping("/app/course")
@@ -46,14 +48,112 @@ public class AppCourseController{
     }
 
 
-    @GetMapping("")
-    public String index(Model model, @SessionAttribute("userId") int userId){
+    @GetMapping("/")
+    public String index(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
+        int pageSize = 12; // Number of courses per page
         RestTemplate restTemplate = new RestTemplate();
         Course[] courseArray = restTemplate.getForObject(courseApiUrl, Course[].class);
         List<Course> courseList = Arrays.asList(courseArray);
-        model.addAttribute("courses", courseList);
-        System.out.println(userId);
-        return "app/course/index";
+        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
+        List<Category> categoryList = Arrays.asList(categories);
+
+        int totalCourses = courseList.size();
+        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+        // Ensure the page number is within the valid range
+        if (page < 1) {
+            page = 1;
+        } else if (page > totalPages) {
+            page = totalPages;
+        }
+
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalCourses);
+
+        // Ensure start index is not negative
+        if (start < 0) {
+            start = 0;
+        }
+
+        List<Course> courses = courseList.subList(start, end);
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("courses", courses);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("imageApiUrl", imageApiUrl);
+        model.addAttribute("totalCourses", totalCourses);
+        return "app/user_view/course/index";
+    }
+
+
+
+    @GetMapping("/category")
+    public String sortByCategory(Model model,
+                                 @RequestParam(value = "page", defaultValue = "1") int page,
+                                 @RequestParam(value = "category", required = false) String category) {
+        int pageSize = 12; // Number of courses per page
+        RestTemplate restTemplate = new RestTemplate();
+        Course[] courseArray = restTemplate.getForObject(courseApiUrl, Course[].class);
+        List<Course> courseList = Arrays.asList(courseArray);
+        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
+        List<Category> categoryList = Arrays.asList(categories);
+
+        // Filter courses based on the category parameter
+        if (category != null && !category.isEmpty()) {
+            courseArray = restTemplate.getForObject(courseApiUrl + "/category/" + category, Course[].class);
+            courseList = Arrays.asList(courseArray);
+        }
+
+        int totalCourses = courseList.size();
+        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+        // Ensure the page number is within the valid range
+        if (page < 1) {
+            page = 1;
+        } else if (page > totalPages) {
+            page = totalPages;
+        }
+
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalCourses);
+
+        List<Course> courses = courseList.subList(start, end);
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("courses", courses);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("imageApiUrl", imageApiUrl);
+        model.addAttribute("totalCourses", totalCourses);
+        model.addAttribute("selectedCategory", category);
+        return "app/user_view/course/index";
+    }
+
+    @GetMapping("/view/{id}")
+    public String showCourseByIdAndLessonId(Model model,
+                                            @PathVariable("id") Integer id,
+                                            @RequestParam(value = "lessonOrder",defaultValue = "1") Integer lessonOrder,
+                                            @RequestParam(value = "subLessonOrder",defaultValue = "1") Integer subLessonOrder){
+        RestTemplate restTemplate = new RestTemplate();
+        Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
+        if(course.isEmpty()){
+            return "redirect:/app/course";
+        }
+        List<Lesson> lessons = course.get().getLessons();
+        HashMap<Integer,SubLesson> subLessonHashMap = new HashMap<>();
+        for (Lesson lesson : lessons) {
+            for (SubLesson subLesson : lesson.getSubLessons()) {
+                subLessonHashMap.put(subLesson.getId(),subLesson);
+            }
+        }
+        Lesson currentLesson = lessons.stream().filter(lesson -> lesson.getOrderNumber().equals(lessonOrder)).toList().getFirst();
+        SubLesson currentSubLesson = currentLesson.getSubLessons().stream().filter(subLesson -> subLesson.getOrderNumber().equals(subLessonOrder)).toList().getFirst();
+        model.addAttribute("currentLesson",currentLesson);
+        model.addAttribute("currentSubLesson",currentSubLesson);
+        model.addAttribute("subLessonHashMap",subLessonHashMap);
+        model.addAttribute("lessons", lessons);
+        model.addAttribute("course", course.get());
+        model.addAttribute("pageTitle", "Course detail");
+        return "app/user_view/course/course-view";
     }
 
     @GetMapping("/instructor/courses/{instructorId}")
@@ -69,11 +169,11 @@ public class AppCourseController{
 
 
     @GetMapping("/instructor/view/{id}")
-        public String showCourseById(Model model, @PathVariable("id") Integer id){
+        public String showCourseById(Model model, @PathVariable("id") Integer id, @SessionAttribute("userId") Integer userId){
         RestTemplate restTemplate = new RestTemplate();
         Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
         if(course.isEmpty()){
-            return "redirect:/app/course/instructor/1";
+            return "redirect:/app/course/instructor/courses/"+userId;
         }
         Optional<Category[]> categories = Optional.ofNullable(restTemplate.getForObject(apiBaseUrl + "/category", Category[].class));
         List<Category> categoryList = Arrays.asList(categories.get());
@@ -93,6 +193,7 @@ public class AppCourseController{
                 subLessonHashMap.put(subLesson.getId(),subLesson);
             }
         }
+        model.addAttribute("isPublished", course.get().getIsPublished());
         model.addAttribute("subLessonHashMap",subLessonHashMap);
         model.addAttribute("courseCreateDto", courseCreateDto);
         model.addAttribute("courseId", course.get().getId());
@@ -106,7 +207,8 @@ public class AppCourseController{
     public String updateCourse(@ModelAttribute CourseCreateDto courseCreateDto,
                                @RequestParam(value = "image",required = false) MultipartFile image,
                                @PathVariable("id") Integer id,
-                               RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes,
+                               @SessionAttribute("userId") Integer userId){
         try {
             // Convert CourseCreateDto to JSON string
             String courseData = objectMapper.writeValueAsString(courseCreateDto);
@@ -135,15 +237,15 @@ public class AppCourseController{
 
             if(updatedCourse == null){
                 redirectAttributes.addFlashAttribute("errorMessage", "Course not found!");
-                return "redirect:/app/course/" + id + "/update";  // Redirect back to the course update form
+                return "redirect:/app/course/instructor/view/" + id;  // Redirect back to the course update form
             }
             redirectAttributes.addFlashAttribute("successMessage", "Course updated successfully!");
-            return "redirect:/app/course/instructor/1";  // Redirect to the course detail page
+            return "redirect:/app/course/instructor/courses/"+userId;  // Redirect to the course detail page
         } catch (Exception e) {
             // Add error message
             redirectAttributes.addFlashAttribute("errorMessage", "Error updating course: " + e.getMessage());
 
-            return "redirect:/app/course/" + id;  // Redirect back to the course update form
+            return "redirect:/app/course/instructor/view/" + id;  // Redirect back to the course update form
         }
     }
 
@@ -170,10 +272,36 @@ public class AppCourseController{
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.delete(courseApiUrl + "/" + id + "/delete");
             redirectAttributes.addFlashAttribute("successMessage", "Course deleted successfully");
-            return "redirect:/app/course/instructor/"+userId;
+            return "redirect:/app/course/instructor/courses/"+userId;
         } catch (RestClientException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting course: " + e.getMessage());
-            return "redirect:/app/course/instructor/"+userId;
+            return "redirect:/app/course/instructor/view/"+id;
+        }
+    }
+
+    @GetMapping("/instructor/{courseId}/publish")
+    public String publishCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.put(courseApiUrl + "/" + courseId + "/publish", null);
+            redirectAttributes.addFlashAttribute("successMessage", "Course published successfully");
+            return "redirect:/app/course/instructor/courses/" + userId;
+        } catch (RestClientException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error publishing course: " + e.getMessage());
+            return "redirect:/app/course/instructor/view/" + courseId;
+        }
+    }
+
+    @GetMapping("/instructor/{courseId}/unpublish")
+    public String unpublishCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.put(courseApiUrl + "/" + courseId + "/unpublish", null);
+            redirectAttributes.addFlashAttribute("successMessage", "Course unpublished successfully");
+            return "redirect:/app/course/instructor/view/" + courseId;
+        } catch (RestClientException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error unpublishing course: " + e.getMessage());
+            return "redirect:/app/course/instructor/view/" + courseId;
         }
     }
 

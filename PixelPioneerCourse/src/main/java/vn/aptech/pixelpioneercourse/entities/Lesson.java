@@ -42,6 +42,7 @@ public class Lesson {
     private List<Test> tests;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"lesson"})
     private List<SubLesson> subLessons;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
