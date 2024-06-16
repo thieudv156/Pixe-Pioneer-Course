@@ -1,57 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.cz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
-    <title>TODO supply a title</title>
+    <title>Pixel Pioneer Course</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" th:href="@{https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css}">
-
-    <!-- jQuery -->
-    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
-
-    <!-- DataTables JS -->
-    <script type="text/javascript" charset="utf8" th:src="@{https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js}"></script>
-    
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
 <div class="content-wrapper" layout:fragment="contents">
     <div class="container">
-        <h1>Enrollments</h1>
-        <table id="enrollmentsTable" class="display">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>User</th>
-                <th>Subscription Type</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="enrollment : ${enrollments}">
-                <td th:text="${enrollment.id}">1</td>
-                <td th:text="${enrollment.user.fullName}">John Doe</td>
-                <td th:text="${enrollment.subscriptionType}">Monthly</td>
-                <td th:text="${enrollment.subscriptionStatus ? 'Active' : 'Inactive'}">Active</td>
-                <td>
-                    <a th:href="@{/admin/enrollments/details/{id}(id=${enrollment.id})}">View</a>
-                    <a th:href="@{/admin/enrollments/edit/{id}(id=${enrollment.id})}">Edit</a>
-                    <a th:href="@{/admin/enrollments/delete/{id}(id=${enrollment.id})}">Delete</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
+        <div class="mdk-header-layout__content page-content">
+            <div class="page-section container page__container">
+                <div class="col-lg-10 p-0 mx-auto">
+                    <div class="page-separator">
+                        <div class="page-separator__text">Enrollments</div>
+                    </div>
+                    <div class="card mb-lg-32pt">
+                        <div class="table-responsive">
+                            <table id="enrollmentTable" class="table mb-0 thead-border-top-0 table-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Status</th>
+                                    <th>Subscription Type</th>
+                                    <th>Payment Date</th>
+                                    <th>Subscription End Date</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="enrollment : ${enrollments}">
+                                    <td th:text="${enrollment.user.getFullName()}"></td>
+                                    <td th:text="${enrollment.subscriptionStatus ? 'Active' : 'Inactive'}"></td>
+                                    <td th:text="${enrollment.subscriptionType}"></td>
+                                    <td th:text="${enrollment.paymentDate}"></td>
+                                    <td th:text="${enrollment.subscriptionEndDate}"></td>
+                                    <td>
+                                        <a th:href="@{'/admin/enrollments/details/' + ${enrollment.id}}" class="btn btn-sm btn-primary">View Detail</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
     <!-- /.content -->
 </div>
 <script>
     $(document).ready(function() {
-        $('#enrollmentsTable').DataTable();
+        $('#enrollmentTable').DataTable();
     });
 </script>
 </body>

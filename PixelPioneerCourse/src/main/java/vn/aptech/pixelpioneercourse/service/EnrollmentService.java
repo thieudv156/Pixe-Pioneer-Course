@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface EnrollmentService {
     Enrollment enrollUser(Integer userId, SubscriptionType subscriptionType, PaymentMethod paymentMethod);
-
     boolean isUserEnrolledAndPaid(Integer userId);
     List<Enrollment> findAll();
     Enrollment findById(Integer id);

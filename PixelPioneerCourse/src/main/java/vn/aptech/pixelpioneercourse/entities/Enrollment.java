@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class Enrollment {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"enrollments", "password", "email", "roles", "createdAt", "updatedAt"})
     private User user;
 
     @Column(nullable = false)

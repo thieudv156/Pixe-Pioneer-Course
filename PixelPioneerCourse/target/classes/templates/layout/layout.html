@@ -84,7 +84,7 @@
                     </button>
 
                     <!-- Navbar Brand -->
-                    <a th:href="@{/index.html}" class="navbar-brand mr-16pt">
+                    <a th:href="@{/}" class="navbar-brand mr-16pt">
                         <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
                             <span class="avatar-title rounded bg-primary">
                                 <img th:src="@{/public/images/logo.jpg}"
@@ -96,7 +96,7 @@
 
                     <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
                         <li class="nav-item active">
-                            <a th:href="@{/index.html}" class="nav-link">Home</a>
+                            <a th:href="@{/}" class="nav-link">Home</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
@@ -177,13 +177,13 @@
 
                     <ul class="nav navbar-nav ml-auto mr-0">
                         <li class="nav-item">
-                            <a th:href="@{/login.html}" class="nav-link" data-toggle="tooltip" data-title="Login"
+                            <a th:href="@{/app/login}" class="nav-link" data-toggle="tooltip" data-title="Login"
                                data-placement="bottom" data-boundary="window">
                                 <i class="material-icons">lock_open</i>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a th:href="@{/signup.html}" class="btn btn-outline-white">Get Started</a>
+                            <a th:href="@{/app/enrollments}" class="btn btn-outline-white">Get Started</a>
                         </li>
                     </ul>
                 </div>
@@ -240,7 +240,7 @@
                     <img th:src="@{/public/images/logo.jpg}" class="brand-icon" width="30" alt="Luma">
                     Pixel Pioneer Course
                 </p>
-                <p class="measure-lead-max text-50 small col-md-12">Pixel Pioneer Course is a beautifully crafted user interface for modern education platforms, 
+                <p>Pixel Pioneer Course is a beautifully crafted user interface for modern education platforms, 
                     encompassing a range of functionalities including Courses & Tutorials, Video Lessons, Student and Teacher Dashboards, and Curriculum Management. 
                     It provides a comprehensive and user-friendly experience for both learners and educators, enhancing the efficiency and effectiveness of online education.
                 </p>
@@ -263,7 +263,7 @@
 
                     <!-- Sidebar Content -->
                     <div class="d-flex align-items-center navbar-height">
-                        <form th:action="@{/index.html}" class="search-form search-form--black mx-16pt pr-0 pl-16pt">
+                        <form th:action="@{/}" class="search-form search-form--black mx-16pt pr-0 pl-16pt">
                             <input type="text" class="form-control pl-0" placeholder="Search">
                             <button class="btn" type="submit">
                                 <i class="material-icons">search</i>
@@ -271,7 +271,7 @@
                         </form>
                     </div>
 
-                    <a th:href="@{/index.html}" class="sidebar-brand ">
+                    <a th:href="@{/}" class="sidebar-brand ">
                         <span class="avatar avatar-xl sidebar-brand-icon h-auto">
                             <span class="avatar-title rounded bg-primary">
                                 <img th:src="@{/public/images/logo.jpg}" class="img-fluid"
@@ -284,7 +284,7 @@
                     <div class="sidebar-heading">Student</div>
                     <ul class="sidebar-menu">
                         <li class="sidebar-menu-item active">
-                            <a class="sidebar-menu-button" th:href="@{/index.html}">
+                            <a class="sidebar-menu-button" th:href="@{/}">
                                 <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">home</span>
                                 <span class="sidebar-menu-text">Home</span>
                             </a>
@@ -609,7 +609,7 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" th:href="@{/login.html}">
+                                    <a class="sidebar-menu-button" th:href="@{/app/login}">
                                         <span class="sidebar-menu-text">Login</span>
                                     </a>
                                 </li>
@@ -1002,6 +1002,7 @@
                         this.closest('.alert').style.display = 'none';
                     });
                 });
+            });
         </script>
     </body>
 </html>

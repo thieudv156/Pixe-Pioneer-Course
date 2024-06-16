@@ -68,7 +68,7 @@ public class User {
     @JsonManagedReference(value = "instructor-course")
     @ToString.Exclude
     private List<Course> courses;
-
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value = "user-test")
     @ToString.Exclude
