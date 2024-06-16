@@ -25,6 +25,7 @@ public class Role {
     private String roleName; // ROLE_STUDENT, ROLE_ADMIN, ROLE_INSTRUCTOR
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "user-role")
     @JsonIgnoreProperties({"role", "password", "getAuthorities()", "getGrantedAuthorities()"})
     @ToString.Exclude
     private List<User> users;

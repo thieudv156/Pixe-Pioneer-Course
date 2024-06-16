@@ -1,6 +1,7 @@
 package vn.aptech.pixelpioneercourse.controller.api.enrollment;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,19 @@ public class EnrollmentApiController {
 
         boolean isEnrolledAndPaid = enrollmentService.isUserEnrolledAndPaid(userId);
         return ResponseEntity.ok(isEnrolledAndPaid);
+    }
+    
+    @GetMapping("/check-enrollments")
+    public ResponseEntity<?> checkEnrollments(@RequestParam("userId") Integer userId) {
+        if (userId == null) {
+            return ResponseEntity.status(401).body("User not authenticated");
+        }
+
+        boolean isEnrolledAndPaid = enrollmentService.isUserEnrolledAndPaid(userId);
+        if (isEnrolledAndPaid) {
+        	return ResponseEntity.ok(isEnrolledAndPaid);
+        } else {
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(isEnrolledAndPaid);
+        }
     }
 }

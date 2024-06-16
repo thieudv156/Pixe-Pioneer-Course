@@ -3,6 +3,7 @@ package vn.aptech.pixelpioneercourse.controller.api.users;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,13 +22,17 @@ import vn.aptech.pixelpioneercourse.service.UserService;
 public class LoginApi {
     @Autowired
     private UserService service;
-    
+
     @PostMapping(value = "/login")
-    public ResponseEntity<UserInformation> login(@RequestBody LoginDto body){
+    public ResponseEntity<?> login(@RequestBody LoginDto body){
         var session = service.processLogin(body);
+        System.out.println(session);
+        if (session == null) {
+        	return ResponseEntity.badRequest().body("Account may not existed");
+        }
         return ResponseEntity.ok(session.getUserInformation());
     }
-    
+
     @GetMapping(value = "/accounts")
     public ResponseEntity<List<User>> findAllAccount(){
         List<User> result = service.findAll();

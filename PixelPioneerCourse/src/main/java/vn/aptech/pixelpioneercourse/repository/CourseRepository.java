@@ -17,7 +17,4 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     List<Course> findByInstructorId(Integer instructorId);
     List<Course> findByInstructorIdAndIsPublishedIsTrue(Integer instructorId);
     List<Course> findByInstructorIdAndIsPublishedIsFalse(Integer instructorId);
-    
-//    @Query("SELECT c FROM Courses c WHERE c.user_id = :user_id")
-    List<Course> findByUserId(Integer userId);
 }

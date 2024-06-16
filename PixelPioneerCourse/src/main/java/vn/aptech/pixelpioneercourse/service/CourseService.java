@@ -14,7 +14,6 @@ public interface  CourseService {
     boolean delete(Integer id);
     List<Course> findByCategoryId(Integer categoryId);
     List<Course> findByInstructorId(Integer instructorId);
-    List<Course> findByUserId(Integer id);
     List<Course> findByTitle(String title);
     List<Course> findAllPublishedCourses();
     List<Course> findPublishedCoursesByInstructorId(Integer instructorId);

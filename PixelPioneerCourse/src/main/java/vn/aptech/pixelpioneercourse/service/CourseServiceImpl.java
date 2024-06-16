@@ -203,15 +203,6 @@ public class CourseServiceImpl implements CourseService{
             throw new RuntimeException("Course is null");
         }
     }
-    
-    public List<Course> findByUserId(Integer id){
-        try{
-            return courseRepository.findByInstructorId(id);
-        }
-        catch (Exception e){
-            throw new RuntimeException("Course is null");
-        }
-    }
 
     //Find course by title
     public List<Course> findByTitle(String title){

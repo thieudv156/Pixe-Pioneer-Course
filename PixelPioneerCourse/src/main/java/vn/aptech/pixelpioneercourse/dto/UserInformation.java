@@ -20,5 +20,5 @@ public class UserInformation {
         username = user.getUsername();
         roles = user.getAuthorities();
     }
-    
+
 }
