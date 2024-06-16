@@ -24,7 +24,6 @@ public class User {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @JsonBackReference(value = "user-role")
     @JsonIgnoreProperties({"users", "id"})
     private Role role;
 
@@ -50,7 +49,6 @@ public class User {
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "user-enrollment")
     @ToString.Exclude
     private List<Enrollment> enrollments;
 
@@ -65,8 +63,7 @@ public class User {
     private List<Discussion> discussions;
 
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "instructor-course")
-    @ToString.Exclude
+    @JsonIgnoreProperties({"instructor", "reviews", "lessons"})
     private List<Course> courses;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

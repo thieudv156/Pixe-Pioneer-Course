@@ -47,7 +47,7 @@
     </div>
     <div class="page-section border-bottom-2">
         <div class="container page__container">
-            <form th:action="@{/templates/app/user_view/course/{id}/update(id=${courseId})}" method="post" enctype="multipart/form-data" th:object="${courseCreateDto}">
+            <form th:action="@{/app/course/instructor/{id}/update(id=${courseId})}" method="post" enctype="multipart/form-data" th:object="${courseCreateDto}">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="page-separator">
@@ -64,12 +64,12 @@
                             <small class="form-text text-muted">Shortly describe this course.</small>
                         </div>
                         <div class="page-separator">
-                            <div class="page-separator__text">Sections</div>
+                            <div class="page-separator__text">Lesson</div>
                         </div>
                         <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
                             <div th:each="lesson : ${lessons}" class="accordion__item">
                                 <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${lesson.id}" data-parent="#parent">
-                                    <span class="btn" th:text="${lesson.title}" th:onclick="'window.location.href=\'/app/lesson/instructor/view/' + ${lesson.id} + '\''">Lesson Title</span>
+                                    <span class="btn" th:text="${lesson.orderNumber} + ' - ' + ${lesson.title}" th:onclick="'window.location.href=\'/app/lesson/instructor/view/' + ${lesson.id} + '\''"></span>
                                     <span class="flex"></span>
                                     <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
                                 </a>
@@ -80,7 +80,7 @@
                                     </div>
                                     <div th:each="subLesson : ${lesson.subLessons}" class="accordion__menu-link">
                                         <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
-                                        <a class="flex" th:href="@{/app/lesson/instructor/view/{id}(id=${lesson.id})}" th:text="${subLesson.title}">Sub-Lesson Detail</a>
+                                        <a class="flex" th:href="@{/app/lesson/instructor/view/{id}(id=${lesson.id})}" th:text="${subLesson.orderNumber} + ' - ' + ${subLesson.title}">Sub-Lesson Detail</a>
                                     </div>
                                 </div>
                             </div>
@@ -153,12 +153,13 @@
                             </div>
                             <div class="list-group list-group-flush text-center">
                                 <div class="list-group-item">
-                                    <a th:href="@{{id}/delete(id=${courseId})}" class="btn btn-outline-accent-dodger-blue"><strong>Published Course</strong></a>
+                                    <a th:if="${isPublished == false}" th:href="@{/app/course/instructor/{id}/publish(id=${courseId})}" class="btn btn-outline-accent-dodger-blue"><strong>Publish Course</strong></a>
+                                    <a th:if="${isPublished == true}" th:href="@{/app/course/instructor/{id}/unpublish(id=${courseId})}" class="btn btn-outline-accent-dodger-blue"><strong>Unpublish Course</strong></a>
                                 </div>
                             </div>
                             <div class="list-group list-group-flush text-center">
                                 <div class="list-group-item">
-                                    <a th:href="@{{id}/delete(id=${courseId})}" class="btn btn-outline-accent"><strong>Delete Course</strong></a>
+                                    <a th:href="@{/app/course/instructor/{id}/delete(id=${courseId})}" class="btn btn-outline-accent"><strong>Delete Course</strong></a>
                                 </div>
                             </div>
                         </div>
@@ -190,14 +191,14 @@
                         var newLesson = $(
                             '<div class="accordion__item">' +
                                 '<a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#course-toc-' + response.id + '" data-parent="#parent">' +
-                                    '<span class="btn" onclick="window.location.href=\'/app/lesson/instructor/view/' + response.id + '\'">' + response.title + '</span>' +
+                                    '<span class="btn" onclick="window.location.href=\'/app/lesson/instructor/view/' + response.id + '\'">' + response.orderNumber + ' - ' + response.title + '</span>' +
                                     '<span class="flex"></span>' +
                                     '<span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>' +
                                 '</a>' +
                                 '<div class="accordion__menu collapse" id="course-toc-' + response.id + '">' +
                                     '<div class="accordion__menu-link">' +
-                                        '<i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>' +
-                                        '<a class="flex" href="/app/lesson/edit/' + response.id + '">' + response.title + '</a>' +
+                                        '<i class="material-icons text-70 icon-16pt icon--left">info</i>' +
+                                        ' <span class="flex">There is no sub-lesson</span>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>'

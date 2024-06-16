@@ -1,9 +1,6 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,8 +37,13 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
-    @JsonBackReference(value = "instructor-course")
+    @JsonIgnoreProperties({"courses", "reviews", "lessons","username","password","activeStatus","createdAt","enrollments","discussions","tests","provider","authorities","grantedAuthorities"})
     private User instructor;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonBackReference(value = "user-course")
+    private User user;
 
     @Column(nullable = false)
     private Boolean isPublished = false;

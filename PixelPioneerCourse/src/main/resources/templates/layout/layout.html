@@ -39,6 +39,13 @@
         <!-- Select2 -->
         <link th:href="@{/public/vendor/select2/select2.min.css}" rel="stylesheet">
         <link th:href="@{/public/css/select2.css}" rel="stylesheet">
+        <style>
+            .alert-success-custom {
+                background-color: #28a745; /* Bright green */
+                color: #ffffff; /* White text */
+                border: none;
+            }
+        </style>
 
 
     </head>
@@ -195,7 +202,7 @@
         <div class="mdk-header-layout__content page-content ">
             <div>
                 <!-- Success Message -->
-                <div th:if="${successMessage}" class="alert bg-accent text-white border-0 alert-dismissible fade show" role="alert">
+                <div th:if="${successMessage}" class="alert alert-success-custom alert-dismissible fade show" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

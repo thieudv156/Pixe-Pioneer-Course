@@ -1,27 +1,114 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
     <title>Courses</title>
+    <style>
+        .card-course {
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
-<h1>Courses</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Course ID</th>
-        <th>Course Name</th>
-        <th>Course Description</th>
-        <!-- Add more columns as needed for other Course properties -->
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="course : ${courses}">
-        <td th:text="${course.id}"></td>
-        <td th:text="${course.title}"></td>
-        <td th:text="${course.description}"></td>
-        <!-- Add more cells as needed for other Course properties -->
-    </tr>
-    </tbody>
-</table>
+<div data-push data-responsive-width="992px" class="mdk-drawer-layout js-mdk-drawer-layout" layout:fragment="contents">
+    <div class="mdk-drawer-layout__content">
+        <div class="page-section">
+            <div class="container page__container">
+                <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-24pt" style="white-space: nowrap;">
+                    <small class="flex text-muted text-headings text-uppercase mr-3 mb-2 mb-sm-0" th:text="'Displaying ' + ${courses.size()} + ' out of ' + ${totalCourses} + ' courses'"></small>
+                    <div class="w-auto ml-sm-auto table d-flex align-items-center mb-2 mb-sm-0">
+                        <small class="text-muted text-headings text-uppercase mr-3 d-none d-sm-block">Sort by</small>
+                        <a href="?sort=newest" class="sort small text-headings text-uppercase">Newest</a>
+                        <a href="?sort=popularity" class="sort small text-headings text-uppercase ml-2">Popularity</a>
+                    </div>
+                    <a href="#" data-target="#library-drawer" data-toggle="sidebar" class="btn btn-sm btn-white ml-sm-16pt">
+                        <i class="material-icons icon--left">tune</i> Filters
+                    </a>
+                </div>
+
+                <div class="page-separator">
+                    <div class="page-separator__text">All Courses</div>
+                </div>
+
+                <div class="row" id="course-container">
+                    <div th:each="course : ${courses}" class="col-md-6 col-lg-3 col-xl-3 card-group-row__col">
+                        <div class="card card-sm card--elevated p-relative o-hidden overlay js-overlay card-group-row__card"
+                             data-partial-height="80"
+                             data-trigger="click">
+                            <a th:href="@{'/app/course/instructor/view/' + ${course.id}}" class="js-image" data-position="">
+                                <img th:src="${course.frontPageImage != null} ? @{${imageApiUrl}+'/'+${course.frontPageImage.imageName}} : @{${imageApiUrl}+'/default.jpg'}" class="img-fluid" style="object-fit: cover; width: 100%; height: 100%;">
+                                <span class="overlay__content align-items-start justify-content-start"></span>
+                            </a>
+                            <div class="mdk-reveal__content">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex">
+                                            <a class="card-title" th:href="@{'/app/course/instructor/view/' + ${course.id}}" th:text="${course.title}">Course Title</a>
+                                            <small class="text-50 font-weight-bold mb-4pt" th:text="${course.instructor.fullName}">Instructor Name</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="rating flex">
+                                            <span class="rating__item"><span class="material-icons">star</span></span>
+                                            <span class="rating__item"><span class="material-icons">star</span></span>
+                                            <span class="rating__item"><span class="material-icons">star</span></span>
+                                            <span class="rating__item"><span class="material-icons">star</span></span>
+                                            <span class="rating__item"><span class="material-icons">star_border</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div class="d-flex justify-content-center mt-4">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{'?page=' + (${currentPage} - 1)}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{'?page=' + ${i}}" th:text="${i}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{'?page=' + (${currentPage} + 1)}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Drawer -->
+    <div class="mdk-drawer js-mdk-drawer" id="library-drawer" data-align="end">
+        <div class="mdk-drawer__content top-navbar">
+            <div class="sidebar sidebar-light sidebar-right py-16pt" data-perfect-scrollbar data-perfect-scrollbar-wheel-propagation="true">
+                <div class="d-flex align-items-center mb-24pt d-lg-none">
+                    <form action="index.html" class="search-form search-form--light mx-16pt pr-0 pl-16pt">
+                        <input type="text" class="form-control pl-0" placeholder="Search">
+                        <button class="btn" type="submit"><i class="material-icons">search</i></button>
+                    </form>
+                </div>
+
+                <div class="sidebar-heading">Category</div>
+                <ul class="sidebar-menu">
+                    <li th:each="category : ${categories}" class="sidebar-menu-item">
+                        <a th:href="@{'category?category=' + ${category.id}}" class="sidebar-menu-button">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">category</span>
+                            <span class="sidebar-menu-text" th:text="${category.name}">Category Name</span>
+                        </a>
+                    </li>
+                </ul>
+                <small class="text-muted text-headings text-uppercase mr-3 d-none d-sm-block sidebar-menu-button">
+                    <a th:href="@{/app/course/}" class="small text-headings text-uppercase btn btn-outline-primary-purple">Reset Filters</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

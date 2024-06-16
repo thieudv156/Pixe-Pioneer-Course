@@ -100,4 +100,28 @@ public class AppLessonController {
         }
     }
 
+    @GetMapping("/instructor/{lessonId}/delete")
+    public String deleteLesson(@PathVariable("lessonId") Integer lessonId, RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Integer> response = restTemplate.exchange(
+                    lessonApiUrl + "/" + lessonId + "/delete",
+                    HttpMethod.DELETE,
+                    null,
+                    Integer.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                Integer courseId = response.getBody();
+                redirectAttributes.addFlashAttribute("successMessage", "Lesson deleted successfully");
+                return "redirect:/app/course/instructor/view/" + courseId;
+            } else {
+                throw new RestClientException("Error deleting lesson");
+            }
+        } catch (RestClientException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting lesson: " + e.getMessage());
+            return "redirect:/app/course/instructor/courses/"+userId;
+        }
+    }
+
 }

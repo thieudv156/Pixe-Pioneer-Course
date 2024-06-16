@@ -85,7 +85,7 @@
                                 <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
                                     <div th:each="subLesson : ${subLessons}" class="accordion__item">
                                         <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#lesson-toc-' + ${subLesson.id}" data-parent="#parent">
-                                            <span class="btn" th:text="${subLesson.title}" th:onclick="'window.location.href=\'/app/sub-lesson/instructor/view/' + ${subLesson.id} + '\''">Sub-Lesson Title</span>
+                                            <span class="btn" th:text="${subLesson.orderNumber}+'-'+${subLesson.title}" th:onclick="'window.location.href=\'/app/sub-lesson/instructor/view/' + ${subLesson.id} + '\''">Sub-Lesson Title</span>
                                             <span class="flex"></span>
                                         </a>
                                     </div>
@@ -97,6 +97,16 @@
                         </div>
                         <div class="col-md-4">
                             <div class="page-separator">
+                                <div class="page-separator__text">Quizzes</div>
+                            </div>
+                            <div class="card">
+                                <div class="list-group list-group-flush text-center">
+                                    <div class="list-group-item">
+<!--                                        <a th:href="@{}" class="btn btn-outline-accent"><strong>See all Quizzes</strong></a>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="page-separator">
                                 <div class="page-separator__text">Options</div>
                             </div>
                             <div class="card">
@@ -105,7 +115,7 @@
                                 </div>
                                 <div class="list-group list-group-flush text-center">
                                     <div class="list-group-item">
-                                        <a th:href="@{{id}/delete(id=${lessonId})}" class="btn btn-outline-accent"><strong>Delete Lesson</strong></a>
+                                        <a th:href="@{/app/lesson/instructor/{id}/delete(id=${lessonId})}" class="btn btn-outline-accent"><strong>Delete Lesson</strong></a>
                                     </div>
                                 </div>
                             </div>
