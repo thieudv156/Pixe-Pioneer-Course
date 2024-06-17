@@ -21,7 +21,6 @@ public interface  CourseService {
     Course publishCourse(Integer courseId);
     Course unpublishCourse(Integer courseId);
     Course createNewCourse(Integer userId);
-    String getInstructorNameByTitle(String title);
 
     public boolean canAccessCourse(Integer userId, Integer courseId);
 }

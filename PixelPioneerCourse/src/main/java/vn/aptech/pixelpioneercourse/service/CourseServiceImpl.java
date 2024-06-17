@@ -82,15 +82,6 @@ public class CourseServiceImpl implements CourseService{
             throw new RuntimeException("List of Course is null");
         }
     }
-    
-    public String getInstructorNameByTitle(String title) {
-    	try {
-    		return courseRepository.findInstructorNameByTitle(title).get().getFullName();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    		throw new RuntimeException("Course has no instructor.");
-    	}
-    }
 
     public Course publishCourse(Integer courseId) {
         try {
