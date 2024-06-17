@@ -1,38 +1,43 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
 @Table(name = "tests")
 public class Test {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference(value = "user-test")
-    private User user;
+    @JoinColumn(name = "testFormat_id", nullable = false)
+    private TestFormat testFormat;
 
     @ManyToOne
-    @JoinColumn(name = "lesson_id", nullable = false)
-    @JsonBackReference(value = "lesson-test")
-    private Lesson lesson;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column
-    private int score;
+    private Integer score;
 
-    @OneToMany
-    private List<Quiz> quizzes;
+    @Column
+    private LocalDateTime testDate=LocalDateTime.now();
+
+    @ManyToMany
+    @JoinTable(
+            name = "test_question",
+            joinColumns = @JoinColumn(name = "test_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_id"))
+    private List<Question> questions;
+
 
 }

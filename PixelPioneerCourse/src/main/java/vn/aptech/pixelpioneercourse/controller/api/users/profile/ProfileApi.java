@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +19,8 @@ import vn.aptech.pixelpioneercourse.dto.UserDto;
 import vn.aptech.pixelpioneercourse.dto.UserInformation;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.service.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/profile")

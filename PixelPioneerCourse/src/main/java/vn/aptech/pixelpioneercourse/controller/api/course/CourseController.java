@@ -16,7 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
-import vn.aptech.pixelpioneercourse.dto.CourseDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.User;
@@ -24,13 +23,9 @@ import vn.aptech.pixelpioneercourse.service.CategoryService;
 import vn.aptech.pixelpioneercourse.service.CourseService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 import vn.aptech.pixelpioneercourse.until.ControllerUtils;
-
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/course")
@@ -40,26 +35,24 @@ public class CourseController {
     private final CategoryService categoryService;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Validator validator;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
 
-    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator) {
+    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator, UserService userService, ModelMapper modelMapper) {
         this.courseService = courseService;
         this.categoryService = categoryService;
         this.validator = validator;
+        this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ModelMapper modelMapper;
+
 
     @GetMapping("")
     public ResponseEntity<?> index() {
         try {
             List<Course> courses = courseService.findAllPublishedCourses();
-            List<CourseDto> courseDtos = courses.stream()
-                    .map(CourseDto::new)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(courseDtos);
+            return ResponseEntity.ok(courses);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
@@ -113,10 +106,7 @@ public class CourseController {
     public ResponseEntity<?> findCourseByCategoryDtoId(@PathVariable("categoryId") Integer categoryId){
         try {
             List<Course> courses = courseService.findByCategoryId(categoryId);
-            List<CourseDto> courseDtos = courses.stream()
-                    .map(CourseDto::new)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(courseDtos);
+            return ResponseEntity.ok(courses);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }

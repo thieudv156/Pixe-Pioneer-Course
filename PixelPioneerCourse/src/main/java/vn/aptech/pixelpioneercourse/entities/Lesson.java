@@ -18,7 +18,6 @@ import java.util.List;
 @Table(name = "lessons")
 @JsonIgnoreProperties({"tests", "quizzes"})
 public class Lesson {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -38,14 +37,6 @@ public class Lesson {
     private Integer orderNumber;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "lesson-test")
-    private List<Test> tests;
-
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"lesson"})
     private List<SubLesson> subLessons;
-
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "lesson-quiz")
-    private List<Quiz> quizzes;
 }

@@ -1,40 +1,36 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-
+@NoArgsConstructor
 @Entity
-@Table(name = "quizzes")
-public class Quiz {
+@Table(name = "questions")
+public class Question {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "lesson_id", nullable = false)
-    @JsonBackReference(value = "lesson-quiz")
-    private Lesson lesson;
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String question;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String correctAnswer;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String wrongAnswer1;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String wrongAnswer2;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String wrongAnswer3;
-
 }
