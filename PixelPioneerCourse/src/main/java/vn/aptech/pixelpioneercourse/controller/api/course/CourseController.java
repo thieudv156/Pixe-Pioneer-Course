@@ -89,6 +89,15 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+    
+    @GetMapping("/search-by-name")
+    public ResponseEntity<?> findCourseByName(@RequestParam("courseName") String courseName) {
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(courseService.findByTitle(courseName));
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    	}
+    }
 
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<?> findCourseByCategoryId(@PathVariable("categoryId") Integer categoryId){
@@ -131,6 +140,15 @@ public class CourseController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
+    }
+    
+    @GetMapping("/search/instructor")
+    public ResponseEntity<?> findInstructorByCourseTitle(@RequestParam("title") String title) {
+    	try {
+    		return ResponseEntity.status(HttpStatus.FOUND).body(courseService.getInstructorNameByTitle(title));
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This course has anonymous instructor.");
+    	}
     }
 
     @PutMapping("/{id}/update")

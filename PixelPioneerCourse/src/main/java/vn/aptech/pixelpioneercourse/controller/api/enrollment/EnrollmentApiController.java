@@ -66,16 +66,16 @@ public class EnrollmentApiController {
     }
     
     @GetMapping("/check-enrollments")
-    public ResponseEntity<?> checkEnrollments(@RequestParam("userId") Integer userId) {
+    public ResponseEntity<?> checkEnrollments(@RequestParam("userId") String userId) {
         if (userId == null) {
             return ResponseEntity.status(401).body("User not authenticated");
         }
-
-        boolean isEnrolledAndPaid = enrollmentService.isUserEnrolledAndPaid(userId);
+        int parsedUserId = Integer.parseInt(userId);
+        boolean isEnrolledAndPaid = enrollmentService.isUserEnrolledAndPaid(parsedUserId);
         if (isEnrolledAndPaid) {
-        	return ResponseEntity.ok(isEnrolledAndPaid);
+            return ResponseEntity.ok(isEnrolledAndPaid);
         } else {
-        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(isEnrolledAndPaid);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(isEnrolledAndPaid);
         }
     }
 }

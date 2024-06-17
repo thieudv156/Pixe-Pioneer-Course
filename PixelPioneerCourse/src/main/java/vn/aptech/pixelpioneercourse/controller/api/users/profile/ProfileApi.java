@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
 import vn.aptech.pixelpioneercourse.dto.UserCreateDto;
 import vn.aptech.pixelpioneercourse.dto.UserDto;
+import vn.aptech.pixelpioneercourse.dto.UserInformation;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
@@ -33,7 +35,7 @@ public class ProfileApi {
     private JavaMailSender mailSender;
 
     private String requestedCode = null;
-    
+
     private UserCreateDto userUpdated = null;
 
     private void sendSimpleMessage(String receiverEmail) {
@@ -57,6 +59,15 @@ public class ProfileApi {
         UserDto result = service.findByID(id);
         result.setPassword(""); // enhance security
         return ResponseEntity.ok(result);
+    }
+    
+    @GetMapping("/instructor")
+    public ResponseEntity<List<UserInformation>> getAllInstructors() {
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(service.getAllInstructors());
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    	}
     }
 
     @PutMapping("/changeInformation/{id}")

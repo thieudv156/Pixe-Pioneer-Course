@@ -4,6 +4,7 @@ import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.UserCreateDto;
 import vn.aptech.pixelpioneercourse.dto.UserDto;
+import vn.aptech.pixelpioneercourse.dto.UserInformation;
 import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
 
@@ -35,6 +36,7 @@ public interface UserService {
     boolean checkPhone(String phone);
     Authentication processLogin(LoginDto body);
     Authentication processLogin(String email, String password);
+    List<UserInformation> getAllInstructors(); //profile api
 }
 
 

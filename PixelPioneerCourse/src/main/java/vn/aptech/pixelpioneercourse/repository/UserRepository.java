@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import vn.aptech.pixelpioneercourse.dto.UserInformation;
 import vn.aptech.pixelpioneercourse.entities.User;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     
     @Query("SELECT u FROM User u WHERE u.username LIKE %:keyword% OR u.email LIKE %:keyword% OR u.fullName LIKE %:keyword%")
     List<User> searchByKeyword(@Param("keyword") String keyword);
+    @Query("SELECT u FROM User u WHERE u.role.roleName = 'ROLE_INSTRUCTOR'")
+    List<UserInformation> findAllInstructor();
 }

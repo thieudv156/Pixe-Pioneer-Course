@@ -408,5 +408,14 @@ public class UserServiceImpl implements UserService{
 
         return authentication;
     }
+    
+    public List<UserInformation> getAllInstructors() {
+    	try {
+    		return userRepository.findAllInstructor();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		return null;
+    	}
+    }
 }
 
