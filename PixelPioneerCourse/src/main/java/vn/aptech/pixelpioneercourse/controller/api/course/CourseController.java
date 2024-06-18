@@ -131,15 +131,6 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
-    
-    @GetMapping("/search/instructor")
-    public ResponseEntity<?> findInstructorByCourseTitle(@RequestParam("title") String title) {
-    	try {
-    		return ResponseEntity.status(HttpStatus.FOUND).body(courseService.getInstructorNameByTitle(title));
-    	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This course has anonymous instructor.");
-    	}
-    }
 
     @PutMapping("/{id}/update")
     public ResponseEntity<?> update(

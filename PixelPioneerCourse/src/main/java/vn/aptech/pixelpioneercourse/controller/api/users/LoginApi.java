@@ -26,9 +26,8 @@ public class LoginApi {
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody LoginDto body){
         var session = service.processLogin(body);
-        System.out.println(session);
         if (session == null) {
-        	return ResponseEntity.badRequest().body("Account may not existed");
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account does not exist.");
         }
         return ResponseEntity.ok(session.getUserInformation());
     }
