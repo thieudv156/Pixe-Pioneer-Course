@@ -36,7 +36,14 @@ public class DiscussionController {
         return (discussion == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(discussion);
     }
     
-    
+    @GetMapping("/sublesson")
+    public ResponseEntity<List<Discussion>> getDiscussionBySublessonId(@RequestParam("sLessonId") Integer sublessonId) {
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(discussionService.findBySubLessonId(sublessonId));
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    	}
+    }
 
 
 //    @GetMapping("/{id}")

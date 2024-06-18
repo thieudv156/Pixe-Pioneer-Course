@@ -2,6 +2,7 @@ package vn.aptech.pixelpioneercourse.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -28,17 +29,17 @@ public class Discussion {
 
     @ManyToOne
     @JoinColumn(name = "sub_lesson_id")
-    @JsonBackReference(value = "sublesson-discussion")
+    @JsonIgnoreProperties({"lesson","enrollment", "content"})
     private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference(value = "user-discussion")
+    @JsonIgnoreProperties({"enrollments", "createdAt", "password", "phone", "courses", "tests", "provider", "grantedAuthorities", "reviews"})
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @JsonBackReference(value = "parent-discussion")
+//    @JsonBackReference(value = "parent-discussion")
     private Discussion parent;
 
     @Column(name = "content", columnDefinition = "TEXT")
