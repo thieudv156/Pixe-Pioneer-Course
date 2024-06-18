@@ -123,9 +123,9 @@ public class UserServiceImpl implements UserService{
                         .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password.")));
 
         if (tbUser == userRepository.findByEmail(EmailorUsername).get()) {
-            return new org.springframework.security.core.userdetails.User(tbUser.getEmail(), tbUser.getPassword(), true, true, true, true, Collections.emptyList());
+            return new org.springframework.security.core.userdetails.User(tbUser.getEmail(), tbUser.getPassword(), true, true, true, true, Collections.singleton(tbUser.getGrantedAuthorities()));
         }
-        return new org.springframework.security.core.userdetails.User(tbUser.getUsername(), tbUser.getPassword(), true, true, true, true, Collections.emptyList());
+        return new org.springframework.security.core.userdetails.User(tbUser.getUsername(), tbUser.getPassword(), true, true, true, true, Collections.singleton(tbUser.getGrantedAuthorities()));
 
     }
 

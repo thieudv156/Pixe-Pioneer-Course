@@ -71,4 +71,9 @@ public class QuestionServiceImpl implements QuestionService{
     {
         return questions.stream().map(question -> modelMapper.map(question, QuestionView.class)).toList();
     }
+
+    public List<Question> findByCourseId(Integer courseId)
+    {
+        return questionRepository.findByCourseId(courseId);
+    }
 }

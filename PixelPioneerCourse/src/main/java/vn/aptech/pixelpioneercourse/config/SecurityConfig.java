@@ -97,8 +97,7 @@ public class SecurityConfig{
         return http.csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/**")
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers(HttpMethod.GET, "/app/register", "/app/login").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/app/course/instructor/**").hasAnyAuthority("ROLE_INSTRUCTOR")
+                        .requestMatchers(HttpMethod.GET, "/app/register", "/app/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/app/course/**").permitAll() // Allows anonymous, USER, and INSTRUCTOR roles
                         .requestMatchers(HttpMethod.GET, "/app/login/checkLogin", "/app/register").anonymous()
                         .requestMatchers("/public/**").permitAll()

@@ -37,6 +37,6 @@ public class Lesson {
     private Integer orderNumber;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"lesson"})
+    @JsonIgnoreProperties({"lesson","createdAt","discussions"})
     private List<SubLesson> subLessons;
 }

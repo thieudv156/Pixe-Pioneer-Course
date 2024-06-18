@@ -1,11 +1,15 @@
 package vn.aptech.pixelpioneercourse.controller.app.course;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.core.Authentication;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -306,8 +310,28 @@ public class AppCourseController{
     }
 
     @GetMapping("/view")
-    public String viewCourse(){
-        return "app/course/course-view";
+    public void viewCourse(@SessionAttribute("role") String role, HttpSession session){
+        System.out.println("Viewing course as: " + session.getAttribute("role"));
     }
+
+
+    @GetMapping("/debug/security-context")
+    public ResponseEntity<String> debugSecurityContext() {
+        Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return ResponseEntity.ok("No authentication information available");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Authentication details:\n");
+        sb.append("Principal: ").append(authentication.getPrincipal()).append("\n");
+        sb.append("Authorities: ").append(authentication.getAuthorities()).append("\n");
+        sb.append("Authenticated: ").append(authentication.isAuthenticated()).append("\n");
+
+        return ResponseEntity.ok(sb.toString());
+    }
+
+
+
 
 }
