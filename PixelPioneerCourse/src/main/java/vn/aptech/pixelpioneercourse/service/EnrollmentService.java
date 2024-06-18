@@ -14,6 +14,7 @@ public interface EnrollmentService {
     List<Enrollment> findAll();
     Enrollment findById(Integer id);
     Enrollment save(Enrollment enrollment);
+    Enrollment findByUserId(Integer id);
     void deleteById(Integer id);
     
 }

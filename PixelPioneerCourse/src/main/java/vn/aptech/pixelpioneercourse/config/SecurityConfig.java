@@ -28,12 +28,15 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import javassist.NotFoundException;
 import vn.aptech.pixelpioneercourse.repository.RoleRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
 import vn.aptech.pixelpioneercourse.service.CustomOAuth2UserService;
@@ -78,6 +81,9 @@ public class SecurityConfig{
 
     @Autowired
     private AuthenticationMiddleware authenticationMiddleware;
+    
+    @Autowired
+    private HttpSession session;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -97,7 +103,8 @@ public class SecurityConfig{
         return http.csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/**")
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers(HttpMethod.GET, "/app/register", "/app/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/app/register", "/app/login").anonymous()
+                        .requestMatchers(HttpMethod.GET, "/app/course/instructor/**").hasAnyAuthority("ROLE_INSTRUCTOR")
                         .requestMatchers(HttpMethod.GET, "/app/course/**").permitAll() // Allows anonymous, USER, and INSTRUCTOR roles
                         .requestMatchers(HttpMethod.GET, "/app/login/checkLogin", "/app/register").anonymous()
                         .requestMatchers("/public/**").permitAll()
@@ -105,22 +112,37 @@ public class SecurityConfig{
                 )
                 .oauth2Login(oauth -> {
                     oauth.loginPage("/app/login");
-                    oauth.userInfoEndpoint(o -> {
-                        o.userService(customOAuth2UserService);
-                    });
+                    oauth.userInfoEndpoint(o -> o.userService(customOAuth2UserService));
                     oauth.successHandler(new AuthenticationSuccessHandler() {
                         @Override
                         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                             DefaultOidcUser oauthUser = (DefaultOidcUser) authentication.getPrincipal();
-                            System.out.println(oauthUser);
-                            processOAuthPostLogin(oauthUser.getAttribute("email"), oauthUser.getAttribute("given_name"));
-                            response.sendRedirect("");
+                            if (processOAuthPostLogin(oauthUser.getAttribute("email"), oauthUser.getAttribute("given_name"))) {
+                                response.sendRedirect("/app/login");
+                            } else {
+                                response.sendRedirect("/");
+                            }
                         }
                     });
                 })
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // Updated to match '/logout' and method GET
-                        .logoutSuccessUrl("/app/login")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                        .logoutSuccessHandler(new LogoutSuccessHandler() {
+                            @Override
+                            public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+                                // Invalidate session and clear cookies
+                                if (authentication != null && authentication.getPrincipal() instanceof DefaultOidcUser) {
+                                    request.getSession().invalidate();
+                                    // Clear any additional cookies related to the session or OIDC
+                                    for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                                        cookie.setMaxAge(0);
+                                        cookie.setPath("/");
+                                        response.addCookie(cookie);
+                                    }
+                                }
+                                response.sendRedirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8080/app/login");
+                            }
+                        })
                         .deleteCookies("JSESSIONID")
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
@@ -189,22 +211,82 @@ public class SecurityConfig{
     @Autowired
     private RoleRepository roleRepository;
 
-    public void processOAuthPostLogin(String email, String fullname){
-        Optional<User> opUser = userRepository.findByEmail(email);
-        Role student = roleRepository.findByRoleName("ROLE_USER").get();
-        if(opUser.isEmpty()) {
-            UserCreateDtoV2 user = new UserCreateDtoV2();
-            user.setRole(student);
-            user.setActiveStatus(true);
-            user.setCreatedAt(LocalDate.now());
-            user.setProvider(Provider.GOOGLE);
-            user.setFullName(fullname);
-            user.setUsername(generateUsername(fullname));
-            PasswordEncoder ed = passwordEncoder();
-            user.setPassword(ed.encode("1"));
-            user.setPhone(generateUniquePhoneNumber());
-            user.setEmail(email);
-            userRepository.save(mapper.map(user, User.class));
+    public boolean processOAuthPostLogin(String email, String fullname) {
+    	Optional<User> opUser = null;
+    	boolean createdYet = false;
+    	try {
+        	opUser = userRepository.findByEmail(email);
+        	if (opUser.isEmpty()) throw new NotFoundException("Cannot find account");
+            if (opUser.isPresent()) {
+            	session.setAttribute("user", opUser.get());
+            	session.setAttribute("userId", opUser.get().getId());
+                session.setAttribute("isUser", true);
+                session.setAttribute("isAdmin", null);
+                session.setAttribute("isInstructor", null);
+                return false; // User exists
+            } else {
+                Role student = roleRepository.findByRoleName("ROLE_USER").orElseThrow();
+                UserCreateDtoV2 user = new UserCreateDtoV2();
+                user.setRole(student);
+                user.setActiveStatus(true);
+                user.setCreatedAt(LocalDate.now());
+                user.setProvider(Provider.GOOGLE);
+                user.setFullName(fullname);
+                user.setUsername(generateUsername(fullname));
+                user.setPassword(passwordEncoder().encode("1"));
+                user.setPhone(generateUniquePhoneNumber());
+                user.setEmail(email);
+                createdYet = true;
+                userRepository.save(mapper.map(user, User.class));
+                session.setAttribute("user", opUser.get());
+            	session.setAttribute("userId", opUser.get().getId());
+                session.setAttribute("isUser", true);
+                session.setAttribute("isAdmin", null);
+                session.setAttribute("isInstructor", null);
+                return false; // User created, proceed normally
+            }
+        } catch (Exception e){
+        	if (createdYet == false) {
+        		try {
+            		Role student = roleRepository.findByRoleName("ROLE_USER").orElseThrow();
+                    UserCreateDtoV2 user = new UserCreateDtoV2();
+                    user.setRole(student);
+                    user.setActiveStatus(true);
+                    user.setCreatedAt(LocalDate.now());
+                    user.setProvider(Provider.GOOGLE);
+                    user.setFullName(fullname);
+                    user.setUsername(generateUsername(fullname));
+                    user.setPassword(passwordEncoder().encode("1"));
+                    user.setPhone(generateUniquePhoneNumber());
+                    user.setEmail(email);
+                    System.out.println("check2");
+                    userRepository.save(mapper.map(user, User.class));
+                    createdYet = false;
+                    session.setAttribute("user", opUser.get());
+                	session.setAttribute("userId", opUser.get().getId());
+                    session.setAttribute("isUser", true);
+                    session.setAttribute("isAdmin", null);
+                    session.setAttribute("isInstructor", null);
+                    return false;
+        		} catch (Exception e2) {
+        			if (!createdYet) {
+        				session.setAttribute("user", opUser.get());
+                    	session.setAttribute("userId", opUser.get().getId());
+                        session.setAttribute("isUser", true);
+                        session.setAttribute("isAdmin", null);
+                        session.setAttribute("isInstructor", null);
+        				return false;
+        			}
+        			else return true;
+        		}
+        	} else {
+        		session.setAttribute("user", opUser.get());
+            	session.setAttribute("userId", opUser.get().getId());
+                session.setAttribute("isUser", true);
+                session.setAttribute("isAdmin", null);
+                session.setAttribute("isInstructor", null);
+        		return false;
+        	}
         }
     }
 }

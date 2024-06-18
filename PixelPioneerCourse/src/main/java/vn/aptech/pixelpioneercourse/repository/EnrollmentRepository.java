@@ -6,12 +6,12 @@ import vn.aptech.pixelpioneercourse.entities.Enrollment;
 import vn.aptech.pixelpioneercourse.entities.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer> {
     Enrollment findFirstByUserOrderByEnrolledAtDesc(User user);
     List<Enrollment> findEnrollmentsByUserId(Integer userId);
-    Enrollment findByUserId(Integer userId);
-
+    Optional<Enrollment> findByUserId(Integer userId);
     boolean existsByUserIdAndPaymentStatusTrue(Integer userId);
 }

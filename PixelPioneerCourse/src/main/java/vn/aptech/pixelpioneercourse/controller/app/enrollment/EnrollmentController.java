@@ -22,7 +22,7 @@ public class EnrollmentController {
     @ModelAttribute("userId")
     public Integer setUserSession() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        String username = authentication.getName(); //no principal
         User user = userRepository.findByUsername(username).orElse(null);
         return (user != null) ? user.getId() : null;
     }
