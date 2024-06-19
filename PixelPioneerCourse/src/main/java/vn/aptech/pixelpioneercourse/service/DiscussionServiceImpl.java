@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.DiscussionCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Discussion;
@@ -18,6 +19,11 @@ public class DiscussionServiceImpl implements DiscussionService {
     private DiscussionServiceImpl(DiscussionRepository discussionRepository) {
         this.discussionRepository = discussionRepository;
     }
+    
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SubLessonService sublessonService;
 
     @Override
     public List<Discussion> findAll() {
@@ -32,6 +38,9 @@ public class DiscussionServiceImpl implements DiscussionService {
     @Override
     public Discussion createDiscussion(DiscussionCreateDto discussionCreateDto) {
         Discussion discussion = new Discussion();
+        discussion.setUser(userService.findById(discussionCreateDto.getUserId()));
+        discussion.setSubLesson(sublessonService.findById(discussionCreateDto.getSubLessonId()));
+        if (discussionCreateDto.getParentId() != null) discussion.setParent(findById(discussionCreateDto.getParentId()));
         discussion.setContent(SensitiveWordFilter.filterSensitiveWords(discussionCreateDto.getContent()));
         discussion.setCreatedAt(LocalDateTime.now());
         return discussionRepository.save(discussion);

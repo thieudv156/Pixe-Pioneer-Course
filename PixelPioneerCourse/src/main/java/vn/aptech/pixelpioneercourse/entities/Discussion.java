@@ -29,12 +29,12 @@ public class Discussion {
 
     @ManyToOne
     @JoinColumn(name = "sub_lesson_id")
-    @JsonIgnoreProperties({"lesson","enrollment", "content"})
+    @JsonIgnoreProperties({"lesson","enrollment", "content", "discussions"})
     private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties({"enrollments", "createdAt", "password", "phone", "courses", "tests", "provider", "grantedAuthorities", "reviews"})
+    @JsonIgnoreProperties({"enrollments", "createdAt", "password", "phone", "courses", "tests", "provider", "grantedAuthorities", "reviews", "discussions"})
     private User user;
 
     @ManyToOne
@@ -49,7 +49,7 @@ public class Discussion {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "parent-discussion")
+//    @JsonManagedReference(value = "parent-discussion")
     private List<Discussion> children;
 
 }

@@ -1,6 +1,8 @@
 package vn.aptech.pixelpioneercourse.controller.api.discussion;
 
 import jakarta.validation.Valid;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import vn.aptech.pixelpioneercourse.dto.DiscussionCreateDto;
@@ -19,6 +21,9 @@ import java.util.Optional;
 public class DiscussionController {
     
     private final DiscussionService discussionService;
+    
+    @Autowired
+    private ModelMapper mapper;
 
     public DiscussionController(DiscussionService discussionService) {
         this.discussionService = discussionService;
@@ -58,18 +63,21 @@ public class DiscussionController {
 
     @PostMapping
     public ResponseEntity<Discussion> createDiscussion(@Valid @RequestBody DiscussionCreateDto discussionCreateDto) {
+    	System.out.println(discussionCreateDto);
         Discussion savedDiscussion = discussionService.createDiscussion(discussionCreateDto);
         return ResponseEntity.ok(savedDiscussion);
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<Discussion> updateDiscussion(@Valid @PathVariable Integer id, @RequestBody Discussion discussionDetails) {
-        Discussion updatedDiscussion = discussionService.findById(id);
+    public ResponseEntity<Discussion> updateDiscussion(@Valid @PathVariable Integer id, String content) {
+    	Discussion updatedDiscussion = discussionService.findById(id);
+    	DiscussionCreateDto discussion = mapper.map(updatedDiscussion, DiscussionCreateDto.class);
         if (updatedDiscussion == null) {
             return ResponseEntity.notFound().build();
         }
-        updatedDiscussion.setContent(discussionDetails.getContent());
-        updatedDiscussion.setCreatedAt(LocalDateTime.now());
+        discussion.setContent(content);
+        discussion.setCreatedAt(LocalDateTime.now());
+        discussionService.updateDiscussion(id, discussion);
         return ResponseEntity.ok(updatedDiscussion);
     }
     
