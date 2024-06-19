@@ -24,4 +24,5 @@ public interface  CourseService {
     Course createNewCourse(Integer userId);
     SubLesson startCourse(Integer courseId, Integer userId);
     boolean canAccessCourse(Integer userId, Integer courseId);
+    List<Course> getEnrolledCourses(Integer userId);
 }

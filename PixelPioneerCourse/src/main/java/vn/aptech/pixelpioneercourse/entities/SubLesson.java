@@ -30,10 +30,6 @@ public class SubLesson {
     @JoinColumn(name = "lesson_id", nullable = false)
     @JsonIgnoreProperties({"subLessons", "tests", "quizzes", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","orderNumber"})
     private Lesson lesson;
-    
-    @ManyToOne
-    @JoinColumn(name = "enrollment_id")
-    private Enrollment enrollment;
 
     @Column(columnDefinition = "TEXT")
     private String content;

@@ -271,4 +271,13 @@ public class CourseController {
     	}
     }
 
+    @GetMapping("/{userId}/get-enrolled-course")
+    public ResponseEntity<?> getEnrolledCourse(@PathVariable("userId") Integer userId){
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(courseService.getEnrolledCourses(userId));
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    	}
+    }
+
 }

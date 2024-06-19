@@ -68,6 +68,9 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("course")
     private List<Lesson> lessons;
+
+    @OneToOne(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private TestFormat testFormat;
     
     public String getImageUrl() {
         if (this.frontPageImage != null) {
