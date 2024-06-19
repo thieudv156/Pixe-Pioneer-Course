@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,7 +28,7 @@ public class Lesson {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    @JsonIgnoreProperties({"lessons", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","price","description","isPublished"})
+    @JsonIgnoreProperties({"lessons", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","price","description","isPublished","imageUrl"})
     private Course course;
 
     @Column
@@ -37,6 +38,6 @@ public class Lesson {
     private Integer orderNumber;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"lesson","createdAt","discussions"})
-    private List<SubLesson> subLessons;
+    @JsonIgnoreProperties({"lesson","createdAt","discussions","progresses"})
+    private List<SubLesson> subLessons = new ArrayList<>();
 }

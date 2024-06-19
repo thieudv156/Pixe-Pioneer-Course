@@ -85,4 +85,15 @@ public class SubLessonController {
         }
     }
 
+    @GetMapping("/{subLessonId}/{userId}/finish")
+    public ResponseEntity<?> finishSubLesson(@PathVariable("subLessonId") Integer subLessonId, @PathVariable("userId") Integer userId){
+        try {
+            Optional<SubLesson> result = Optional.ofNullable(subLessonService.finishSubLesson(subLessonId, userId));
+            return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+
 }

@@ -14,11 +14,13 @@ public class SubLessonServiceImpl implements SubLessonService {
     final private SubLessonRepository subLessonRepository;
     final private ModelMapper modelMapper;
     final private LessonService lessonService;
+    private final ProgressService progressService;
 
-    public SubLessonServiceImpl(SubLessonRepository subLessonRepository, ModelMapper modelMapper, LessonService lessonService) {
+    public SubLessonServiceImpl(SubLessonRepository subLessonRepository, ModelMapper modelMapper, LessonService lessonService, ProgressService progressService) {
         this.subLessonRepository = subLessonRepository;
         this.modelMapper = modelMapper;
         this.lessonService = lessonService;
+        this.progressService = progressService;
     }
 
     public SubLesson toSubLesson(SubLessonCreateDto dto) {
@@ -57,9 +59,11 @@ public class SubLessonServiceImpl implements SubLessonService {
             subLesson.setTitle("New Sub-Lesson");
             subLesson.setContent("Content");
             subLesson.setOrderNumber(lesson.getSubLessons().size() + 1);
-            return subLessonRepository.save(subLesson);
+            SubLesson newSubLesson = subLessonRepository.save(subLesson);
+            progressService.addProgressForNewSubLesson(subLesson.getId());
+            return newSubLesson;
         } catch (Exception e) {
-            throw new RuntimeException("SubLesson is null", e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -84,5 +88,18 @@ public class SubLessonServiceImpl implements SubLessonService {
         } catch (Exception e) {
             throw new RuntimeException("SubLesson is null", e);
         }
+    }
+
+    public SubLesson finishSubLesson(Integer subLessonId, Integer userId) {
+    	try {
+    		SubLesson subLesson = subLessonRepository.findById(subLessonId).orElse(null);
+    		if (subLesson == null) {
+    			throw new RuntimeException("SubLesson is null");
+    		}
+    		progressService.finishSubLesson(subLessonId,userId);
+    		return subLesson;
+    	} catch (Exception e) {
+    		throw new RuntimeException("SubLesson is null", e);
+    	}
     }
 }

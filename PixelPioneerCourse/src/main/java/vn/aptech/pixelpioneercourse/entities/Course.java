@@ -42,7 +42,7 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
 //    @JsonBackReference(value = "instructor-course")
-    @JsonIgnoreProperties({"id","username","password","reviews","discussions","courses","enrollments","tests","provider","grantedAuthorities"})
+    @JsonIgnoreProperties({"id","username","password","reviews","discussions","courses","enrollments","tests","provider","grantedAuthorities","authorities","progresses"})
     private User instructor;
     
     @ManyToOne
@@ -66,6 +66,7 @@ public class Course {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("course")
     private List<Lesson> lessons;
     
     public String getImageUrl() {

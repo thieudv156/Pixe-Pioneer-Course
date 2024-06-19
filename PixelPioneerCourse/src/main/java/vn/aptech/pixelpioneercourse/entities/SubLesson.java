@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -44,7 +45,11 @@ public class SubLesson {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "sublesson-discussion")
+    @JsonIgnoreProperties({"subLesson", "user"})
     private List<Discussion> discussions;
+
+    @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"subLesson", "user"})
+    private List<Progress> progresses = new ArrayList<>();
 
 }

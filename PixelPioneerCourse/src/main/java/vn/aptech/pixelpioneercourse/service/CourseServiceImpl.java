@@ -8,10 +8,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
-import vn.aptech.pixelpioneercourse.entities.Course;
-import vn.aptech.pixelpioneercourse.entities.Enrollment;
-import vn.aptech.pixelpioneercourse.entities.Image;
-import vn.aptech.pixelpioneercourse.entities.User;
+import vn.aptech.pixelpioneercourse.entities.*;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 import vn.aptech.pixelpioneercourse.repository.EnrollmentRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
@@ -30,8 +27,9 @@ public class CourseServiceImpl implements CourseService{
     final private ImageService imageService;
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final ProgressService progressService;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService, UserRepository userRepository, EnrollmentRepository enrollmentRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService, UserRepository userRepository, EnrollmentRepository enrollmentRepository, ProgressService progressService, ProgressService progressService1) {
         this.courseRepository = courseRepository;
         this.mapper = mapper;
         this.categoryService = categoryService;
@@ -39,6 +37,7 @@ public class CourseServiceImpl implements CourseService{
         this.imageService = imageService;
         this.userRepository = userRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.progressService = progressService1;
     }
 
     //from CourseCreateDto to Course
@@ -86,13 +85,31 @@ public class CourseServiceImpl implements CourseService{
     public Course publishCourse(Integer courseId) {
         try {
             Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found!"));
+                    .orElseThrow(() -> new RuntimeException("Course not found!"));
+
+            // Check if the course has at least 3 lessons
+            List<Lesson> lessons = course.getLessons();
+            if (lessons.size() < 3) {
+                throw new RuntimeException("Course must have at least 3 lessons to be published!");
+            }
+
+            // Check if each of the 3 lessons has at least 2 sublessons
+            long lessonsWithAtLeastTwoSubLessons = lessons.stream()
+                    .filter(lesson -> lesson.getSubLessons().size() >= 2)
+                    .count();
+
+            if (lessonsWithAtLeastTwoSubLessons < 3) {
+                throw new RuntimeException("Each of the 3 lessons must have at least 2 sub-lessons to be published!");
+            }
+
+            // Publish the course
             course.setIsPublished(true);
             return courseRepository.save(course);
         } catch (Exception e) {
-            throw new RuntimeException("Cannot published course!", e);
+            throw new RuntimeException(e.getMessage());
         }
     }
+
 
     public Course unpublishCourse(Integer courseId) {
         try {
@@ -212,6 +229,11 @@ public class CourseServiceImpl implements CourseService{
         catch (Exception e){
             throw new RuntimeException("Course name not found!");
         }
+    }
+
+    public SubLesson startCourse(Integer courseId, Integer userId) {
+       List<Progress> processes = progressService.createProgressByCourseId(courseId, userId);
+        return progressService.getCurrentSubLessonByCourseId(courseId, userId);
     }
 
 

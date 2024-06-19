@@ -14,4 +14,5 @@ public interface SubLessonService {
     SubLesson createNewSublesson(Integer lessonId);
     boolean delete(Integer id);
     SubLesson update(Integer id, SubLessonCreateDto dto);
+    SubLesson finishSubLesson(Integer subLessonId, Integer userId);
 }

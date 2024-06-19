@@ -4,6 +4,7 @@ import org.springframework.data.relational.core.sql.In;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
+import vn.aptech.pixelpioneercourse.entities.SubLesson;
 
 import java.util.List;
 
@@ -21,6 +22,6 @@ public interface  CourseService {
     Course publishCourse(Integer courseId);
     Course unpublishCourse(Integer courseId);
     Course createNewCourse(Integer userId);
-
-    public boolean canAccessCourse(Integer userId, Integer courseId);
+    SubLesson startCourse(Integer courseId, Integer userId);
+    boolean canAccessCourse(Integer userId, Integer courseId);
 }

@@ -140,15 +140,9 @@
                         var newSubLesson = $(
                             '<div class="accordion__item">' +
                             '<a href="#" class="accordion__toggle collapsed" data-toggle="collapse" data-target="#lesson-toc-' + response.id + '" data-parent="#parent">' +
-                            '<span class="btn" onclick="window.location.href=\'/app/sub-lesson/instructor/view/' + response.id + '\'">' + response.title + '</span>' +
+                            '<span class="btn" onclick="window.location.href=\'/app/sub-lesson/instructor/view/' + response.id + '\'">' + response.orderNumber + ' - ' + response.title + '</span>' +
                             '<span class="flex"></span>' +
                             '</a>' +
-                            '<div class="accordion__menu collapse" id="lesson-toc-' + response.id + '">' +
-                            '<div class="accordion__menu-link">' +
-                            '<i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>' +
-                            '<a class="flex" href="/app/sub-lesson/edit/' + response.id + '">' + response.title + '</a>' +
-                            '</div>' +
-                            '</div>' +
                             '</div>'
                         );
                         $('#parent').append(newSubLesson);

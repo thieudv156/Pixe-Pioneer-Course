@@ -3,6 +3,7 @@ package vn.aptech.pixelpioneercourse.controller.api.course;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.Role;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,7 @@ import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.service.CategoryService;
 import vn.aptech.pixelpioneercourse.service.CourseService;
+import vn.aptech.pixelpioneercourse.service.ProgressService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 import vn.aptech.pixelpioneercourse.until.ControllerUtils;
 import java.io.IOException;
@@ -37,13 +39,15 @@ public class CourseController {
     private final Validator validator;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final ProgressService progressService;
 
-    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator, UserService userService, ModelMapper modelMapper) {
+    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator, UserService userService, ModelMapper modelMapper, ProgressService progressService, ProgressService progressService1) {
         this.courseService = courseService;
         this.categoryService = categoryService;
         this.validator = validator;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.progressService = progressService1;
     }
 
 
@@ -239,4 +243,32 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("/{courseId}/{userId}/start-progress")
+    public ResponseEntity<?> startCourseProgress(@PathVariable("courseId") Integer courseId, @PathVariable("userId") Integer userId) {
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(courseService.startCourse(courseId,userId));
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    	}
+    }
+
+    @GetMapping("/{courseId}/{userId}/get-sub-lesson-progress")
+    public ResponseEntity<?> getCourseSubLessonProgress(@PathVariable("courseId") Integer courseId, @PathVariable Integer userId){
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(progressService.getCurrentSubLessonByCourseId(courseId,userId));
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    	}
+    }
+
+    @GetMapping("/{courseId}/{userId}/get-progress")
+    public ResponseEntity<?> getCourseProgress(@PathVariable("courseId") Integer courseId, @PathVariable Integer userId){
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(progressService.getCurrentProgressByCourseId(courseId,userId));
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    	}
+    }
+
 }

@@ -247,7 +247,7 @@ public class AppCourseController{
             return "redirect:/app/course/instructor/courses/"+userId;  // Redirect to the course detail page
         } catch (Exception e) {
             // Add error message
-            redirectAttributes.addFlashAttribute("errorMessage", "Error updating course: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/app/course/instructor/view/" + id;  // Redirect back to the course update form
         }
@@ -308,29 +308,6 @@ public class AppCourseController{
             return "redirect:/app/course/instructor/view/" + courseId;
         }
     }
-
-    @GetMapping("/view")
-    public void viewCourse(@SessionAttribute("role") String role, HttpSession session){
-        System.out.println("Viewing course as: " + session.getAttribute("role"));
-    }
-
-
-    @GetMapping("/debug/security-context")
-    public ResponseEntity<String> debugSecurityContext() {
-        Authentication authentication = (Authentication) SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return ResponseEntity.ok("No authentication information available");
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Authentication details:\n");
-        sb.append("Principal: ").append(authentication.getPrincipal()).append("\n");
-        sb.append("Authorities: ").append(authentication.getAuthorities()).append("\n");
-        sb.append("Authenticated: ").append(authentication.isAuthenticated()).append("\n");
-
-        return ResponseEntity.ok(sb.toString());
-    }
-
 
 
 

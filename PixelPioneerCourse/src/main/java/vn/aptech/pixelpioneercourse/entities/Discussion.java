@@ -1,9 +1,6 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,12 +25,10 @@ public class Discussion {
 
     @ManyToOne
     @JoinColumn(name = "sub_lesson_id")
-    @JsonBackReference(value = "sublesson-discussion")
     private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference(value = "user-discussion")
     private User user;
 
     @ManyToOne
@@ -48,7 +43,7 @@ public class Discussion {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "parent-discussion")
+    @JsonIgnoreProperties("parent")
     private List<Discussion> children;
 
 }
