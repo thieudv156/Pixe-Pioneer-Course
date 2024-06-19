@@ -21,7 +21,7 @@ public class Enrollment {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({"enrollments", "password", "email", "roles", "createdAt", "updatedAt"})
+    @JsonIgnoreProperties({"enrollments", "password", "email", "roles", "createdAt", "updatedAt", "reviews", "discussions"})
     private User user;
 
     @Column(nullable = false)

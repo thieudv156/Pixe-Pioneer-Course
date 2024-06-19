@@ -18,7 +18,7 @@ public class TestFormat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
@@ -30,7 +30,4 @@ public class TestFormat {
 
     @Column
     private Integer passingScore;
-
-    @OneToMany(mappedBy = "testFormat", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Test> tests;
 }
