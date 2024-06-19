@@ -57,7 +57,7 @@ public class SubLessonServiceImpl implements SubLessonService {
             Lesson lesson = lessonService.findById(lessonId);
             subLesson.setLesson(lesson);
             subLesson.setTitle("New Sub-Lesson");
-            subLesson.setContent("Content");
+            subLesson.setContent("<h2>Content</h2>");
             subLesson.setOrderNumber(lesson.getSubLessons().size() + 1);
             SubLesson newSubLesson = subLessonRepository.save(subLesson);
             progressService.addProgressForNewSubLesson(subLesson.getId());

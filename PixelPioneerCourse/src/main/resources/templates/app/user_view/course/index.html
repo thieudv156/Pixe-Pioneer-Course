@@ -34,7 +34,7 @@
                         <div class="card card-sm card--elevated p-relative o-hidden overlay js-overlay card-group-row__card"
                              data-partial-height="80"
                              data-trigger="click">
-                            <a th:href="@{'/app/course/instructor/view/' + ${course.id}}" class="js-image" data-position="">
+                            <a th:href="@{'/app/course/preview/' + ${course.id}}" class="js-image" data-position="">
                                 <img th:src="${course.frontPageImage != null} ? @{${imageApiUrl}+'/'+${course.frontPageImage.imageName}} : @{${imageApiUrl}+'/default.jpg'}" class="img-fluid" style="object-fit: cover; width: 100%; height: 100%;">
                                 <span class="overlay__content align-items-start justify-content-start"></span>
                             </a>

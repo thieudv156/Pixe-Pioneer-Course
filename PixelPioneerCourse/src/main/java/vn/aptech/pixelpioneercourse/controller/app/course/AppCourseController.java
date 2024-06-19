@@ -1,6 +1,7 @@
 package vn.aptech.pixelpioneercourse.controller.app.course;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
@@ -20,10 +21,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
-import vn.aptech.pixelpioneercourse.entities.Category;
-import vn.aptech.pixelpioneercourse.entities.Course;
-import vn.aptech.pixelpioneercourse.entities.Lesson;
-import vn.aptech.pixelpioneercourse.entities.SubLesson;
+import vn.aptech.pixelpioneercourse.entities.*;
+import vn.aptech.pixelpioneercourse.service.CourseService;
+import vn.aptech.pixelpioneercourse.service.ProgressService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,10 +38,15 @@ public class AppCourseController{
     private String courseApiUrl;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
+    private final ProgressService progressService;
+    private final CourseService courseService;
 
-    public AppCourseController(ModelMapper modelMapper, ObjectMapper objectMapper) {
+    @Autowired
+    public AppCourseController(ModelMapper modelMapper, ObjectMapper objectMapper,ProgressService progressService,CourseService courseService) {
         this.modelMapper = modelMapper;
         this.objectMapper = objectMapper;
+        this.progressService = progressService;
+        this.courseService = courseService;
     }
 
     @PostConstruct
@@ -136,7 +141,8 @@ public class AppCourseController{
     public String showCourseByIdAndLessonId(Model model,
                                             @PathVariable("id") Integer id,
                                             @RequestParam(value = "lessonOrder",defaultValue = "1") Integer lessonOrder,
-                                            @RequestParam(value = "subLessonOrder",defaultValue = "1") Integer subLessonOrder){
+                                            @RequestParam(value = "subLessonId",required = false) Integer subLessonId,
+                                            @SessionAttribute("userId") Integer userId){
         RestTemplate restTemplate = new RestTemplate();
         Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
         if(course.isEmpty()){
@@ -150,9 +156,23 @@ public class AppCourseController{
             }
         }
         Lesson currentLesson = lessons.stream().filter(lesson -> lesson.getOrderNumber().equals(lessonOrder)).toList().getFirst();
-        SubLesson currentSubLesson = currentLesson.getSubLessons().stream().filter(subLesson -> subLesson.getOrderNumber().equals(subLessonOrder)).toList().getFirst();
+
+        if(subLessonId == null)
+        {
+            SubLesson currentSubLesson = progressService.getCurrentSubLessonByCourseId(id,userId);
+            model.addAttribute("currentSubLesson",currentSubLesson);
+        }
+        else{
+            SubLesson currentSubLesson = currentLesson.getSubLessons().stream()
+                    .filter(subLesson -> subLesson.getId().equals(subLessonId))
+                    .findFirst()
+                    .orElse(null);
+
+            model.addAttribute("currentSubLesson",currentSubLesson);
+        }
+        Double currentProgress = progressService.getCurrentProgressByCourseId(id,userId);
+        model.addAttribute("currentProgress",currentProgress);
         model.addAttribute("currentLesson",currentLesson);
-        model.addAttribute("currentSubLesson",currentSubLesson);
         model.addAttribute("subLessonHashMap",subLessonHashMap);
         model.addAttribute("lessons", lessons);
         model.addAttribute("course", course.get());
@@ -308,6 +328,41 @@ public class AppCourseController{
             return "redirect:/app/course/instructor/view/" + courseId;
         }
     }
+
+    @GetMapping("/preview/{courseId}")
+    public String previewCourse(@PathVariable("courseId") Integer courseId, Model model) {
+        RestTemplate restTemplate = new RestTemplate();
+        Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
+        if(course.isEmpty()) {
+            return "redirect:/app/course";
+        }
+        List<Lesson> lessons = course.get().getLessons();
+
+        // Limit to the first 4 lessons
+        List<Lesson> limitedLessons = lessons.stream().limit(4).collect(Collectors.toList());
+
+        HashMap<Integer, SubLesson> subLessonHashMap = new HashMap<>();
+        for (Lesson lesson : limitedLessons) {
+            for (SubLesson subLesson : lesson.getSubLessons()) {
+                subLessonHashMap.put(subLesson.getId(), subLesson);
+            }
+        }
+        model.addAttribute("subLessonHashMap", subLessonHashMap);
+        model.addAttribute("lessons", limitedLessons);
+        model.addAttribute("course", course.get());
+        model.addAttribute("pageTitle", "Course detail");
+        return "app/user_view/course/course-preview";
+    }
+
+    @GetMapping("/{courseId}/start-course")
+    public String startCourse(@PathVariable("courseId") Integer courseId, @SessionAttribute("userId") Integer userId) {
+        if (!courseService.startCourse(courseId, userId)) {
+            return "redirect:/app/course/";
+        }
+        return "redirect:/app/course/view/" + courseId;
+    }
+
+
 
 
 

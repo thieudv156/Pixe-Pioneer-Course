@@ -22,7 +22,7 @@ public interface  CourseService {
     Course publishCourse(Integer courseId);
     Course unpublishCourse(Integer courseId);
     Course createNewCourse(Integer userId);
-    SubLesson startCourse(Integer courseId, Integer userId);
+    Boolean startCourse(Integer courseId, Integer userId);
     boolean canAccessCourse(Integer userId, Integer courseId);
     List<Course> getEnrolledCourses(Integer userId);
 }

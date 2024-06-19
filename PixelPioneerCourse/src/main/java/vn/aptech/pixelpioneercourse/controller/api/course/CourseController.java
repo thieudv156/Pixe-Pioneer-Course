@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.Role;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,13 +18,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
+import vn.aptech.pixelpioneercourse.dto.TestFormatCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.User;
-import vn.aptech.pixelpioneercourse.service.CategoryService;
-import vn.aptech.pixelpioneercourse.service.CourseService;
-import vn.aptech.pixelpioneercourse.service.ProgressService;
-import vn.aptech.pixelpioneercourse.service.UserService;
+import vn.aptech.pixelpioneercourse.service.*;
 import vn.aptech.pixelpioneercourse.until.ControllerUtils;
 import java.io.IOException;
 import java.util.List;
@@ -40,14 +39,16 @@ public class CourseController {
     private final UserService userService;
     private final ModelMapper modelMapper;
     private final ProgressService progressService;
+    private final TestFormatService testFormatService;
 
-    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator, UserService userService, ModelMapper modelMapper, ProgressService progressService, ProgressService progressService1) {
+    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator, UserService userService, ModelMapper modelMapper, ProgressService progressService1, TestFormatService testFormatService) {
         this.courseService = courseService;
         this.categoryService = categoryService;
         this.validator = validator;
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.progressService = progressService1;
+        this.testFormatService = testFormatService;
     }
 
 
@@ -249,7 +250,7 @@ public class CourseController {
     	try {
     		return ResponseEntity.status(HttpStatus.OK).body(courseService.startCourse(courseId,userId));
     	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     	}
     }
 
@@ -258,7 +259,7 @@ public class CourseController {
     	try {
     		return ResponseEntity.status(HttpStatus.OK).body(progressService.getCurrentSubLessonByCourseId(courseId,userId));
     	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     	}
     }
 
@@ -267,7 +268,7 @@ public class CourseController {
     	try {
     		return ResponseEntity.status(HttpStatus.OK).body(progressService.getCurrentProgressByCourseId(courseId,userId));
     	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     	}
     }
 
@@ -276,8 +277,18 @@ public class CourseController {
     	try {
     		return ResponseEntity.status(HttpStatus.OK).body(courseService.getEnrolledCourses(userId));
     	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     	}
     }
+
+    @GetMapping("/{courseId}/create-test-format")
+    public ResponseEntity<?> createTestFormat(@PathVariable("courseId") Integer courseId, @Valid @RequestBody TestFormatCreateDto testFormatCreateDto){
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(testFormatService.save(testFormatCreateDto));
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    	}
+    }
+
 
 }

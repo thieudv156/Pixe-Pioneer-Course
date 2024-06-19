@@ -231,9 +231,9 @@ public class CourseServiceImpl implements CourseService{
         }
     }
 
-    public SubLesson startCourse(Integer courseId, Integer userId) {
+    public Boolean startCourse(Integer courseId, Integer userId) {
        List<Progress> processes = progressService.createProgressByCourseId(courseId, userId);
-        return progressService.getCurrentSubLessonByCourseId(courseId, userId);
+        return !processes.isEmpty();
     }
 
     public List<Course> getEnrolledCourses(Integer userId) {
