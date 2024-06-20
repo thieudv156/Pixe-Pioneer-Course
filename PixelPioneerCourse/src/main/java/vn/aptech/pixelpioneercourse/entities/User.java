@@ -50,6 +50,8 @@ public class User {
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "user-enrollment")
+    @ToString.Exclude
     @JsonIgnoreProperties("user")
     private List<Enrollment> enrollments;
 
@@ -58,25 +60,21 @@ public class User {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("user")
+    @JsonManagedReference(value = "user-discussion")
     @ToString.Exclude
     private List<Discussion> discussions;
 
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"instructor", "category", "enrollments", "frontPageImage", "createdAt", "reviews", "price", "description", "isPublished","progresses","tests"})
+    @JsonManagedReference(value = "instructor-course")
+    @ToString.Exclude
     private List<Course> courses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("user")
+    @JsonManagedReference(value = "user-test")
+    @ToString.Exclude
     private List<Test> tests;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("user")
-    private List<Progress> progresses;
-
     public List<String> getAuthorities() {
-        if(role == null)
-            return Collections.singletonList("ROLE_USER");
         return Collections.singletonList(role.getRoleName());
     }
 

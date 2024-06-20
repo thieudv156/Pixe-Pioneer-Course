@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,6 +30,10 @@ public class SubLesson {
     @JsonIgnoreProperties({"subLessons", "tests", "quizzes", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","orderNumber"})
     private Lesson lesson;
 
+    @ManyToOne
+    @JoinColumn(name = "enrollment_id")
+    private Enrollment enrollment;
+
     @Column(columnDefinition = "TEXT")
     private String content;
 
@@ -41,11 +44,7 @@ public class SubLesson {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"subLesson", "user"})
+    @JsonManagedReference(value = "sublesson-discussion")
     private List<Discussion> discussions;
-
-    @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"subLesson", "user"})
-    private List<Progress> progresses = new ArrayList<>();
 
 }

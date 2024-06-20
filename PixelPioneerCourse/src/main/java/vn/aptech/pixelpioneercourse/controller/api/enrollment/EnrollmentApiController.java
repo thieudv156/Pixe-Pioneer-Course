@@ -74,7 +74,7 @@ public class EnrollmentApiController {
         boolean isEnrolledAndPaid = enrollmentService.isUserEnrolledAndPaid(userId);
         return ResponseEntity.ok(isEnrolledAndPaid);
     }
-    
+
     @GetMapping("/check-enrollments")
     public ResponseEntity<?> checkEnrollments(@RequestParam("userId") String userId) {
         if (userId == null) {
@@ -88,27 +88,27 @@ public class EnrollmentApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(isEnrolledAndPaid);
         }
     }
-    
+
     @GetMapping("/get-subscription")
     public ResponseEntity<?> getSubscription(@RequestParam("userId") String userId) {
-    	if (userId == null) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not authenticated");
-    	}
-    	int parsedUID = Integer.parseInt(userId);
-    	try {
-    	    Enrollment enrollInfo = enrollmentService.findByUserId(parsedUID);
-    	    List<Map<String, String>> subscriptionInfo = new ArrayList<>(); // Initialize the list
-    	    subscriptionInfo.add(Map.of("user_name", enrollInfo.getUser().getFullName()));
-    	    subscriptionInfo.add(Map.of("subscription_state", enrollInfo.getSubscriptionStatus().toString()));
-    	    subscriptionInfo.add(Map.of("subscription_package_name", enrollInfo.getSubscriptionType().toString()));
-    	    subscriptionInfo.add(Map.of("validity", Period.between(LocalDateTime.now().toLocalDate(), enrollInfo.getSubscriptionEndDate().toLocalDate()).toString()));
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not authenticated");
+        }
+        int parsedUID = Integer.parseInt(userId);
+        try {
+            Enrollment enrollInfo = enrollmentService.findByUserId(parsedUID);
+            List<Map<String, String>> subscriptionInfo = new ArrayList<>(); // Initialize the list
+            subscriptionInfo.add(Map.of("user_name", enrollInfo.getUser().getFullName()));
+            subscriptionInfo.add(Map.of("subscription_state", enrollInfo.getSubscriptionStatus().toString()));
+            subscriptionInfo.add(Map.of("subscription_package_name", enrollInfo.getSubscriptionType().toString()));
+            subscriptionInfo.add(Map.of("validity", Period.between(LocalDateTime.now().toLocalDate(), enrollInfo.getSubscriptionEndDate().toLocalDate()).toString()));
 
-    	    ObjectMapper objectMapper = new ObjectMapper(); // Create an ObjectMapper instance
-    	    String json = objectMapper.writeValueAsString(subscriptionInfo); // Convert subscriptionInfo to JSON
+            ObjectMapper objectMapper = new ObjectMapper(); // Create an ObjectMapper instance
+            String json = objectMapper.writeValueAsString(subscriptionInfo); // Convert subscriptionInfo to JSON
 
-    	    return ResponseEntity.status(HttpStatus.OK).body(json); // Return the JSON string
-    	} catch (Exception e) {
-    	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    	}
+            return ResponseEntity.status(HttpStatus.OK).body(json); // Return the JSON string
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

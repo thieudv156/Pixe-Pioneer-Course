@@ -16,18 +16,18 @@ public class RegisterApi {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@PostMapping(value = "/register")
 	public ResponseEntity<String> register(@RequestBody UserCreateDto dto){
-	    try {
-	    	boolean isCreated = userService.create(dto);
-		    if (isCreated) {
-		        return ResponseEntity.ok("Account Created Successfully");
-		    } else {
-		        return ResponseEntity.badRequest().body("Account may have existed with these information, please try again.");
-		    }
-	    } catch (Exception e) {
-	    	return ResponseEntity.badRequest().body(e.getMessage());
-	    }
+		try {
+			boolean isCreated = userService.create(dto);
+			if (isCreated) {
+				return ResponseEntity.ok("Account Created Successfully");
+			} else {
+				return ResponseEntity.badRequest().body("Account may have existed with these information, please try again.");
+			}
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 }

@@ -43,7 +43,7 @@ public class LessonController {
         }
     }
 
-   @GetMapping("/{lessonId}")
+    @GetMapping("/{lessonId}")
     public ResponseEntity<?> findLessonById(@PathVariable("lessonId") Integer lessonId){
         try {
             Optional<Lesson> result = Optional.ofNullable(lessonService.findById(lessonId));

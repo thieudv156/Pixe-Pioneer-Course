@@ -61,14 +61,14 @@ public class ProfileApi {
         result.setPassword(""); // enhance security
         return ResponseEntity.ok(result);
     }
-    
+
     @GetMapping("/instructor")
     public ResponseEntity<List<UserInformation>> getAllInstructors() {
-    	try {
-    		return ResponseEntity.status(HttpStatus.OK).body(service.getAllInstructors());
-    	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    	}
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(service.getAllInstructors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @PutMapping("/changeInformation/{id}")
