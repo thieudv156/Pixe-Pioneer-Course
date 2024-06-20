@@ -54,7 +54,6 @@ public class User {
     private List<Enrollment> enrollments;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "user-review")
     @ToString.Exclude
     private List<Review> reviews;
 
