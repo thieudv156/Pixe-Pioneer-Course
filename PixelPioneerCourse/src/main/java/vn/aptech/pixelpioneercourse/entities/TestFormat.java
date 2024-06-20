@@ -18,7 +18,7 @@ public class TestFormat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
