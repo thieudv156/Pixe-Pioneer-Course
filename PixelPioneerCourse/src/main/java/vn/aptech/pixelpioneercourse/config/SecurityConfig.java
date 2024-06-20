@@ -152,21 +152,17 @@ public class SecurityConfig{
 
 
     @Bean
-    @Order(2) //thu tu chay
-    public SecurityFilterChain api(HttpSecurity http) throws Exception{
-        PublicRoutes.PublicRoutesManager.publicRoutes()
-                .add(HttpMethod.GET, "/api/accounts")
-                .add(HttpMethod.POST, "/api/login", "/api/register")
-                .injectOn(http);
-        http.csrf(AbstractHttpConfigurer::disable)
-                .securityMatcher("/**")
-                .authorizeHttpRequests(request-> request.anyRequest().authenticated())
-                .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(authenticationMiddleware, UsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling(hdl->hdl.authenticationEntryPoint(
-//                        (req, res, ex) -> ResponseEntity.status(403).build()))
-                .cors(configurer-> new CorsConfiguration().applyPermitDefaultValues());
-        return http.build();
+    @Order(2)
+    public SecurityFilterChain api(HttpSecurity http) throws Exception {
+        return http.csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(HttpMethod.POST, "/api/googleLogin").permitAll()
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(authenticationMiddleware, UsernamePasswordAuthenticationFilter.class)
+            .cors().and()
+            .build();
     }
 
     public String generateUsername(String fullName) {

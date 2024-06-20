@@ -9,12 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.exceptions.TemplateInputException;
 
+import jakarta.servlet.http.HttpSession;
+import javassist.NotFoundException;
 import net.sf.jsqlparser.util.validation.metadata.DatabaseException;
 import vn.aptech.pixelpioneercourse.entities.Provider;
 import vn.aptech.pixelpioneercourse.dto.Authentication;
 import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.RoleDto;
 import vn.aptech.pixelpioneercourse.dto.UserCreateDto;
+import vn.aptech.pixelpioneercourse.dto.UserCreateDtoV2;
 import vn.aptech.pixelpioneercourse.dto.UserDto;
 import vn.aptech.pixelpioneercourse.dto.UserInformation;
 import vn.aptech.pixelpioneercourse.entities.RefreshToken;
@@ -22,11 +25,12 @@ import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.jwt.JWT;
 import vn.aptech.pixelpioneercourse.repository.RefreshTokenRepository;
+import vn.aptech.pixelpioneercourse.repository.RoleRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -317,21 +321,6 @@ public class UserServiceImpl implements UserService{
     		throw new Exception(e1.getMessage());
     	}
     }
-    
-    public void processOAuthPostLogin(String username) {
-        User existUser = userRepository.findByUsername(username).get();
-         
-        if (existUser == null) {
-            User newUser = new User();
-            newUser.setUsername(username);
-            newUser.setCreatedAt(LocalDate.now());
-            newUser.setProvider(Provider.GOOGLE);
-            newUser.setActiveStatus(true);          
-             
-            userRepository.save(newUser);        
-        }
-         
-    }
 
     // =========================================================================================================
     /*
@@ -416,6 +405,54 @@ public class UserServiceImpl implements UserService{
     		e.printStackTrace();
     		return null;
     	}
+    }
+    
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    public User processOAuthPostLogin(String email, String fullname) {
+        Optional<User> opUser = userRepository.findByEmail(email);
+        if (opUser.isPresent()) {
+            return opUser.get(); // User exists
+        } else {
+            Role student = roleRepository.findByRoleName("ROLE_USER").orElseThrow();
+            UserCreateDtoV2 user = new UserCreateDtoV2();
+            user.setRole(student);
+            user.setActiveStatus(true);
+            user.setCreatedAt(LocalDate.now());
+            user.setProvider(Provider.GOOGLE);
+            user.setFullName(fullname);
+            user.setUsername(generateUsername(fullname));
+            user.setPassword(passwordEncoder.encode("123456"));
+            user.setPhone(generateUniquePhoneNumber());
+            user.setEmail(email);
+            userRepository.save(mapper.map(user, User.class));
+            return mapper.map(user, User.class); // User created, proceed normally
+        }
+    }
+
+    public String generateUsername(String fullName) {
+        String[] names = fullName.trim().split("\\s+");
+        String firstName = names[0];
+        String lastName = names.length > 1 ? names[names.length - 1] : "";
+        LocalDateTime now = LocalDateTime.now();
+        String day = now.format(DateTimeFormatter.ofPattern("dd"));
+        String month = now.format(DateTimeFormatter.ofPattern("MM"));
+        String username = lastName + "." + firstName.charAt(0) + "." + day + month;
+        return username.toLowerCase();
+    }
+
+    public String generateUniquePhoneNumber() {
+        Random random = new Random();
+        String phoneNumber;
+        do {
+            phoneNumber = "0" + random.ints(9, 0, 10).mapToObj(Integer::toString).reduce("", (a, b) -> a + b);
+        } while (!userRepository.findByPhone(phoneNumber).isEmpty());
+        return phoneNumber;
     }
 }
 
