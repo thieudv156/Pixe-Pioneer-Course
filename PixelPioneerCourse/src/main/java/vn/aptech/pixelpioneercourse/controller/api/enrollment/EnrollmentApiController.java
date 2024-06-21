@@ -29,11 +29,14 @@ import jakarta.validation.Valid;
 @Validated
 public class EnrollmentApiController {
 
-    @Autowired
-    private EnrollmentService enrollmentService;
+    private final EnrollmentService enrollmentService;
 
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
+
+    public EnrollmentApiController(EnrollmentService enrollmentService, PaymentService paymentService) {
+        this.enrollmentService = enrollmentService;
+        this.paymentService = paymentService;
+    }
 
     @PostMapping("/process-payment")
     public ResponseEntity<?> processPayment(@SessionAttribute("userId") Integer userId, @Valid @RequestBody PaymentRequest paymentRequest, HttpSession session) {
@@ -83,9 +86,9 @@ public class EnrollmentApiController {
         int parsedUserId = Integer.parseInt(userId);
         boolean isEnrolledAndPaid = enrollmentService.isUserEnrolledAndPaid(parsedUserId);
         if (isEnrolledAndPaid) {
-            return ResponseEntity.ok(isEnrolledAndPaid);
+            return ResponseEntity.ok(true);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(isEnrolledAndPaid);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
         }
     }
 
