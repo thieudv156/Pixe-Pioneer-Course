@@ -5,8 +5,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import vn.aptech.pixelpioneercourse.entities.Enrollment;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
+
+import java.util.List;
 
 @Controller("enrollmentAppController")
 @RequestMapping("app/enrollments")
@@ -30,6 +33,16 @@ public class EnrollmentController {
     @GetMapping
     public String showEnrollments() {
         return "app/enrollment/subscription";
+    }
+    
+    @GetMapping("/user-history-payment")
+    public String showUserHistoryPayment(@SessionAttribute("userId") Integer userId, Model model) {
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        List<Enrollment> enrollments = userRepository.findById(userId).get().getEnrollments();
+        model.addAttribute("enrollments", enrollments);
+        return "app/enrollment/user-history-payment";
     }
 
     @GetMapping("/purchase-details")

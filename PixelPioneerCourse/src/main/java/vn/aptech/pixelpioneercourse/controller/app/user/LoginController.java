@@ -58,7 +58,50 @@ public class LoginController {
     public String checkLogin(@RequestParam("info") String emailorusername, @RequestParam("password") String password, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
         	User u = userService.checkLogin(emailorusername, password);
-        	Enrollment e = enrollmentService.findByUserId(u.getId());
+        	Enrollment e = null;
+        	try {
+        		e = enrollmentService.findByUserId(u.getId());
+        	} catch (Exception ex) {
+        		try {
+            		e = enrollmentService.findEnrollmentsByUserID(u.getId()).getLast();
+        		}
+        		catch (Exception ex2) {
+        			if (u.getRole() == null || u.getRole().getRoleName() == null) {
+                        redirectAttributes.addFlashAttribute("loginErrorCondition", true);
+                        redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");
+                        return "redirect:/app/login";
+                    } else if (u.getRole().getRoleName().equals("ROLE_USER") && session.getAttribute("isUser") == null) {
+                    	session.setAttribute("user", u);
+                    	session.setAttribute("userId", u.getId());
+                    	session.setAttribute("enrollment", e);
+                        session.setAttribute("isUser", true);
+                        session.setAttribute("isAdmin", null);
+                        session.setAttribute("isInstructor", null);
+                        return "redirect:/app/login/loginSuccess";
+                    } else if (u.getRole().getRoleName().equals("ROLE_ADMIN") && session.getAttribute("isAdmin") == null) {
+                        session.setAttribute("isAdmin", true);
+                        session.setAttribute("userId", u.getId());
+                        session.setAttribute("user", u);
+                        session.setAttribute("enrollment", e);
+                        session.setAttribute("isUser", null);
+                        session.setAttribute("isInstructor", null);
+                        return "redirect:/app/admin/users";
+                    } else if (u.getRole().getRoleName().equals("ROLE_INSTRUCTOR") && session.getAttribute("isInstructor") == null) {
+                    	session.setAttribute("user", u);
+                    	session.setAttribute("userId", u.getId());
+                        session.setAttribute("isInstructor", true);
+                        session.setAttribute("enrollment", e);
+                        session.setAttribute("isAdmin", null);
+                        session.setAttribute("isUser", null);
+                        return "redirect:/app/login/loginSuccess";
+                    } else {
+                    	redirectAttributes.addFlashAttribute("loginErrorCondition", true);
+                        redirectAttributes.addFlashAttribute("loginError", "Unknown error occurs");
+                        return "redirect:/app/login";
+                    }
+        		}
+        		
+        	}
             if (u.getRole() == null || u.getRole().getRoleName() == null) {
                 redirectAttributes.addFlashAttribute("loginErrorCondition", true);
                 redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");

@@ -1,5 +1,7 @@
 package vn.aptech.pixelpioneercourse.dto;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -29,4 +31,8 @@ public class UserDto {
     private String fullName;
     @Getter
     private String phone;
+    @Getter
+    private LocalDate createdAt;
+    @Getter
+    private boolean activeStatus;
 }
