@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Pixel Pioneer Course</title>
+    <link rel="icon" th:href="@{/public/images/logo.jpg}"/>
 
     <!-- Prevent the demo from appearing in search engines -->
     <meta name="robots" content="noindex">
@@ -272,14 +273,14 @@
         <div class="sidebar sidebar-dark-pickled-bluewood sidebar-left" data-perfect-scrollbar>
 
             <!-- Sidebar Content -->
-            <div class="d-flex align-items-center navbar-height">
+            <!-- <div class="d-flex align-items-center navbar-height">
                 <form th:action="@{/}" class="search-form search-form--black mx-16pt pr-0 pl-16pt">
                     <input type="text" class="form-control pl-0" placeholder="Search">
                     <button class="btn" type="submit">
                         <i class="material-icons">search</i>
                     </button>
                 </form>
-            </div>
+            </div>  -->
 
             <a th:href="@{/}" class="sidebar-brand ">
                         <span class="avatar avatar-xl sidebar-brand-icon h-auto">
@@ -376,8 +377,8 @@
                 </li>
             </ul>
 
-            <div class="sidebar-heading">Components</div>
-            <ul class="sidebar-menu">
+            <div class="sidebar-heading" th:if="${session.user != null}">Components</div>
+            <ul class="sidebar-menu" th:if="${session.user != null}">
                 <li class="sidebar-menu-item">
                     <a class="sidebar-menu-button"
                        data-toggle="collapse"
@@ -388,13 +389,18 @@
                     </a>
                     <ul class="sidebar-submenu collapse sm-indent"
                         id="components_menu">
+		                <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/users/profile/edit-my-profile}">
+                                <span class="sidebar-menu-text">Edit Profile</span>
+                            </a>
+                        </li>
                         <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/ui-buttons.html}">
+                            <a class="sidebar-menu-button" th:href="@{/app/reset-password}">
                                 <span class="sidebar-menu-text">Reset Password</span>
                             </a>
                         </li>
                         <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/ui-avatars.html}">
+                            <a class="sidebar-menu-button" th:href="@{/logout}">
                                 <span class="sidebar-menu-text">Logout</span>
                             </a>
                         </li>

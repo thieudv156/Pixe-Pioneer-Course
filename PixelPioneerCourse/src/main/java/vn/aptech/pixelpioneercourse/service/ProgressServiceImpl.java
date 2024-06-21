@@ -123,4 +123,7 @@ public class ProgressServiceImpl implements ProgressService {
         return lastProgress.getSubLesson();
     }
 
+    public List<Progress> findByUserId(Integer uid) {
+    	return progressRepository.findByUserId(uid);
+    }
 }
