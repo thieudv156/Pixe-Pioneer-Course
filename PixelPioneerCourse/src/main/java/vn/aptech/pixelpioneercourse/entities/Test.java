@@ -32,12 +32,4 @@ public class Test {
     @Column
     private LocalDateTime testDate=LocalDateTime.now();
 
-    @ManyToMany
-    @JoinTable(
-            name = "test_question",
-            joinColumns = @JoinColumn(name = "test_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id"))
-    private List<Question> questions;
-
-
 }

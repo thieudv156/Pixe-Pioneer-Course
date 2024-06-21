@@ -77,7 +77,10 @@ public class ProgressServiceImpl implements ProgressService {
     public Double getCurrentProgressByCourseId(Integer courseId, Integer userId) {
         Integer totalSubLessons = progressRepository.countTotalSubLessonsByCourseAndUser(courseId, userId);
         Integer completedSubLessons = progressRepository.countCompletedSubLessonsByCourseAndUser(courseId, userId);
-
+        if(!checkIfUserHasProgress(courseId, userId))
+        {
+            return null;
+        }
         if (totalSubLessons == 0) {
             return 0.0;
         }
@@ -123,7 +126,15 @@ public class ProgressServiceImpl implements ProgressService {
         return lastProgress.getSubLesson();
     }
 
+<<<<<<< Updated upstream
     public List<Progress> findByUserId(Integer uid) {
     	return progressRepository.findByUserId(uid);
     }
+=======
+    public Boolean checkIfUserHasProgress(Integer courseId, Integer userId) {
+        List<Progress> progresses = progressRepository.findByCourseIdAndUserId(courseId, userId);
+        return !progresses.isEmpty();
+    }
+
+>>>>>>> Stashed changes
 }

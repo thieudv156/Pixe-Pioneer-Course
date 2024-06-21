@@ -111,21 +111,8 @@
                         Courses
                     </a>
                     <div class="dropdown-menu">
-                        <a th:href="@{/courses.html}" class="dropdown-item">Browse Courses</a>
-                        <a th:href="@{/student-course.html}" class="dropdown-item">Preview Course</a>
-                        <a th:href="@{/student-lesson.html}" class="dropdown-item">Preview Lesson</a>
-                        <a th:href="@{/student-take-course.html}" class="dropdown-item">
-                            <span class="mr-16pt">Take Course</span>
-                            <span class="badge badge-notifications badge-accent text-uppercase ml-auto">Pro
-                                    </span>
-                        </a>
-                        <a th:href="@{/student-take-lesson.html}" class="dropdown-item">Take Lesson</a>
-                        <a th:href="@{/student-take-quiz.html}" class="dropdown-item">Take Quiz</a>
-                        <a th:href="@{/student-quiz-result-details.html}" class="dropdown-item">Quiz Result</a>
-                        <a th:href="@{/student-dashboard.html}" class="dropdown-item">Student Dashboard</a>
-                        <a th:href="@{/student-my-courses.html}" class="dropdown-item">My Courses</a>
-                        <a th:href="@{/student-quiz-results.html}" class="dropdown-item">My Quizzes</a>
-                        <a th:href="@{/help-center.html}" class="dropdown-item">Help Center</a>
+                        <a th:href="@{/app/course/}" class="dropdown-item">Browse Courses</a>
+                        <a th:href="@{/app/course/my-courses}" class="dropdown-item">My Courses</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -292,10 +279,10 @@
                 <span>Pixel Pioneer Course</span>
             </a>
 
-            <div class="sidebar-heading" th:if="${session.user.role.roleName=='ROLE_USER'}">Student</div>
-            <ul class="sidebar-menu" th:if="${session.user.role.roleName=='ROLE_USER'}">
+            <div class="sidebar-heading" th:if="${session.isUser}">Student</div>
+            <ul class="sidebar-menu" th:if="${session.isUser}">
                 <li class="sidebar-menu-item active">
-                    <a class="sidebar-menu-button" th:href="@{/app/users/profile/{id}(id=${session.user.id})}">
+                    <a class="sidebar-menu-button" th:href="@{/app/users/profile/{id}(id=${session.userId})}">
                         <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">face</span>
                         <span class="sidebar-menu-text">Profile</span>
                     </a>
@@ -328,8 +315,8 @@
                 </li>
             </ul>
 
-            <div class="sidebar-heading" th:if="${session.user.role.roleName=='ROLE_INSTRUCTOR'}">Instructor</div>
-            <ul class="sidebar-menu" th:if="${session.user.role.roleName=='ROLE_INSTRUCTOR'}">
+            <div class="sidebar-heading" th:if="${session.isInstructor}">Instructor</div>
+            <ul class="sidebar-menu" th:if="${session.isInstructor}">
                 <li class="sidebar-menu-item">
                     <a class="sidebar-menu-button" th:href="@{/instructor-dashboard.html}">
                         <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">school</span>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <title>Course Dashboard</title>
+    <style>
+        .form-group.card {
+            margin-bottom: 20px;
+        }
+        .invalid-feedback {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="contents">
+    <div class="pt-32pt">
+        <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+            <div class="flex d-flex flex-column flex-sm-row align-items-center">
+                <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                    <h2 class="mb-0">Question Create</h2>
+                    <ol class="breadcrumb p-0 m-0">
+                        <li class="breadcrumb-item"><a th:href="@{/index.html}">Home</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/app/course/instructor/courses/{instructorId}(instructorId=${session.userId})}">My Courses</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/app/course/instructor/view/{courseId}(courseId=${courseId})}">Edit Course</a></li>
+                        <li class="breadcrumb-item active">Edit Course</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-section">
+        <div class="container page__container">
+            <form th:action="@{/app/question/{id}/create(id=${courseId})}" method="post" th:object="${questionCreateDto}">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="page-separator">
+                            <div class="page-separator__text">Question Information</div>
+                        </div>
+                        <div class="form-group mb-24pt">
+                            <label class="form-label">Question</label>
+                            <input type="text" th:field="*{question}" class="form-control form-control-lg" placeholder="Question">
+                            <span class="alert-accent" th:errors="*{question}"></span>
+                        </div>
+                        <div class="form-group mb-32pt">
+                            <label class="form-label">Correct Answer</label>
+                            <textarea th:field="*{correctAnswer}" class="form-control" rows="3" placeholder="Correct Answer"></textarea>
+                            <span class="alert-accent" th:errors="*{correctAnswer}"></span>
+                        </div>
+                        <div class="form-group mb-32pt">
+                            <label class="form-label">Wrong Choice 1</label>
+                            <textarea th:field="*{wrongAnswer1}" class="form-control" rows="3" placeholder="Wrong Choice 1"></textarea>
+                            <span class="alert-accent" th:errors="*{wrongAnswer1}"></span>
+                        </div>
+                        <div class="form-group mb-32pt">
+                            <label class="form-label">Wrong Choice 2</label>
+                            <textarea th:field="*{wrongAnswer2}" class="form-control" rows="3" placeholder="Wrong Choice 2"></textarea>
+                            <span class="alert-accent" th:errors="*{wrongAnswer2}"></span>
+                        </div>
+                        <div class="form-group mb-32pt">
+                            <label class="form-label">Wrong Choice 3</label>
+                            <textarea th:field="*{wrongAnswer3}" class="form-control" rows="3" placeholder="Wrong Choice 3"></textarea>
+                            <span class="alert-accent" th:errors="*{wrongAnswer3}"></span>
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-outline-primary-purple">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -6,6 +6,14 @@
         .card-course {
             margin-bottom: 30px;
         }
+        .sidebar-sticky {
+            position: sticky;
+            top: 0;
+            height: calc(100vh - 20px);
+            padding-top: 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -88,7 +96,7 @@
     </div>
 
     <!-- Sidebar Drawer -->
-    <div class="mdk-drawer js-mdk-drawer" id="library-drawer" data-align="end">
+    <div class="mdk-drawer js-mdk-drawer sidebar-sticky" id="library-drawer" data-align="end">
         <div class="mdk-drawer__content top-navbar">
             <div class="sidebar sidebar-light sidebar-right py-16pt" data-perfect-scrollbar data-perfect-scrollbar-wheel-propagation="true">
                 <div class="d-flex align-items-center mb-24pt d-lg-none">

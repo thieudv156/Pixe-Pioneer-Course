@@ -11,6 +11,7 @@ import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -337,140 +338,172 @@ public class AppCourseController{
     }
 
     @GetMapping("/preview/{courseId}")
-    public String previewCourse(@PathVariable("courseId") Integer courseId, Model model) {
-        RestTemplate restTemplate = new RestTemplate();
-        Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
-        if(course.isEmpty()) {
-            return "redirect:/app/course";
-        }
-        List<Lesson> lessons = course.get().getLessons();
-
-        // Limit to the first 4 lessons
-        List<Lesson> limitedLessons = lessons.stream().limit(4).collect(Collectors.toList());
-
-        HashMap<Integer, SubLesson> subLessonHashMap = new HashMap<>();
-        for (Lesson lesson : limitedLessons) {
-            for (SubLesson subLesson : lesson.getSubLessons()) {
-                subLessonHashMap.put(subLesson.getId(), subLesson);
+    public String previewCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, Model model, @SessionAttribute("userId") Integer userId){
+        try{
+            RestTemplate restTemplate = new RestTemplate();
+            Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
+            if(course.isEmpty()) {
+                return "redirect:/app/course";
             }
+            List<Lesson> lessons = course.get().getLessons();
+
+            // Limit to the first 4 lessons
+            List<Lesson> limitedLessons = lessons.stream().limit(4).collect(Collectors.toList());
+            Double progress = progressService.getCurrentProgressByCourseId(courseId,userId);
+
+            HashMap<Integer, SubLesson> subLessonHashMap = new HashMap<>();
+            for (Lesson lesson : limitedLessons) {
+                for (SubLesson subLesson : lesson.getSubLessons()) {
+                    subLessonHashMap.put(subLesson.getId(), subLesson);
+                }
+            }
+            model.addAttribute("subLessonHashMap", subLessonHashMap);
+            model.addAttribute("lessons", limitedLessons);
+            model.addAttribute("course", course.get());
+            model.addAttribute("pageTitle", "Course detail");
+            model.addAttribute("currentProgress", progress);
+            return "app/user_view/course/course-preview";
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/app/error/500";
         }
-        model.addAttribute("subLessonHashMap", subLessonHashMap);
-        model.addAttribute("lessons", limitedLessons);
-        model.addAttribute("course", course.get());
-        model.addAttribute("pageTitle", "Course detail");
-        return "app/user_view/course/course-preview";
+
     }
 
     @GetMapping("/{courseId}/start-course")
-    public String startCourse(@PathVariable("courseId") Integer courseId, @SessionAttribute("userId") Integer userId) {
-        if (!courseService.startCourse(courseId, userId)) {
-            return "redirect:/app/course/";
+    public String startCourse(@PathVariable("courseId") Integer courseId, @SessionAttribute("userId") Integer userId, RedirectAttributes redirectAttributes) {
+        try {
+            if (!courseService.startCourse(courseId, userId)) {
+                return "redirect:/app/course/";
+            }
+            return "redirect:/app/course/view/" + courseId;
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/app/error/500";
         }
-        return "redirect:/app/course/view/" + courseId;
     }
 
     @GetMapping("/my-courses")
-    public String showMyCourses(Model model, @RequestParam(value = "page", defaultValue = "1") int page, @SessionAttribute("userId") Integer userId) {
-        int pageSize = 12; // Number of courses per page
-        RestTemplate restTemplate = new RestTemplate();
-        List<Course> courseList = courseService.getEnrolledCourses(userId);
-        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
-        List<Category> categoryList = Arrays.asList(categories);
+    public String showMyCourses(Model model, @RequestParam(value = "page", defaultValue = "1") int page, @SessionAttribute("userId") Integer userId, RedirectAttributes redirectAttributes) {
+        try {
+            int pageSize = 12; // Number of courses per page
+            RestTemplate restTemplate = new RestTemplate();
+            List<Course> courseList = courseService.getEnrolledCourses(userId);
+            Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
+            List<Category> categoryList = Arrays.asList(categories);
 
-        int totalCourses = courseList.size();
-        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+            int totalCourses = courseList.size();
+            int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
 
-        // Ensure the page number is within the valid range
-        if (page < 1) {
-            page = 1;
-        } else if (page > totalPages) {
-            page = totalPages;
+            // Ensure the page number is within the valid range
+            if (page < 1) {
+                page = 1;
+            } else if (page > totalPages) {
+                page = totalPages;
+            }
+
+            int start = (page - 1) * pageSize;
+            int end = Math.min(start + pageSize, totalCourses);
+
+            // Ensure start index is not negative
+            if (start < 0) {
+                start = 0;
+            }
+
+            List<Course> courses = courseList.subList(start, end);
+
+            // Create a map to hold course progress
+            Map<Integer, Double> courseProgressMap = new HashMap<>();
+            for (Course course : courseList) {
+                // Assuming getCourseProgress is a method that retrieves the progress for a course
+                Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
+                courseProgressMap.put(course.getId(), progress);
+            }
+
+            model.addAttribute("categories", categoryList);
+            model.addAttribute("courses", courses);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("imageApiUrl", imageApiUrl);
+            model.addAttribute("totalCourses", totalCourses);
+            model.addAttribute("courseProgressMap", courseProgressMap);
+            return "app/user_view/course/my-courses";
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "app/error/500";
         }
-
-        int start = (page - 1) * pageSize;
-        int end = Math.min(start + pageSize, totalCourses);
-
-        // Ensure start index is not negative
-        if (start < 0) {
-            start = 0;
-        }
-
-        List<Course> courses = courseList.subList(start, end);
-
-        // Create a map to hold course progress
-        Map<Integer, Double> courseProgressMap = new HashMap<>();
-        for (Course course : courseList) {
-            // Assuming getCourseProgress is a method that retrieves the progress for a course
-            Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
-            courseProgressMap.put(course.getId(), progress);
-        }
-
-        model.addAttribute("categories", categoryList);
-        model.addAttribute("courses", courses);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("imageApiUrl", imageApiUrl);
-        model.addAttribute("totalCourses", totalCourses);
-        model.addAttribute("courseProgressMap", courseProgressMap);
-        return "app/user_view/course/my-courses";
     }
 
     @GetMapping("my-courses/category")
     public String sortByCategoryMyCourses(Model model,
                                           @RequestParam(value = "page", defaultValue = "1") int page,
                                           @RequestParam(value = "category", required = false) Integer category,
-                                          @SessionAttribute("userId") Integer userId) {
-        int pageSize = 12; // Number of courses per page
-        RestTemplate restTemplate = new RestTemplate();
-        List<Course> courseList = courseService.getEnrolledCourses(userId);
-        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
-        List<Category> categoryList = Arrays.asList(categories);
+                                          @SessionAttribute("userId") Integer userId,
+                                          RedirectAttributes redirectAttributes) {
+        try{
+            int pageSize = 12; // Number of courses per page
+            RestTemplate restTemplate = new RestTemplate();
+            List<Course> courseList = courseService.getEnrolledCourses(userId);
+            Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
+            List<Category> categoryList = Arrays.asList(categories);
 
-        // Filter courses based on the category parameter
-        if (category != null) {
-           courseList = courseList.stream()
-                    .filter(course -> course.getCategory().getId().equals(category))
-                    .collect(Collectors.toList());
-        }
+            // Filter courses based on the category parameter
+            if (category != null) {
+                courseList = courseList.stream()
+                        .filter(course -> course.getCategory().getId().equals(category))
+                        .collect(Collectors.toList());
+            }
 
-        int totalCourses = courseList.size();
-        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+            int totalCourses = courseList.size();
+            int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
 
-        if (page < 1) {
-            page = 1;
-        } else if (page > totalPages) {
-            page = totalPages;
-        }
+            if (page < 1) {
+                page = 1;
+            } else if (page > totalPages) {
+                page = totalPages;
+            }
 
-        int start = (page - 1) * pageSize;
-        if (start < 0) {
-            start = 0;
+            int start = (page - 1) * pageSize;
+            if (start < 0) {
+                start = 0;
+            }
+            int end = Math.min(start + pageSize, totalCourses);
+            List<Course> courses = courseList.subList(start, end);
+            Map<Integer, Double> courseProgressMap = new HashMap<>();
+            for (Course course : courseList) {
+                // Assuming getCourseProgress is a method that retrieves the progress for a course
+                Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
+                courseProgressMap.put(course.getId(), progress);
+            }
+            model.addAttribute("courseProgressMap", courseProgressMap);
+            model.addAttribute("categories", categoryList);
+            model.addAttribute("courses", courses);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("imageApiUrl", imageApiUrl);
+            model.addAttribute("totalCourses", totalCourses);
+            model.addAttribute("selectedCategory", category);
+            return "app/user_view/course/my-courses";
         }
-        int end = Math.min(start + pageSize, totalCourses);
-        List<Course> courses = courseList.subList(start, end);
-        Map<Integer, Double> courseProgressMap = new HashMap<>();
-        for (Course course : courseList) {
-            // Assuming getCourseProgress is a method that retrieves the progress for a course
-            Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
-            courseProgressMap.put(course.getId(), progress);
+        catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/app/error/500";
         }
-        model.addAttribute("courseProgressMap", courseProgressMap);
-        model.addAttribute("categories", categoryList);
-        model.addAttribute("courses", courses);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("imageApiUrl", imageApiUrl);
-        model.addAttribute("totalCourses", totalCourses);
-        model.addAttribute("selectedCategory", category);
-        return "app/user_view/course/my-courses";
     }
 
     @GetMapping("/sub-lesson/{subLessonId}/finish-sub-lesson")
-    public String finishSubLesson(@PathVariable("subLessonId") Integer subLessonId, @SessionAttribute("userId") Integer userId) {
-        SubLesson subLesson = subLessonService.finishSubLesson(subLessonId, userId);
-        if(subLesson == null){
-            return "redirect:/app/course/my-courses";
+    public String finishSubLesson(@PathVariable("subLessonId") Integer subLessonId, @SessionAttribute("userId") Integer userId, RedirectAttributes redirectAttributes) {
+
+        try {
+            SubLesson subLesson = subLessonService.finishSubLesson(subLessonId, userId);
+            if (subLesson == null) {
+                return "redirect:/app/course/my-courses";
+            }
+            return "redirect:/app/course/view/" + subLesson.getLesson().getCourse().getId();
         }
-        return "redirect:/app/course/view/"+ subLesson.getLesson().getCourse().getId();
+        catch (Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/app/error/500";
+        }
     }
 }

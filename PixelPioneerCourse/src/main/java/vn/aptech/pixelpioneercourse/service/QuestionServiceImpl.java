@@ -1,14 +1,17 @@
 package vn.aptech.pixelpioneercourse.service;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.QuestionCreateDto;
-import vn.aptech.pixelpioneercourse.dto.QuestionView;
+import vn.aptech.pixelpioneercourse.dto.QuestionDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Question;
 import vn.aptech.pixelpioneercourse.repository.QuestionRepository;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService{
@@ -67,13 +70,36 @@ public class QuestionServiceImpl implements QuestionService{
         return questionRepository.save(question);
     }
 
-    public List<QuestionView> toQuestionViews(List<Question> questions)
-    {
-        return questions.stream().map(question -> modelMapper.map(question, QuestionView.class)).toList();
-    }
-
     public List<Question> findByCourseId(Integer courseId)
     {
         return questionRepository.findByCourseId(courseId);
+    }
+
+    public List<QuestionDto> mapRandomAnswer(Integer courseId, Integer totalQuestion){
+        List<Question> questions = findByCourseId(courseId);
+        Collections.shuffle(questions);
+        List<Question> randomQuestions = questions.subList(0, Math.min(questions.size(), totalQuestion));
+        return randomQuestions.stream().map(this::mapToDtoWithRandomAnswers).collect(Collectors.toList());
+    }
+
+    private QuestionDto mapToDtoWithRandomAnswers(Question question) {
+        QuestionDto dto = new QuestionDto();
+        dto.setId(question.getId());
+        dto.setQuestion(question.getQuestion());
+
+        List<String> answers = new ArrayList<>();
+        answers.add(question.getCorrectAnswer());
+        answers.add(question.getWrongAnswer1());
+        answers.add(question.getWrongAnswer2());
+        answers.add(question.getWrongAnswer3());
+
+        Collections.shuffle(answers);
+
+        dto.setAnswer1(answers.get(0));
+        dto.setAnswer2(answers.get(1));
+        dto.setAnswer3(answers.get(2));
+        dto.setAnswer4(answers.get(3));
+        System.out.println(dto);
+        return dto;
     }
 }

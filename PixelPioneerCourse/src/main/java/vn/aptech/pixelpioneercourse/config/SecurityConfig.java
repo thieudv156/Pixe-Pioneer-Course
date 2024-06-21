@@ -124,6 +124,7 @@ public class SecurityConfig{
                         }
                     });
                 })
+                .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage("/app/403"))
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                         .logoutSuccessHandler(new LogoutSuccessHandler() {
