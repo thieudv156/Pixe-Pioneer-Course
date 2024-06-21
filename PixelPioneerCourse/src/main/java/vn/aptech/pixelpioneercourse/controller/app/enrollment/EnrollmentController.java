@@ -52,8 +52,6 @@ public class EnrollmentController {
         return "app/enrollment/view-details-enrollment";
     }
     
-    
-
     @GetMapping("/purchase-details")
     public String showPurchaseSummary(@RequestParam String subscriptionType, Model model) {
         double price = getPrice(subscriptionType);
