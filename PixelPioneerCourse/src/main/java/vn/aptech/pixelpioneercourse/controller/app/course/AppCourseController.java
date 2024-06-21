@@ -24,6 +24,8 @@ import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.*;
 import vn.aptech.pixelpioneercourse.service.CourseService;
 import vn.aptech.pixelpioneercourse.service.ProgressService;
+import vn.aptech.pixelpioneercourse.service.SubLessonService;
+import vn.aptech.pixelpioneercourse.service.SubLessonServiceImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,13 +42,15 @@ public class AppCourseController{
     private final ModelMapper modelMapper;
     private final ProgressService progressService;
     private final CourseService courseService;
+    private final SubLessonService subLessonService;
 
     @Autowired
-    public AppCourseController(ModelMapper modelMapper, ObjectMapper objectMapper,ProgressService progressService,CourseService courseService) {
+    public AppCourseController(ModelMapper modelMapper, ObjectMapper objectMapper, ProgressService progressService, CourseService courseService, SubLessonService subLessonService) {
         this.modelMapper = modelMapper;
         this.objectMapper = objectMapper;
         this.progressService = progressService;
         this.courseService = courseService;
+        this.subLessonService = subLessonService;
     }
 
     @PostConstruct
@@ -157,24 +161,25 @@ public class AppCourseController{
                 subLessonHashMap.put(subLesson.getId(),subLesson);
             }
         }
-        Lesson currentLesson = lessons.stream().filter(lesson -> lesson.getOrderNumber().equals(lessonOrder)).toList().getFirst();
+
 
         if(subLessonId == null)
         {
             SubLesson currentSubLesson = progressService.getCurrentSubLessonByCourseId(id,userId);
             model.addAttribute("currentSubLesson",currentSubLesson);
+            model.addAttribute("currentLesson",currentSubLesson.getLesson());
         }
         else{
+            Lesson currentLesson = lessons.stream().filter(lesson -> lesson.getOrderNumber().equals(lessonOrder)).toList().getFirst();
             SubLesson currentSubLesson = currentLesson.getSubLessons().stream()
                     .filter(subLesson -> subLesson.getId().equals(subLessonId))
                     .findFirst()
                     .orElse(null);
-
+            model.addAttribute("currentLesson",currentLesson);
             model.addAttribute("currentSubLesson",currentSubLesson);
         }
         Double currentProgress = progressService.getCurrentProgressByCourseId(id,userId);
         model.addAttribute("currentProgress",currentProgress);
-        model.addAttribute("currentLesson",currentLesson);
         model.addAttribute("subLessonHashMap",subLessonHashMap);
         model.addAttribute("lessons", lessons);
         model.addAttribute("course", course.get());
@@ -460,12 +465,12 @@ public class AppCourseController{
         return "app/user_view/course/my-courses";
     }
 
-
-
-
-
-
-
-
-
+    @GetMapping("/sub-lesson/{subLessonId}/finish-sub-lesson")
+    public String finishSubLesson(@PathVariable("subLessonId") Integer subLessonId, @SessionAttribute("userId") Integer userId) {
+        SubLesson subLesson = subLessonService.finishSubLesson(subLessonId, userId);
+        if(subLesson == null){
+            return "redirect:/app/course/my-courses";
+        }
+        return "redirect:/app/course/view/"+ subLesson.getLesson().getCourse().getId();
+    }
 }

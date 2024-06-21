@@ -2,10 +2,7 @@ package vn.aptech.pixelpioneercourse.entities;
 
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,5 +36,6 @@ public class Lesson {
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"lesson","createdAt","discussions","progresses"})
+    @ToString.Exclude
     private List<SubLesson> subLessons = new ArrayList<>();
 }

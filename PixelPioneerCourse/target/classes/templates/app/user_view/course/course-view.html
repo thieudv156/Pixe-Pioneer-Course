@@ -11,7 +11,6 @@
             border-radius: 15px;
             padding: 20px;
             background-color: #f8f9fa; /* Light background color */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for better card look */
         }
         .content-container img {
             max-width: 100%; /* Ensure images don't exceed the container's width */
@@ -96,7 +95,7 @@
                         <div class="card">
                             <div class="list-group list-group-flush text-center">
                                 <div class="list-group-item">
-                                    <a th:href="@{/app/course/instructor/{id}/publish(id=${course.id})}" class="btn btn-outline-primary-purple"><strong>Mark as finish</strong></a>
+                                    <a th:href="@{/app/course/sub-lesson/{id}/finish-sub-lesson(id=${currentSubLesson.id})}" class="btn btn-outline-primary-purple"><strong>Mark as finish</strong></a>
                                 </div>
                             </div>
                             <div class="list-group list-group-flush text-center">

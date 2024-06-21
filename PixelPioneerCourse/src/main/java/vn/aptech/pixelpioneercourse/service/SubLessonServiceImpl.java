@@ -97,9 +97,9 @@ public class SubLessonServiceImpl implements SubLessonService {
     			throw new RuntimeException("SubLesson is null");
     		}
     		progressService.finishSubLesson(subLessonId,userId);
-    		return subLesson;
+            return subLesson;
     	} catch (Exception e) {
-    		throw new RuntimeException("SubLesson is null", e);
+    		throw new RuntimeException(e.getMessage());
     	}
     }
 }

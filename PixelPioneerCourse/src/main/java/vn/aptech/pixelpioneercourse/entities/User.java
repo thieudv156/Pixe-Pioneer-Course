@@ -72,6 +72,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("user")
+    @ToString.Exclude
     private List<Progress> progresses;
 
     public List<String> getAuthorities() {
@@ -88,9 +89,4 @@ public class User {
     @Setter
     @Enumerated(EnumType.STRING)
     private Provider provider;
-
-    @Override
-    public String toString() {
-        return "User{id=" + id + ", username='" + username + "', email='" + email + "', fullName='" + fullName + "', phone='" + phone + "', activeStatus=" + activeStatus + ", createdAt=" + createdAt + ", role=" + role.getRoleName() + "}";
-    }
 }

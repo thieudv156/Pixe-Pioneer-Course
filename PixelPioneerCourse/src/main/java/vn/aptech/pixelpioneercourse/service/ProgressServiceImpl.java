@@ -1,6 +1,7 @@
 package vn.aptech.pixelpioneercourse.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.entities.*;
 import vn.aptech.pixelpioneercourse.repository.*;
@@ -32,7 +33,10 @@ public class ProgressServiceImpl implements ProgressService {
 
         Optional<Course> courseOpt = courseRepository.findById(courseId);
         Optional<User> userOpt = userRepository.findById(userId);
-
+        List<Progress> existingProgress = progressRepository.findByCourseIdAndUserId(userId, courseId);
+        if(!existingProgress.isEmpty()) {
+            return existingProgress;
+        }
         if (courseOpt.isPresent() && userOpt.isPresent()) {
             Course course = courseOpt.get();
             User user = userOpt.get();
@@ -54,13 +58,20 @@ public class ProgressServiceImpl implements ProgressService {
     }
 
     public void finishSubLesson(Integer subLessonId, Integer userId) {
-        Optional<Progress> progressOpt = progressRepository.findBySubLessonIdAndUserId(subLessonId, userId);
 
-        if (progressOpt.isPresent()) {
-            Progress progress = progressOpt.get();
-            progress.setIsCompleted(true);
-            progressRepository.save(progress);
+        try {
+            Optional<Progress> progressOpt = progressRepository.findBySubLessonIdAndUserId(subLessonId, userId);
+            System.out.println(progressOpt);
+            if (progressOpt.isPresent()) {
+                Progress progress = progressOpt.get();
+                progress.setIsCompleted(true);
+                progressRepository.save(progress);
+            }
         }
+        catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 
     public Double getCurrentProgressByCourseId(Integer courseId, Integer userId) {
@@ -79,6 +90,9 @@ public class ProgressServiceImpl implements ProgressService {
 
     public SubLesson getCurrentSubLessonByCourseId(Integer courseId, Integer userId) {
         List<SubLesson> currentSubLessonOpt = progressRepository.findFirstIncompleteSubLessonByUserIdAndCourseId(courseId, userId);
+        if (currentSubLessonOpt.isEmpty()) {
+            return findLastSubLessonByCourseId(courseId, userId);
+        }
         Optional<SubLesson> currentSubLesson = Optional.ofNullable(currentSubLessonOpt.get(0));
         return currentSubLesson.orElse(null);
     }
@@ -101,6 +115,12 @@ public class ProgressServiceImpl implements ProgressService {
                 return;
             }
         }
+    }
+
+    public SubLesson findLastSubLessonByCourseId(Integer courseId, Integer userId){
+        List<Progress> progresses = progressRepository.findByCourseIdAndUserId(courseId, userId);
+        Progress lastProgress = progresses.getLast();
+        return lastProgress.getSubLesson();
     }
 
 }
