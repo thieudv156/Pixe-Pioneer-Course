@@ -1,11 +1,8 @@
 package vn.aptech.pixelpioneercourse.service;
 
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.*;
@@ -244,6 +241,10 @@ public class CourseServiceImpl implements CourseService{
 
     public List<Course> getEnrolledCourses(Integer userId) {
         return courseRepository.findDistinctByLessons_SubLessons_Progresses_User_Id(userId);
+    }
+
+    public List<Course> findTop8ByCategoryOrderByCreatedAtDesc(Category category) {
+        return courseRepository.findTop8ByCategoryOrderByCreatedAtDesc(category);
     }
 
 }
