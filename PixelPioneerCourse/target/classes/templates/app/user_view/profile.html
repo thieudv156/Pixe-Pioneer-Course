@@ -161,14 +161,14 @@
                 <div class="page-section bg-primary border-bottom-white">
                     <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-md-left">
                         <div class="flex mb-32pt mb-md-0">
-                            <h1 class="text-white mb-0" th:text="${session.user.fullName}">Full Name</h1>
+                            <h1 class="text-white mb-0" th:text="${user.fullName}">Full Name</h1>
 							<div class="d-flex align-items-center">
-							    <span class="text-white-100" th:text="${session.user.role.roleName.substring(5)}" style="font-size: large;">Role</span>
-							    <span style="margin-left: 1vh;"></span><span style="font-size: medium;" class="text-white">- Joined since </span><span class="text-white" style="font-size: medium; margin-right: 0.7vh;"></span><span th:text="${#temporals.format(session.user.createdAt, 'dd/MM/yyyy')}" style="font-size: medium;" class="text-white">Join Date</span>
+							    <span class="text-white-100" th:text="${user.role.roleName.substring(5)}" style="font-size: large;">Role</span>
+							    <span style="margin-left: 1vh;"></span><span style="font-size: medium;" class="text-white">- Joined since </span><span class="text-white" style="font-size: medium; margin-right: 0.7vh;"></span><span th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}" style="font-size: medium;" class="text-white">Join Date</span>
 							</div>
 							<span class="d-flex align-items-center">
-							    <span th:if="${session.user.activeStatus}" class="badge bg-success" style="height: 5vh; color: white; font-size: large;">Active Account</span>
-							    <span th:if="${!session.user.activeStatus}" class="badge bg-danger" style="height: 5vh; color: white; font-size: large;">Inactive Account</span>
+							    <span th:if="${user.activeStatus}" class="badge bg-success" style="height: 5vh; color: white; font-size: large;">Active Account</span>
+							    <span th:if="${!user.activeStatus}" class="badge bg-danger" style="height: 5vh; color: white; font-size: large;">Inactive Account</span>
 							</span>							                            
                         </div>
                     </div>

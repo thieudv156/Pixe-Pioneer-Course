@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,9 +31,10 @@ public class ProfileController {
 	@Autowired
 	private ResetPasswordController mailer;
 	
-	@GetMapping("/profile")
-	public String profilePage(RedirectAttributes ra) {
+	@GetMapping("/profile/{id}")
+	public String profilePage(@PathVariable("id") Integer id, RedirectAttributes ra, Model model) {
 		try {
+			model.addAttribute("user", userService.findByID(id));
 			return "app/user_view/profile";
 		} catch (Exception e) {
 			ra.addFlashAttribute("ErrorCondition",true);

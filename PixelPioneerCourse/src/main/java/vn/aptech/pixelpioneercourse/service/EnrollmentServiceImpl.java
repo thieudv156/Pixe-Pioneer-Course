@@ -89,6 +89,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     	return enrollmentRepository.findByUserId(id).
     			orElseThrow(() -> new RuntimeException("Enrollment not found"));
     }
+    
+    public List<Enrollment> findEnrollmentsByUserID(Integer id) {
+    	return enrollmentRepository.findEnrollmentsByUserId(id);
+    }
 
     public Enrollment save(Enrollment enrollment) {
         return enrollmentRepository.save(enrollment);
