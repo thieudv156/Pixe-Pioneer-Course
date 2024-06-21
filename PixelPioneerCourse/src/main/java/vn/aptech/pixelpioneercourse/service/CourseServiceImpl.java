@@ -143,6 +143,8 @@ public class CourseServiceImpl implements CourseService{
             TestFormat testFormat = new TestFormat();
             testFormat.setCourse(newCourse);
             testFormatRepository.save(testFormat);
+            Question question = new Question();
+            question.setCourse(newCourse);
             return newCourse;
         } catch (Exception e) {
             throw new RuntimeException("Cannot create new course!: "+ e.getMessage());

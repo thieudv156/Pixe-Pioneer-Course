@@ -30,7 +30,7 @@ public class TestFormat {
     private Integer duration = 10;
 
     @Column
-    private Integer totalQuestion = 5;
+    private Integer totalQuestion = 1;
 
     @Column
     private Integer passingScore = 60;

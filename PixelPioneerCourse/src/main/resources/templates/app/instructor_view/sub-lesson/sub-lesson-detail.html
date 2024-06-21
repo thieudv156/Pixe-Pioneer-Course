@@ -75,7 +75,7 @@
                                 </div>
                                 <div class="list-group list-group-flush text-center">
                                     <div class="list-group-item">
-                                        <a th:href="@{{id}/delete(id=${subLessonId})}" class="btn btn-outline-accent"><strong>Delete Sub-Lesson</strong></a>
+                                        <a th:href="@{/app/sub-lesson/instructor/{lessonId}/{id}/delete(lessonId=${lesson.id},id=${subLessonId})}" class="btn btn-outline-accent"><strong>Delete Sub-Lesson</strong></a>
                                     </div>
                                 </div>
                             </div>

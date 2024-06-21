@@ -56,6 +56,7 @@ public class Course {
     private Image frontPageImage;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)

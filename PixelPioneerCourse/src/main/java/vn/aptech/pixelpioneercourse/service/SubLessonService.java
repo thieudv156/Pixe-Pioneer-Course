@@ -12,7 +12,7 @@ public interface SubLessonService {
     List<SubLesson> findAllSubLessons();
     SubLesson findById(Integer id);
     SubLesson createNewSublesson(Integer lessonId);
-    boolean delete(Integer id);
+    Integer delete(Integer id);
     SubLesson update(Integer id, SubLessonCreateDto dto);
     SubLesson finishSubLesson(Integer subLessonId, Integer userId);
 }

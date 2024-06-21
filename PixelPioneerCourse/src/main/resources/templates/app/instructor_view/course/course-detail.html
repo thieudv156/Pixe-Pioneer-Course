@@ -134,7 +134,7 @@
                                     </div>
                                     <div th:each="subLesson : ${lesson.subLessons}" class="accordion__menu-link">
                                         <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
-                                        <a class="flex" th:href="@{/app/lesson/instructor/view/{id}(id=${lesson.id})}" th:text="${subLesson.orderNumber} + ' - ' + ${subLesson.title}">Sub-Lesson Detail</a>
+                                        <a class="flex" th:href="@{/app/sub-lesson/instructor/view/{id}(id=${subLesson.id})}" th:text="${subLesson.orderNumber} + ' - ' + ${subLesson.title}">Sub-Lesson Detail</a>
                                     </div>
                                 </div>
                             </div>
