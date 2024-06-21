@@ -47,7 +47,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonBackReference(value = "user-course")
+//    @JsonBackReference(value = "user-course")
     private User user;
 
     @Column(nullable = false)

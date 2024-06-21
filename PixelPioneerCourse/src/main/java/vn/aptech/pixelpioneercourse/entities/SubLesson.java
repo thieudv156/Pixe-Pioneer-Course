@@ -44,7 +44,7 @@ public class SubLesson {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "subLesson", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "sublesson-discussion")
+//    @JsonManagedReference(value = "sublesson-discussion")
     private List<Discussion> discussions;
 
 }

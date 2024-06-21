@@ -189,7 +189,7 @@
                         <i class="material-icons">lock_open</i>
                     </a>
                 </li>
-                <li class="nav-item" th:if="${session.user.enrollments.getLast()}">
+                <li class="nav-item" th:if="${session.enrollment.subscriptionStatus == false}">
                     <a th:href="@{/app/enrollments}" class="btn btn-outline-white">Get Started</a>
                 </li>
             </ul>
@@ -291,7 +291,7 @@
                 <span>Pixel Pioneer Course</span>
             </a>
 
-            <div class="sidebar-heading">Student</div>
+            <div class="sidebar-heading" th:if="${session.user.role == ROLE_USER}">Student</div>
             <ul class="sidebar-menu">
                 <li class="sidebar-menu-item active">
                     <a class="sidebar-menu-button" th:href="@{/}">

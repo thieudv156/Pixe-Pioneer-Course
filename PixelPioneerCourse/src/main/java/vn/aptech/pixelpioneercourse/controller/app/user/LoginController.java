@@ -13,7 +13,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import vn.aptech.pixelpioneercourse.dto.CustomOauth2User;
+import vn.aptech.pixelpioneercourse.entities.Enrollment;
 import vn.aptech.pixelpioneercourse.entities.User;
+import vn.aptech.pixelpioneercourse.service.EnrollmentService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
 @Controller
@@ -21,12 +23,14 @@ import vn.aptech.pixelpioneercourse.service.UserService;
 public class LoginController {
 
     private final UserService userService;
+    private final EnrollmentService enrollmentService;
 
     @Autowired
     private ModelMapper mapper;
 
-    public LoginController(UserService uService) {
+    public LoginController(UserService uService, EnrollmentService eService) {
         userService = uService;
+        enrollmentService = eService;
     }
 
     @GetMapping
@@ -34,7 +38,7 @@ public class LoginController {
         if (session.getAttribute("isUser") != null || session.getAttribute("isAdmin") != null || session.getAttribute("isInstructor") != null) {
             // Redirect based on the role
             if (session.getAttribute("isUser") != null) {
-                return "redirect:/app/course/";
+                return "redirect:/";
             } else if (session.getAttribute("isAdmin") != null) {
                 return "redirect:/app/admin";
             } else if (session.getAttribute("isInstructor") != null) {
@@ -47,13 +51,14 @@ public class LoginController {
     @GetMapping("/loginSuccess")
     public String loginSuccess() {
         // Use customUser here
-        return "redirect:/app/course/";
+        return "redirect:/";
     }
 
     @PostMapping("/checkLogin")
     public String checkLogin(@RequestParam("info") String emailorusername, @RequestParam("password") String password, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
         	User u = userService.checkLogin(emailorusername, password);
+        	Enrollment e = enrollmentService.findByUserId(u.getId());
             if (u.getRole() == null || u.getRole().getRoleName() == null) {
                 redirectAttributes.addFlashAttribute("loginErrorCondition", true);
                 redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");
@@ -61,6 +66,7 @@ public class LoginController {
             } else if (u.getRole().getRoleName().equals("ROLE_USER") && session.getAttribute("isUser") == null) {
             	session.setAttribute("user", u);
             	session.setAttribute("userId", u.getId());
+            	session.setAttribute("enrollment", e);
                 session.setAttribute("isUser", true);
                 session.setAttribute("isAdmin", null);
                 session.setAttribute("isInstructor", null);
@@ -69,6 +75,7 @@ public class LoginController {
                 session.setAttribute("isAdmin", true);
                 session.setAttribute("userId", u.getId());
                 session.setAttribute("user", u);
+                session.setAttribute("enrollment", e);
                 session.setAttribute("isUser", null);
                 session.setAttribute("isInstructor", null);
                 return "redirect:/app/admin/users";
@@ -76,6 +83,7 @@ public class LoginController {
             	session.setAttribute("user", u);
             	session.setAttribute("userId", u.getId());
                 session.setAttribute("isInstructor", true);
+                session.setAttribute("enrollment", e);
                 session.setAttribute("isAdmin", null);
                 session.setAttribute("isUser", null);
                 return "redirect:/app/login/loginSuccess";
@@ -86,7 +94,7 @@ public class LoginController {
             }
         } catch (Exception e) {
         	redirectAttributes.addFlashAttribute("loginErrorCondition", true);
-            redirectAttributes.addFlashAttribute("loginError", "Unknown error occurs");
+            redirectAttributes.addFlashAttribute("loginError", e.getMessage());
             return "redirect:/app/login";
         }
     }

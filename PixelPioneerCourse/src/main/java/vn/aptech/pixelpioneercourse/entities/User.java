@@ -40,7 +40,7 @@ public class User {
     @Column(nullable = false, name = "full_name")
     private String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String phone;
 
     @Column(nullable = false, name = "active_status")
@@ -50,7 +50,7 @@ public class User {
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "user-enrollment")
+//    @JsonManagedReference(value = "user-enrollment")
     @ToString.Exclude
     @JsonIgnoreProperties("user")
     private List<Enrollment> enrollments;
@@ -60,17 +60,17 @@ public class User {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "user-discussion")
+//    @JsonManagedReference(value = "user-discussion")
     @ToString.Exclude
     private List<Discussion> discussions;
 
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "instructor-course")
+//    @JsonManagedReference(value = "instructor-course")
     @ToString.Exclude
     private List<Course> courses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "user-test")
+//    @JsonManagedReference(value = "user-test")
     @ToString.Exclude
     private List<Test> tests;
 
