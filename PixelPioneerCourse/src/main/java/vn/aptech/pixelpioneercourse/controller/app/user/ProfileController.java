@@ -1,5 +1,10 @@
 package vn.aptech.pixelpioneercourse.controller.app.user;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +19,14 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import vn.aptech.pixelpioneercourse.dto.CourseDto;
 import vn.aptech.pixelpioneercourse.dto.UserCreateDto;
+import vn.aptech.pixelpioneercourse.dto.UserDto;
+import vn.aptech.pixelpioneercourse.entities.Course;
+import vn.aptech.pixelpioneercourse.entities.Progress;
 import vn.aptech.pixelpioneercourse.entities.User;
+import vn.aptech.pixelpioneercourse.service.CourseService;
+import vn.aptech.pixelpioneercourse.service.ProgressService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
 @Controller
@@ -24,6 +35,10 @@ public class ProfileController {
 	
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private CourseService courseService;
+	@Autowired
+	private ProgressService progressService;
 	
 	@Autowired
 	private ModelMapper mapper;
@@ -32,16 +47,42 @@ public class ProfileController {
 	private ResetPasswordController mailer;
 	
 	@GetMapping("/profile/{id}")
-	public String profilePage(@PathVariable("id") Integer id, RedirectAttributes ra, Model model) {
-		try {
-			model.addAttribute("user", userService.findByID(id));
-			return "app/user_view/profile";
-		} catch (Exception e) {
-			ra.addFlashAttribute("ErrorCondition",true);
-			ra.addFlashAttribute("ErrorError", "Something is wrong with your profile, contact us for further support.");
-			return "redirect:/";
-		}
-	}
+    public String profilePage(@PathVariable("id") Integer id, RedirectAttributes ra, Model model, HttpSession session) {
+        try {
+            UserDto u = userService.findByID(id);
+            Object isUser = session.getAttribute("isUser");
+            Object isInstructor = session.getAttribute("isInstructor");
+            Object isAdmin = session.getAttribute("isAdmin");
+
+            if (isUser == null && isInstructor == null && isAdmin == null) {
+                throw new Exception("User session is not valid.");
+            }
+
+            User user = userService.findById(id);
+            final Set<CourseDto> courses = new HashSet<>();
+
+            if (user.getRole().getRoleName().equals("ROLE_INSTRUCTOR")) {
+                List<Course> instructorCourses = courseService.findByInstructorId(id);
+                courses.addAll(instructorCourses.stream().map(course -> mapper.map(course, CourseDto.class)).collect(Collectors.toSet()));
+            } else {
+                List<Progress> progresses = progressService.findByUserId(id);
+                if (progresses != null) {
+                    progresses.forEach(progress -> {
+                        Course course = progress.getSubLesson().getLesson().getCourse();
+                        courses.add(mapper.map(course, CourseDto.class));
+                    });
+                }
+            }
+
+            model.addAttribute("user", u);
+            model.addAttribute("courses", courses);
+            return "app/user_view/profile";
+        } catch (Exception e) {
+            ra.addFlashAttribute("ErrorCondition", true);
+            ra.addFlashAttribute("ErrorError", "Something is wrong with your profile, contact us for further support.");
+            return "redirect:/";
+        }
+    }
 	
 	@GetMapping("/profile/edit-my-profile")
 	public String editPage(Model model, @SessionAttribute("userId") int userid) {

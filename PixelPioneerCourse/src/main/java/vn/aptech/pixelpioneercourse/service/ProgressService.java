@@ -11,4 +11,5 @@ public interface ProgressService {
     Double getCurrentProgressByCourseId(Integer courseId, Integer userId);
     SubLesson getCurrentSubLessonByCourseId(Integer courseId, Integer userId);
     void addProgressForNewSubLesson(Integer subLessonId);
+    List<Progress> findByUserId(Integer uid);
 }

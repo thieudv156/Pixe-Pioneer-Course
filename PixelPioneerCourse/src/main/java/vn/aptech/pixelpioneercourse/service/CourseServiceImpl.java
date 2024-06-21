@@ -6,9 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.*;
-import vn.aptech.pixelpioneercourse.repository.CourseRepository;
-import vn.aptech.pixelpioneercourse.repository.EnrollmentRepository;
-import vn.aptech.pixelpioneercourse.repository.UserRepository;
+import vn.aptech.pixelpioneercourse.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,8 +23,9 @@ public class CourseServiceImpl implements CourseService{
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final ProgressService progressService;
+    private final TestFormatRepository testFormatRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService, UserRepository userRepository, EnrollmentRepository enrollmentRepository, ProgressService progressService, ProgressService progressService1) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService, UserRepository userRepository, EnrollmentRepository enrollmentRepository, ProgressService progressService1, TestFormatRepository testFormatRepository) {
         this.courseRepository = courseRepository;
         this.mapper = mapper;
         this.categoryService = categoryService;
@@ -35,6 +34,7 @@ public class CourseServiceImpl implements CourseService{
         this.userRepository = userRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.progressService = progressService1;
+        this.testFormatRepository = testFormatRepository;
     }
 
     //from CourseCreateDto to Course
@@ -136,7 +136,11 @@ public class CourseServiceImpl implements CourseService{
             newCourse.setTitle("New Course");
             newCourse.setDescription("Description");
             newCourse.setInstructor(userService.findById(userId));
-            return courseRepository.save(newCourse);
+            courseRepository.save(newCourse);
+            TestFormat testFormat = new TestFormat();
+            testFormat.setCourse(newCourse);
+            testFormatRepository.save(testFormat);
+            return newCourse;
         } catch (Exception e) {
             throw new RuntimeException("Cannot create new course!: "+ e.getMessage());
         }

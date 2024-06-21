@@ -1,9 +1,11 @@
 package vn.aptech.pixelpioneercourse.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,14 +22,16 @@ public class TestFormat {
 
     @OneToOne
     @JoinColumn(name = "course_id", nullable = false)
+    @JsonIgnoreProperties({"testFormat"})
+    @ToString.Exclude
     private Course course;
 
     @Column
-    private Integer duration;
+    private Integer duration = 10;
 
     @Column
-    private Integer totalQuestion;
+    private Integer totalQuestion = 5;
 
     @Column
-    private Integer passingScore;
+    private Integer passingScore = 60;
 }

@@ -23,7 +23,7 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"category"})
+    @JsonIgnoreProperties({"category","lessons","reviews","createdAt","isPublished","frontPageImage","instructor","enrollments","tests","provider","grantedAuthorities","authorities","progresses","testFormat"})
     @ToString.Exclude
     private List<Course> courses;
     

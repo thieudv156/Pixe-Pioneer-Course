@@ -29,5 +29,6 @@ public interface ProgressRepository extends JpaRepository<Progress, Integer>{
     @Query("SELECT p FROM Progress p WHERE p.user.id = :userId AND p.subLesson.lesson.course.id = :courseId")
     List<Progress> findByCourseIdAndUserId(@Param("courseId") Integer courseId, @Param("userId") Integer userId);
 
+    List<Progress> findByUserId(Integer id);
 }
 
