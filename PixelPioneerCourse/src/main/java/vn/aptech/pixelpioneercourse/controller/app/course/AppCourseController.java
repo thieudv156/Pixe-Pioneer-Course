@@ -24,6 +24,8 @@ import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.*;
 import vn.aptech.pixelpioneercourse.service.CourseService;
 import vn.aptech.pixelpioneercourse.service.ProgressService;
+import vn.aptech.pixelpioneercourse.service.SubLessonService;
+import vn.aptech.pixelpioneercourse.service.SubLessonServiceImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,13 +42,15 @@ public class AppCourseController{
     private final ModelMapper modelMapper;
     private final ProgressService progressService;
     private final CourseService courseService;
+    private final SubLessonService subLessonService;
 
     @Autowired
-    public AppCourseController(ModelMapper modelMapper, ObjectMapper objectMapper,ProgressService progressService,CourseService courseService) {
+    public AppCourseController(ModelMapper modelMapper, ObjectMapper objectMapper, ProgressService progressService, CourseService courseService, SubLessonService subLessonService) {
         this.modelMapper = modelMapper;
         this.objectMapper = objectMapper;
         this.progressService = progressService;
         this.courseService = courseService;
+        this.subLessonService = subLessonService;
     }
 
     @PostConstruct
@@ -58,8 +62,7 @@ public class AppCourseController{
 
 
     @GetMapping("/")
-    public String index(Model model, @RequestParam(value = "page", defaultValue = "1") int page, HttpSession session) {
-    	System.out.println(session.getAttribute("user").toString());
+    public String index(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
         int pageSize = 12; // Number of courses per page
         RestTemplate restTemplate = new RestTemplate();
         Course[] courseArray = restTemplate.getForObject(courseApiUrl, Course[].class);
@@ -158,24 +161,25 @@ public class AppCourseController{
                 subLessonHashMap.put(subLesson.getId(),subLesson);
             }
         }
-        Lesson currentLesson = lessons.stream().filter(lesson -> lesson.getOrderNumber().equals(lessonOrder)).toList().getFirst();
+
 
         if(subLessonId == null)
         {
             SubLesson currentSubLesson = progressService.getCurrentSubLessonByCourseId(id,userId);
             model.addAttribute("currentSubLesson",currentSubLesson);
+            model.addAttribute("currentLesson",currentSubLesson.getLesson());
         }
         else{
+            Lesson currentLesson = lessons.stream().filter(lesson -> lesson.getOrderNumber().equals(lessonOrder)).toList().getFirst();
             SubLesson currentSubLesson = currentLesson.getSubLessons().stream()
                     .filter(subLesson -> subLesson.getId().equals(subLessonId))
                     .findFirst()
                     .orElse(null);
-
+            model.addAttribute("currentLesson",currentLesson);
             model.addAttribute("currentSubLesson",currentSubLesson);
         }
         Double currentProgress = progressService.getCurrentProgressByCourseId(id,userId);
         model.addAttribute("currentProgress",currentProgress);
-        model.addAttribute("currentLesson",currentLesson);
         model.addAttribute("subLessonHashMap",subLessonHashMap);
         model.addAttribute("lessons", lessons);
         model.addAttribute("course", course.get());
@@ -365,99 +369,108 @@ public class AppCourseController{
         return "redirect:/app/course/view/" + courseId;
     }
 
-//    @GetMapping("/my-courses")
-//    public String showMyCourses(Model model, @RequestParam(value = "page", defaultValue = "1") int page, @SessionAttribute("userId") Integer userId) {
-//        int pageSize = 12; // Number of courses per page
-//        RestTemplate restTemplate = new RestTemplate();
-//        List<Course> courseList = courseService.getEnrolledCourses(userId);
-//        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
-//        List<Category> categoryList = Arrays.asList(categories);
-//
-//        int totalCourses = courseList.size();
-//        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
-//
-//        // Ensure the page number is within the valid range
-//        if (page < 1) {
-//            page = 1;
-//        } else if (page > totalPages) {
-//            page = totalPages;
-//        }
-//
-//        int start = (page - 1) * pageSize;
-//        int end = Math.min(start + pageSize, totalCourses);
-//
-//        // Ensure start index is not negative
-//        if (start < 0) {
-//            start = 0;
-//        }
-//
-//        List<Course> courses = courseList.subList(start, end);
-//
-//        // Create a map to hold course progress
-//        Map<Integer, Double> courseProgressMap = new HashMap<>();
-//        for (Course course : courseList) {
-//            // Assuming getCourseProgress is a method that retrieves the progress for a course
-//            Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
-//            courseProgressMap.put(course.getId(), progress);
-//        }
-//
-//        model.addAttribute("categories", categoryList);
-//        model.addAttribute("courses", courses);
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", totalPages);
-//        model.addAttribute("imageApiUrl", imageApiUrl);
-//        model.addAttribute("totalCourses", totalCourses);
-//        model.addAttribute("courseProgressMap", courseProgressMap);
-//        return "app/user_view/course/my-courses";
-//    }
-//
-//    @GetMapping("my-courses/category")
-//    public String sortByCategoryMyCourses(Model model,
-//                                          @RequestParam(value = "page", defaultValue = "1") int page,
-//                                          @RequestParam(value = "category", required = false) Integer category,
-//                                          @SessionAttribute("userId") Integer userId) {
-//        int pageSize = 12; // Number of courses per page
-//        RestTemplate restTemplate = new RestTemplate();
-//        List<Course> courseList = courseService.getEnrolledCourses(userId);
-//        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
-//        List<Category> categoryList = Arrays.asList(categories);
-//
-//        // Filter courses based on the category parameter
-//        if (category != null) {
-//           courseList = courseList.stream()
-//                    .filter(course -> course.getCategory().getId().equals(category))
-//                    .collect(Collectors.toList());
-//        }
-//
-//        int totalCourses = courseList.size();
-//        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
-//
-//        if (page < 1) {
-//            page = 1;
-//        } else if (page > totalPages) {
-//            page = totalPages;
-//        }
-//
-//        int start = (page - 1) * pageSize;
-//        if (start < 0) {
-//            start = 0;
-//        }
-//        int end = Math.min(start + pageSize, totalCourses);
-//        List<Course> courses = courseList.subList(start, end);
-//        Map<Integer, Double> courseProgressMap = new HashMap<>();
-//        for (Course course : courseList) {
-//            // Assuming getCourseProgress is a method that retrieves the progress for a course
-//            Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
-//            courseProgressMap.put(course.getId(), progress);
-//        }
-//        model.addAttribute("courseProgressMap", courseProgressMap);
-//        model.addAttribute("categories", categoryList);
-//        model.addAttribute("courses", courses);
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", totalPages);
-//        model.addAttribute("imageApiUrl", imageApiUrl);
-//        model.addAttribute("totalCourses", totalCourses);
-//        model.addAttribute("selectedCategory", category);
-//        return "app/user_view/course/my-courses";
-//    }
+    @GetMapping("/my-courses")
+    public String showMyCourses(Model model, @RequestParam(value = "page", defaultValue = "1") int page, @SessionAttribute("userId") Integer userId) {
+        int pageSize = 12; // Number of courses per page
+        RestTemplate restTemplate = new RestTemplate();
+        List<Course> courseList = courseService.getEnrolledCourses(userId);
+        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
+        List<Category> categoryList = Arrays.asList(categories);
+
+        int totalCourses = courseList.size();
+        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+        // Ensure the page number is within the valid range
+        if (page < 1) {
+            page = 1;
+        } else if (page > totalPages) {
+            page = totalPages;
+        }
+
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalCourses);
+
+        // Ensure start index is not negative
+        if (start < 0) {
+            start = 0;
+        }
+
+        List<Course> courses = courseList.subList(start, end);
+
+        // Create a map to hold course progress
+        Map<Integer, Double> courseProgressMap = new HashMap<>();
+        for (Course course : courseList) {
+            // Assuming getCourseProgress is a method that retrieves the progress for a course
+            Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
+            courseProgressMap.put(course.getId(), progress);
+        }
+
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("courses", courses);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("imageApiUrl", imageApiUrl);
+        model.addAttribute("totalCourses", totalCourses);
+        model.addAttribute("courseProgressMap", courseProgressMap);
+        return "app/user_view/course/my-courses";
+    }
+
+    @GetMapping("my-courses/category")
+    public String sortByCategoryMyCourses(Model model,
+                                          @RequestParam(value = "page", defaultValue = "1") int page,
+                                          @RequestParam(value = "category", required = false) Integer category,
+                                          @SessionAttribute("userId") Integer userId) {
+        int pageSize = 12; // Number of courses per page
+        RestTemplate restTemplate = new RestTemplate();
+        List<Course> courseList = courseService.getEnrolledCourses(userId);
+        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
+        List<Category> categoryList = Arrays.asList(categories);
+
+        // Filter courses based on the category parameter
+        if (category != null) {
+           courseList = courseList.stream()
+                    .filter(course -> course.getCategory().getId().equals(category))
+                    .collect(Collectors.toList());
+        }
+
+        int totalCourses = courseList.size();
+        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+        if (page < 1) {
+            page = 1;
+        } else if (page > totalPages) {
+            page = totalPages;
+        }
+
+        int start = (page - 1) * pageSize;
+        if (start < 0) {
+            start = 0;
+        }
+        int end = Math.min(start + pageSize, totalCourses);
+        List<Course> courses = courseList.subList(start, end);
+        Map<Integer, Double> courseProgressMap = new HashMap<>();
+        for (Course course : courseList) {
+            // Assuming getCourseProgress is a method that retrieves the progress for a course
+            Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
+            courseProgressMap.put(course.getId(), progress);
+        }
+        model.addAttribute("courseProgressMap", courseProgressMap);
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("courses", courses);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("imageApiUrl", imageApiUrl);
+        model.addAttribute("totalCourses", totalCourses);
+        model.addAttribute("selectedCategory", category);
+        return "app/user_view/course/my-courses";
+    }
+
+    @GetMapping("/sub-lesson/{subLessonId}/finish-sub-lesson")
+    public String finishSubLesson(@PathVariable("subLessonId") Integer subLessonId, @SessionAttribute("userId") Integer userId) {
+        SubLesson subLesson = subLessonService.finishSubLesson(subLessonId, userId);
+        if(subLesson == null){
+            return "redirect:/app/course/my-courses";
+        }
+        return "redirect:/app/course/view/"+ subLesson.getLesson().getCourse().getId();
+    }
 }

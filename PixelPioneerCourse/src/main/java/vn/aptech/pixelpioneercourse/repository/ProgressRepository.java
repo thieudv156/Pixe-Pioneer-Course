@@ -13,9 +13,6 @@ import java.util.Optional;
 public interface ProgressRepository extends JpaRepository<Progress, Integer>{
     Optional<Progress> findBySubLessonIdAndUserId(Integer subLessonId, Integer userId);
 
-    Optional<Progress> findByUserIdAndSubLessonId(Integer userId, Integer id);
-
-
     @Query("SELECT COUNT(p) FROM Progress p WHERE p.user.id = :userId AND p.subLesson.lesson.course.id = :courseId")
     Integer countTotalSubLessonsByCourseAndUser(@Param("courseId") Integer courseId, @Param("userId") Integer userId);
 
@@ -29,6 +26,8 @@ public interface ProgressRepository extends JpaRepository<Progress, Integer>{
     @Query("SELECT DISTINCT p.user FROM Progress p WHERE p.subLesson.lesson.course.id = :courseId")
     List<User> findUsersByCourseId(@Param("courseId") Integer courseId);
 
+    @Query("SELECT p FROM Progress p WHERE p.user.id = :userId AND p.subLesson.lesson.course.id = :courseId")
+    List<Progress> findByCourseIdAndUserId(@Param("courseId") Integer courseId, @Param("userId") Integer userId);
 
 }
 

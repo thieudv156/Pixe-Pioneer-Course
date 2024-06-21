@@ -40,7 +40,7 @@ public class User {
     @Column(nullable = false, name = "full_name")
     private String fullName;
 
-    @Column(nullable = true, unique = true)
+    @Column(nullable = false, unique = true)
     private String phone;
 
     @Column(nullable = false, name = "active_status")
@@ -50,8 +50,6 @@ public class User {
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference(value = "user-enrollment")
-    @ToString.Exclude
     @JsonIgnoreProperties("user")
     private List<Enrollment> enrollments;
 
@@ -60,21 +58,26 @@ public class User {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference(value = "user-discussion")
+    @JsonIgnoreProperties("user")
     @ToString.Exclude
     private List<Discussion> discussions;
 
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference(value = "instructor-course")
-    @ToString.Exclude
+    @JsonIgnoreProperties({"instructor", "category", "enrollments", "frontPageImage", "createdAt", "reviews", "price", "description", "isPublished","progresses","tests"})
     private List<Course> courses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference(value = "user-test")
-    @ToString.Exclude
+    @JsonIgnoreProperties("user")
     private List<Test> tests;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("user")
+    @ToString.Exclude
+    private List<Progress> progresses;
+
     public List<String> getAuthorities() {
+        if(role == null)
+            return Collections.singletonList("ROLE_USER");
         return Collections.singletonList(role.getRoleName());
     }
 
@@ -86,9 +89,4 @@ public class User {
     @Setter
     @Enumerated(EnumType.STRING)
     private Provider provider;
-
-    @Override
-    public String toString() {
-        return "User{id=" + id + ", username='" + username + "', email='" + email + "', fullName='" + fullName + "', phone='" + phone + "', activeStatus=" + activeStatus + ", createdAt=" + createdAt + ", role=" + role.getRoleName() + "}";
-    }
 }

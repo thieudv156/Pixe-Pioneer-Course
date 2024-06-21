@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -13,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "categories")
-@JsonIgnoreProperties({"courses"})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,8 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"category"})
+    @ToString.Exclude
     private List<Course> courses;
     
     @JsonProperty("courseCount")

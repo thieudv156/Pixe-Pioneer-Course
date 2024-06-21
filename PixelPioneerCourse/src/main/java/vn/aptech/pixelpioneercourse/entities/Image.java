@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
@@ -30,5 +27,6 @@ public class Image {
     private String imageUrl;
 
     @OneToOne(mappedBy = "frontPageImage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private Course course;
 }

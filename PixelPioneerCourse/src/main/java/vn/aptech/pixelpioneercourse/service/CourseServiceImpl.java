@@ -236,8 +236,8 @@ public class CourseServiceImpl implements CourseService{
         return !processes.isEmpty();
     }
 
-//    public List<Course> getEnrolledCourses(Integer userId) {
-//        return courseRepository.findDistinctByLessons_SubLessons_Progresses_User_Id(userId);
-//    }
+    public List<Course> getEnrolledCourses(Integer userId) {
+        return courseRepository.findDistinctByLessons_SubLessons_Progresses_User_Id(userId);
+    }
 
 }
