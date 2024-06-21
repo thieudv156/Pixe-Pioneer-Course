@@ -35,15 +35,24 @@ public class EnrollmentController {
         return "app/enrollment/subscription";
     }
     
-    @GetMapping("/user-history-payment")
+    @GetMapping("/user-history-enrollment")
     public String showUserHistoryPayment(@SessionAttribute("userId") Integer userId, Model model) {
         if (userId == null) {
             return "redirect:/login";
         }
         List<Enrollment> enrollments = userRepository.findById(userId).get().getEnrollments();
         model.addAttribute("enrollments", enrollments);
-        return "app/enrollment/user-history-payment";
+        return "app/enrollment/user-history-enrollment";
     }
+    
+    @GetMapping("/view-detail-enrollment/{id}")
+    public String showDetailPayment(@PathVariable Integer id, Model model) {
+        Enrollment enrollment = userRepository.findById((Integer) model.getAttribute("userId")).get().getEnrollments().stream().filter(e -> e.getId().equals(id)).findFirst().orElse(null);
+        model.addAttribute("enrollment", enrollment);
+        return "app/enrollment/view-details-enrollment";
+    }
+    
+    
 
     @GetMapping("/purchase-details")
     public String showPurchaseSummary(@RequestParam String subscriptionType, Model model) {

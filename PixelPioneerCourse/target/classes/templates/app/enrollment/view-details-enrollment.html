@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.cz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Pixel Pioneer Course</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .page-section {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .page-separator__text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            display: inline-block;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-body h5 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .card-body div {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .card-body strong {
+            color: #333;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .page-section {
+                padding: 15px;
+            }
+            .card-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="content-wrapper" layout:fragment="contents">
+    <div class="container">
+        <div class="mdk-header-layout__content page-content">
+            <div class="page-section container page__container">
+                <div class="col-lg-10 p-0 mx-auto">
+                    <div class="page-separator">
+                        <div class="page-separator__text">Enrollment Detail</div>
+                    </div>
+                    <div class="card mb-lg-32pt">
+                        <div class="card-body">
+                            <div><strong>Full Name:</strong> <span th:text="${enrollment.user.getFullName()}"></span></div>
+                            <div><strong>Subscription Status:</strong> <span th:text="${enrollment.subscriptionStatus ? 'Active' : 'Inactive'}"></span></div>
+                            <div><strong>Subscription Type:</strong> <span th:text="${enrollment.subscriptionType}"></span></div>
+                            <div><strong>Payment Date:</strong> <span th:text="${enrollment.paymentDate}"></span></div>
+                            <div><strong>Subscription End Date:</strong> <span th:text="${enrollment.subscriptionEndDate}"></span></div>
+                            <a href="/app/enrollments/user-history-enrollment" class="btn btn-primary mt-3">Back to Enrollments</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content -->
+</div>
+</body>
+</html>
