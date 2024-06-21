@@ -1,5 +1,7 @@
 package vn.aptech.pixelpioneercourse.service;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.TestFormatCreateDto;
@@ -35,6 +37,10 @@ public class TestFormatServiceImpl implements TestFormatService{
 
     public TestFormat findById(Integer id){
         return testFormatRepository.findById(id).orElse(null);
+    }
+    
+    public List<TestFormat> findByCourseId(Integer cID) {
+    	return testFormatRepository.findByCourseId(cID);
     }
 
     public TestFormat update(TestFormatCreateDto dto, Integer id){

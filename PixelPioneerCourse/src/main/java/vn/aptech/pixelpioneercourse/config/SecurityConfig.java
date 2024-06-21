@@ -191,21 +191,21 @@ public class SecurityConfig{
         return username.toLowerCase(); // or return alternativeUsername.toLowerCase();
     }
 
-    @Autowired
-    @Lazy
-    private UserService userService;
-
-    public String generateUniquePhoneNumber() {
-        Random random = new Random();
-        String phoneNumber;
-        do {
-            // Generate a 10-digit phone number starting with '0'
-            phoneNumber = "0" + random.ints(9, 0, 10) //10 digit, ranges from 0 to 9
-                    .mapToObj(Integer::toString)
-                    .reduce("", (a, b) -> a + b);
-        } while (!userService.checkPhone(phoneNumber)); // Check if the phone number already exists
-        return phoneNumber;
-    }
+//    @Autowired
+//    @Lazy
+//    private UserService userService;
+//
+//    public String generateUniquePhoneNumber() {
+//        Random random = new Random();
+//        String phoneNumber;
+//        do {
+//            // Generate a 10-digit phone number starting with '0'
+//            phoneNumber = "0" + random.ints(9, 0, 10) //10 digit, ranges from 0 to 9
+//                    .mapToObj(Integer::toString)
+//                    .reduce("", (a, b) -> a + b);
+//        } while (!userService.checkPhone(phoneNumber)); // Check if the phone number already exists
+//        return phoneNumber;
+//    }
 
     @Autowired
     private RoleRepository roleRepository;
@@ -232,8 +232,7 @@ public class SecurityConfig{
                 user.setProvider(Provider.GOOGLE);
                 user.setFullName(fullname);
                 user.setUsername(generateUsername(fullname));
-                user.setPassword(passwordEncoder().encode("1"));
-                user.setPhone(generateUniquePhoneNumber());
+                user.setPassword(passwordEncoder().encode("123456"));
                 user.setEmail(email);
                 createdYet = true;
                 userRepository.save(mapper.map(user, User.class));
@@ -255,8 +254,7 @@ public class SecurityConfig{
                     user.setProvider(Provider.GOOGLE);
                     user.setFullName(fullname);
                     user.setUsername(generateUsername(fullname));
-                    user.setPassword(passwordEncoder().encode("1"));
-                    user.setPhone(generateUniquePhoneNumber());
+                    user.setPassword(passwordEncoder().encode("123456"));
                     user.setEmail(email);
                     System.out.println("check2");
                     userRepository.save(mapper.map(user, User.class));

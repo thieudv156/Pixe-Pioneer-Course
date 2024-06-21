@@ -5,7 +5,6 @@ import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.UserCreateDto;
 import vn.aptech.pixelpioneercourse.dto.UserDto;
 import vn.aptech.pixelpioneercourse.dto.UserInformation;
-import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
 
 import java.util.List;
@@ -32,11 +31,13 @@ public interface UserService {
     boolean checkCode(String codeGenerated, String inputCode);
     boolean updatePassword(UserCreateDto u);
     void passwordChanger(String email, String password) throws Exception;
-    void processOAuthPostLogin(String username);
     boolean checkPhone(String phone);
     Authentication processLogin(LoginDto body);
     Authentication processLogin(String email, String password);
     List<UserInformation> getAllInstructors(); //profile api
+    String generateUsername(String fullName);
+    String generateUniquePhoneNumber();
+    User processOAuthPostLogin(String email, String fullname);
 }
 
 

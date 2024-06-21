@@ -27,7 +27,7 @@ public class LoginApi {
     public ResponseEntity<?> login(@RequestBody LoginDto body){
         var session = service.processLogin(body);
         if (session == null) {
-        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account does not exist.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account does not exist.");
         }
         return ResponseEntity.ok(session.getUserInformation());
     }

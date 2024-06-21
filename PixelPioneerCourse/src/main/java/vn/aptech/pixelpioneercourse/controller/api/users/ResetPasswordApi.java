@@ -28,7 +28,7 @@ public class ResetPasswordApi {
 
     @Autowired
     private JavaMailSender mailSender;
-    
+
     private String requestedCode = null;;
     private String requestedEmail = null;
     private Boolean verified = false;
@@ -78,7 +78,7 @@ public class ResetPasswordApi {
             logger.info("Password reset request for email: {}, verified: {}", requestedEmail, verified);
             if (requestedEmail != null && verified != null && verified) {
                 try {
-                	if (np.length() < 6 || rnp.length() < 6) {
+                    if (np.length() < 6 || rnp.length() < 6) {
                         logger.warn("Password length issue");
                         return ResponseEntity.badRequest().body("Password must contain at least 6 letters");
                     }
@@ -90,7 +90,7 @@ public class ResetPasswordApi {
                     logger.warn("Old password used");
                     return ResponseEntity.badRequest().body("You may have used an old password, please try a new one.");
                 } catch (Exception e2) {
-                	userService.passwordChanger(requestedEmail, np);
+                    userService.passwordChanger(requestedEmail, np);
                     session.invalidate();
                     logger.info("Password reset successful for email: {}", requestedEmail);
                     requestedEmail = null;

@@ -19,9 +19,9 @@ import java.util.Optional;
 @RestController("apiDiscussionController")
 @RequestMapping("/api/discussions")
 public class DiscussionController {
-    
+
     private final DiscussionService discussionService;
-    
+
     @Autowired
     private ModelMapper mapper;
 
@@ -40,14 +40,14 @@ public class DiscussionController {
         Discussion discussion = discussionService.findById(id);
         return (discussion == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(discussion);
     }
-    
+
     @GetMapping("/sublesson")
     public ResponseEntity<List<Discussion>> getDiscussionBySublessonId(@RequestParam("sLessonId") Integer sublessonId) {
-    	try {
-    		return ResponseEntity.status(HttpStatus.OK).body(discussionService.findBySubLessonId(sublessonId));
-    	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    	}
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(discussionService.findBySubLessonId(sublessonId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
 
@@ -63,15 +63,15 @@ public class DiscussionController {
 
     @PostMapping
     public ResponseEntity<Discussion> createDiscussion(@Valid @RequestBody DiscussionCreateDto discussionCreateDto) {
-    	System.out.println(discussionCreateDto);
+        System.out.println(discussionCreateDto);
         Discussion savedDiscussion = discussionService.createDiscussion(discussionCreateDto);
         return ResponseEntity.ok(savedDiscussion);
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<Discussion> updateDiscussion(@Valid @PathVariable Integer id, String content) {
-    	Discussion updatedDiscussion = discussionService.findById(id);
-    	DiscussionCreateDto discussion = mapper.map(updatedDiscussion, DiscussionCreateDto.class);
+        Discussion updatedDiscussion = discussionService.findById(id);
+        DiscussionCreateDto discussion = mapper.map(updatedDiscussion, DiscussionCreateDto.class);
         if (updatedDiscussion == null) {
             return ResponseEntity.notFound().build();
         }
@@ -80,7 +80,7 @@ public class DiscussionController {
         discussionService.updateDiscussion(id, discussion);
         return ResponseEntity.ok(updatedDiscussion);
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDiscussion(@PathVariable Integer id) {
         Discussion discussion = discussionService.findById(id);
