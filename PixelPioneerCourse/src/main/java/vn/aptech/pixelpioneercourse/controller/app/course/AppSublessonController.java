@@ -6,6 +6,7 @@ import java.util.Optional;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import vn.aptech.pixelpioneercourse.dto.SubLessonCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Discussion;
 import vn.aptech.pixelpioneercourse.entities.SubLesson;
 import vn.aptech.pixelpioneercourse.service.DiscussionService;
+import vn.aptech.pixelpioneercourse.service.LessonService;
 
 @Controller
 @RequestMapping("/app/sub-lesson")
@@ -30,10 +32,13 @@ public class AppSublessonController {
 	private String apiBaseUrl;
 	private String subLessonApiUrl;
 	private final ModelMapper modelMapper;
+	private final LessonService lessonService;
 
-	public AppSublessonController(DiscussionService discussionService, ModelMapper modelMapper) {
+	public AppSublessonController(DiscussionService discussionService, ModelMapper modelMapper, LessonService lessonService) {
 		this.discussionService = discussionService;
         this.modelMapper = modelMapper;
+
+        this.lessonService = lessonService;
     }
 	@PostConstruct
 	public void init() {
@@ -125,4 +130,31 @@ public class AppSublessonController {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@GetMapping("/instructor/{lessonId}/{subLessonId}/delete")
+	public String deleteSubLesson(@PathVariable Integer subLessonId, @PathVariable("lessonId") Integer lessonId,RedirectAttributes redirectAttributes) {
+		try {
+			// Make the API call to delete the sub-lesson
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<Integer> response = restTemplate.exchange(
+					subLessonApiUrl + "/" + subLessonId + "/delete",
+					HttpMethod.DELETE,
+					null,
+					Integer.class
+			);
+			Integer body = response.getBody();
+
+			if (body == null) {
+				redirectAttributes.addFlashAttribute("errorMessage", "Sub-lesson not found!");
+				return "redirect:/app/sub-lesson/instructor/view/" + subLessonId;
+			}
+
+			redirectAttributes.addFlashAttribute("successMessage", "Sub-lesson deleted successfully!");
+			return "redirect:/app/lesson/instructor/view/" + lessonId;
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+			return "redirect:/app/lesson/instructor/view/"+lessonId;
+		}
+	}
+
 }

@@ -67,7 +67,7 @@ public class SubLessonController {
     @DeleteMapping("/{subLessonId}/delete")
     public ResponseEntity<?> deleteSubLesson(@PathVariable("subLessonId") Integer subLessonId) {
         try {
-            Optional<Boolean> result = Optional.of(subLessonService.delete(subLessonId));
+            Optional<Integer> result = Optional.of(subLessonService.delete(subLessonId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());

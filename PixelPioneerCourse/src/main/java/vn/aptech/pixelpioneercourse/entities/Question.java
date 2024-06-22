@@ -20,17 +20,17 @@ public class Question {
     private Course course;
 
     @Column(columnDefinition = "TEXT")
-    private String question;
+    private String question="Question";
 
     @Column(columnDefinition = "TEXT")
-    private String correctAnswer;
+    private String correctAnswer="Correct Answer";
 
     @Column(columnDefinition = "TEXT")
-    private String wrongAnswer1;
+    private String wrongAnswer1="Wrong Answer 1";
 
     @Column(columnDefinition = "TEXT")
-    private String wrongAnswer2;
+    private String wrongAnswer2="Wrong Answer 2";
 
     @Column(columnDefinition = "TEXT")
-    private String wrongAnswer3;
+    private String wrongAnswer3="Wrong Answer 3";
 }

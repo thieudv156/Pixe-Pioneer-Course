@@ -121,18 +121,22 @@ public class ProgressServiceImpl implements ProgressService {
     }
 
     public SubLesson findLastSubLessonByCourseId(Integer courseId, Integer userId){
-        List<Progress> progresses = progressRepository.findByCourseIdAndUserId(courseId, userId);
-        Progress lastProgress = progresses.getLast();
+        List<Progress> progresses = progressRepository.findNextIncompleteProgressByUserIdAndCourseId(courseId, userId);
+        if (progresses.isEmpty()) {
+            Progress lastProgress = progressRepository.findByCourseIdAndUserId(courseId, userId).getLast();
+            return lastProgress.getSubLesson();
+        }
+        Progress lastProgress = progressRepository.findNextIncompleteProgressByUserIdAndCourseId(userId, courseId).getFirst();
         return lastProgress.getSubLesson();
     }
 
     public List<Progress> findByUserId(Integer uid) {
     	return progressRepository.findByUserId(uid);
     }
-    
     public Boolean checkIfUserHasProgress(Integer courseId, Integer userId) {
         List<Progress> progresses = progressRepository.findByCourseIdAndUserId(courseId, userId);
         return !progresses.isEmpty();
     }
+
 
 }

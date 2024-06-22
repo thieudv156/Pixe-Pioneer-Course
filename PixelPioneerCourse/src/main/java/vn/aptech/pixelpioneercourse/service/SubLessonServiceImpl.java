@@ -3,6 +3,7 @@ package vn.aptech.pixelpioneercourse.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.SubLessonCreateDto;
+import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
 import vn.aptech.pixelpioneercourse.entities.SubLesson;
 import vn.aptech.pixelpioneercourse.repository.SubLessonRepository;
@@ -67,12 +68,18 @@ public class SubLessonServiceImpl implements SubLessonService {
         }
     }
 
-    public boolean delete(Integer id) {
+    public Integer delete(Integer id) {
         try {
+            SubLesson deletedSubLesson = subLessonRepository.findById(id).orElse(null);
+            if (deletedSubLesson == null) {
+                throw new RuntimeException("SubLesson is null");
+            }
+            Integer lessonId = deletedSubLesson.getLesson().getId();
+            checkDeleteCondition(id);
             subLessonRepository.deleteById(id);
-            return true;
+            return lessonId;
         } catch (Exception e) {
-            throw new RuntimeException("SubLesson is null", e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -101,5 +108,19 @@ public class SubLessonServiceImpl implements SubLessonService {
     	} catch (Exception e) {
     		throw new RuntimeException(e.getMessage());
     	}
+    }
+
+    public void checkDeleteCondition(Integer subLessonId) {
+        SubLesson subLesson = subLessonRepository.findById(subLessonId).orElse(null);
+        if (subLesson == null) {
+            throw new RuntimeException("SubLesson is null");
+        }
+        Lesson lesson = subLesson.getLesson();
+        Course course = lesson.getCourse();
+        if (course.getIsPublished()) {
+            if(lesson.getSubLessons().size() <= 2) {
+                throw new RuntimeException("Lesson must have at least 2 sub-lessons to stay published!");
+            }
+        }
     }
 }
