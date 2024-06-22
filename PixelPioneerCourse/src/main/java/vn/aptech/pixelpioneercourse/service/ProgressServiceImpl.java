@@ -130,11 +130,13 @@ public class ProgressServiceImpl implements ProgressService {
     public List<Progress> findByUserId(Integer uid) {
     	return progressRepository.findByUserId(uid);
     }
+
     public Boolean checkIfUserHasProgress(Integer courseId, Integer userId) {
         List<Progress> progresses = progressRepository.findByCourseIdAndUserId(courseId, userId);
         return !progresses.isEmpty();
     }
 
+<<<<<<< Updated upstream
     public List<Progress> checkAndCreateProgressForMissingSubLessons(Integer courseId, Integer userId) {
         List<Progress> existingProgress = progressRepository.findByCourseIdAndUserId(courseId, userId);
         if (existingProgress.isEmpty()) {
@@ -164,4 +166,6 @@ public class ProgressServiceImpl implements ProgressService {
     public List<Progress> findProgressByCourseIdAndUserId(Integer courseId, Integer userId) {
         return progressRepository.findByCourseIdAndUserId(courseId, userId);
     }
+=======
+>>>>>>> Stashed changes
 }

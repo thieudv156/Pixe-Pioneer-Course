@@ -101,4 +101,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void deleteById(Integer id) {
         enrollmentRepository.deleteById(id);
     }
+
+    
 }

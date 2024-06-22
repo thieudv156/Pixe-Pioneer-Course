@@ -29,5 +29,5 @@ public class ReviewCreateDto {
     private String content;
 
     @NotNull(message = "Created at date is required")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

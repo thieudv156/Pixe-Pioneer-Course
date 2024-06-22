@@ -6,9 +6,6 @@
     <title>Pixel Pioneer Course</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
 <div class="content-wrapper" layout:fragment="contents">
@@ -17,7 +14,7 @@
             <div class="page-section container page__container">
                 <div class="col-lg-10 p-0 mx-auto">
                     <div class="page-separator">
-                        <div class="page-separator__text">Enrollments</div>
+                        <div class="page-separator__text">Enrollments Management</div>
                     </div>
                     <div class="card mb-lg-32pt">
                         <div class="table-responsive">
@@ -37,15 +34,13 @@
                                     <td th:text="${enrollment.user.fullName}"></td>
                                     <td>
                                         <span class="text-success" th:if="${enrollment.subscriptionStatus}">Active</span>
-                                        <span class="text-danger"
-                                              th:if="${!enrollment.subscriptionStatus}">Inactive</span>
+                                        <span class="text-danger" th:if="${!enrollment.subscriptionStatus}">Inactive</span>
                                     </td>
                                     <td th:text="${enrollment.subscriptionType}"></td>
                                     <td th:text="${enrollment.formattedPaymentDate}"></td>
                                     <td th:text="${enrollment.formattedSubscriptionEndDate}"></td>
                                     <td>
-                                        <a th:href="@{'/admin/enrollments/details/' + ${enrollment.id}}"
-                                           class="btn btn-sm btn-primary">View Detail</a>
+                                        <a th:href="@{'/admin/enrollments/details/' + ${enrollment.id}}" class="btn btn-sm btn-primary">View Detail</a>
                                         <a th:href="@{'/admin/enrollments/delete/' + ${enrollment.id}}" class="btn btn-sm btn-danger">Delete</a>
                                     </td>
                                 </tr>
@@ -59,10 +54,12 @@
     </div>
     <!-- /.content -->
 </div>
-<script>
+
+<script th:fragment="script">
     $(document).ready(function () {
         $('#enrollmentTable').DataTable();
     });
 </script>
+
 </body>
 </html>

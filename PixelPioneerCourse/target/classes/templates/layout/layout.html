@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Pixel Pioneer Course</title>
     <link rel="icon" th:href="@{/public/images/logo.jpg}"/>
+    
 
     <!-- Prevent the demo from appearing in search engines -->
     <meta name="robots" content="noindex">
@@ -49,6 +50,11 @@
         .container {
             max-width: 1800px;
             margin: 0 auto;
+        }
+        .container-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 
@@ -234,10 +240,12 @@
 <!-- // END Header Layout Content -->
 
 <!-- Footer -->
+<div class="container-footer">
 <div class="bg-white border-top-2 mt-auto">
     <div class="container page__container page-section d-flex flex-column">
         <p class="text-70 brand mb-24pt">
-            <img th:src="@{/public/images/logo.jpg}" class="brand-icon" width="30" alt="Luma">
+            <a th:href="@{/}" class="text-70 text-underline mr-8pt small">
+            <img th:src="@{/public/images/logo.jpg}" class="brand-icon" width="30" alt="Luma"></a>
             Pixel Pioneer Course
         </p>
         <p>Pixel Pioneer Course is a beautifully crafted user interface for modern education platforms,
@@ -255,6 +263,7 @@
 
         </div>
     </div>
+</div>
     <!-- // END Footer -->
 
 </div>

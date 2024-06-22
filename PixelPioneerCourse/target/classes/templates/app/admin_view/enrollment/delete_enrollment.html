@@ -11,6 +11,8 @@
             font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
             color: #343a40;
+            margin: 0;
+            padding: 0;
         }
 
         .content-wrapper {
@@ -18,63 +20,132 @@
         }
 
         .container {
-            max-width: 1800px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 15px;
+            
+        }
+        
+        .container1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .page-separator {
             border-bottom: 2px solid #dee2e6;
             margin-bottom: 20px;
+            padding-bottom: 10px;
         }
 
         .page-separator__text {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 600;
-            padding-bottom: 10px;
             color: #495057;
+            margin: 0;
         }
 
         .card {
             background-color: #fff;
             border: 1px solid #dee2e6;
             border-radius: 0.25rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 1.5rem;
+            overflow: hidden;
         }
 
         .card-body {
-            padding: 20px;
+            padding: 50px;
         }
 
         h5 {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             margin-bottom: 1rem;
             color: #343a40;
         }
 
         .card-body div {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         strong {
             color: #495057;
         }
 
+        .btn {
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
         .btn-primary {
+            color: #fff;
             background-color: #007bff;
             border-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 0.25rem;
-            text-decoration: none;
-            display: inline-block;
         }
 
         .btn-primary:hover {
+            color: #fff;
             background-color: #0056b3;
             border-color: #004085;
+        }
+
+        .btn-danger {
             color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            color: #fff;
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        @media (max-width: 768px) {
+            .page-separator__text {
+                font-size: 1.5rem;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            .btn {
+                font-size: 0.875rem;
+                padding: 0.25rem 0.5rem;
+            }
         }
     </style>
 </head>
@@ -88,40 +159,40 @@
                         <div class="page-separator__text">Delete Enrollment</div>
                     </div>
                     <div class="card mb-lg-32pt">
-                        <div class="card-body">
-                            <form th:action="@{'/admin/enrollments/delete/' + ${enrollment.id}}" method="post">
-                                <h5>Enrollment Detail</h5>
-                                <div><strong>Full Name:</strong> <span
-                                        th:text="${enrollment.user.getFullName()}"></span>
-                                </div>
-                                <div><strong>Subscription Status:
-                                </strong>
-                                    <span th:if="${enrollment.subscriptionStatus}" class="text-success">Active</span>
-                                    <span
-                                            th:if="${!enrollment.subscriptionStatus}"
-                                            class="text-danger">Inactive</span></div>
-                                <div><strong>Subscription Type:</strong> <span
-                                        th:text="${enrollment.subscriptionType}"></span></div>
-                                <div><strong>Payment Date:</strong> <span
-                                        th:text="${enrollment.formattedPaymentDate}"></span></div>
-                                <div><strong>Subscription End Date:</strong> <span
-                                        th:text="${enrollment.formattedSubscriptionEndDate}"></span></div>
-                                <div>
-                                    <label for="reason">Reason for deletion:</label>
-                                    <input type="text" id="reason" name="reason" th:required="required">
-                                </div>
-                                <div>
-                                    <input type="submit" value="Confirm Deletion" class="btn btn-danger mt-3">
-                                </div>
-                                <a href="/admin/enrollments" class="btn btn-primary mt-3">Cancel</a>
-                            </form>
+                        <div class="card-body ">
+                            <div class="container1">
+                                <form th:action="@{'/admin/enrollments/delete/' + ${enrollment.id}}" method="post">
+                                    <h5>Are you sure?</h5>
+                                    <div><strong>Full Name:</strong> <span
+                                            th:text="${enrollment.user.getFullName()}"></span>
+                                    </div>
+                                    <div><strong>Subscription Status:</strong>
+                                        <span th:if="${enrollment.subscriptionStatus}" class="text-success">Active</span>
+                                        <span th:if="${!enrollment.subscriptionStatus}" class="text-danger">Inactive</span>
+                                    </div>
+                                    <div><strong>Subscription Type:</strong> <span
+                                            th:text="${enrollment.subscriptionType}"></span></div>
+                                    <div><strong>Payment Date:</strong> <span
+                                            th:text="${enrollment.formattedPaymentDate}"></span></div>
+                                    <div><strong>Subscription End Date:</strong> <span
+                                            th:text="${enrollment.formattedSubscriptionEndDate}"></span></div>
+                                    <div>
+                                        <label for="reason">Reason for deletion:</label>
+                                        <textarea name="reason" id="reason" cols="20" rows="5" class="form-control"
+                                                  th:required="required"></textarea>
+                                    </div>
+                                    <div>
+                                        <input type="submit" value="Confirm Deletion" class="btn btn-danger mt-3">
+                                        <a href="/admin/enrollments" class="btn btn-primary mt-3">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- /.content -->
 </div>
 </body>
 </html>

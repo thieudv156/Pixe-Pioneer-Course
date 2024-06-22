@@ -40,6 +40,6 @@ public class Review {
     private String content;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
 

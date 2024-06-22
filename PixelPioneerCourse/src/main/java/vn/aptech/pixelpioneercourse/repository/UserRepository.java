@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import vn.aptech.pixelpioneercourse.dto.UserInformation;
 import vn.aptech.pixelpioneercourse.entities.User;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,4 +27,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> searchByKeyword(@Param("keyword") String keyword);
     @Query("SELECT u FROM User u WHERE u.role.roleName = 'ROLE_INSTRUCTOR'")
     List<UserInformation> findAllInstructor();
+
+    List<User> findAllByActiveStatusIsTrue();
 }
