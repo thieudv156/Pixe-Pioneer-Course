@@ -85,25 +85,36 @@
             <div class="page-section container page__container">
                 <div class="col-lg-10 p-0 mx-auto">
                     <div class="page-separator">
-                        <div class="page-separator__text">Enrollment Detail</div>
+                        <div class="page-separator__text">Delete Enrollment</div>
                     </div>
                     <div class="card mb-lg-32pt">
                         <div class="card-body">
-                            <h5>Enrollment Detail</h5>
-                            <div><strong>Full Name:</strong> <span th:text="${enrollment.user.getFullName()}"></span>
-                            </div>
-                            <div><strong>Subscription Status:
-                            </strong>
-                                <span th:if="${enrollment.subscriptionStatus}" class="text-success">Active</span>
-                                <span
-                                        th:if="${!enrollment.subscriptionStatus}" class="text-danger">Inactive</span></div>
-                            <div><strong>Subscription Type:</strong> <span
-                                    th:text="${enrollment.subscriptionType}"></span></div>
-                            <div><strong>Payment Date:</strong> <span
-                                    th:text="${enrollment.formattedPaymentDate}"></span></div>
-                            <div><strong>Subscription End Date:</strong> <span
-                                    th:text="${enrollment.formattedSubscriptionEndDate}"></span></div>
-                            <a href="/admin/enrollments" class="btn btn-primary mt-3">Back to Enrollments</a>
+                            <form th:action="@{'/admin/enrollments/delete/' + ${enrollment.id}}" method="post">
+                                <h5>Enrollment Detail</h5>
+                                <div><strong>Full Name:</strong> <span
+                                        th:text="${enrollment.user.getFullName()}"></span>
+                                </div>
+                                <div><strong>Subscription Status:
+                                </strong>
+                                    <span th:if="${enrollment.subscriptionStatus}" class="text-success">Active</span>
+                                    <span
+                                            th:if="${!enrollment.subscriptionStatus}"
+                                            class="text-danger">Inactive</span></div>
+                                <div><strong>Subscription Type:</strong> <span
+                                        th:text="${enrollment.subscriptionType}"></span></div>
+                                <div><strong>Payment Date:</strong> <span
+                                        th:text="${enrollment.formattedPaymentDate}"></span></div>
+                                <div><strong>Subscription End Date:</strong> <span
+                                        th:text="${enrollment.formattedSubscriptionEndDate}"></span></div>
+                                <div>
+                                    <label for="reason">Reason for deletion:</label>
+                                    <input type="text" id="reason" name="reason" th:required="required">
+                                </div>
+                                <div>
+                                    <input type="submit" value="Confirm Deletion" class="btn btn-danger mt-3">
+                                </div>
+                                <a href="/admin/enrollments" class="btn btn-primary mt-3">Cancel</a>
+                            </form>
                         </div>
                     </div>
                 </div>

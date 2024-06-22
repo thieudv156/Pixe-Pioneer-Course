@@ -10,7 +10,6 @@
 <body>
 <div class="content-wrapper" layout:fragment="contents">
     <div class="container">
-        Payment History
         <div class="mdk-header-layout__content page-content">
             <div class="page-section container page__container">
                 <div class="col-lg-10 p-0 mx-auto">
@@ -33,12 +32,17 @@
                                 <tbody>
                                 <tr th:each="enrollment : ${enrollments}">
                                     <td th:text="${enrollment.user.getFullName()}"></td>
-                                    <td th:text="${enrollment.subscriptionStatus ? 'Active' : 'Inactive'}"></td>
-                                    <td th:text="${enrollment.subscriptionType}"></td>
-                                    <td th:text="${enrollment.paymentDate}"></td>
-                                    <td th:text="${enrollment.subscriptionEndDate}"></td>
                                     <td>
-                                        <a th:href="@{'/app/enrollments/view-detail-enrollment/' + ${enrollment.id}}" class="btn btn-sm btn-primary">View Detail</a>
+                                        <span class="text-success" th:if="${enrollment.subscriptionStatus}">Active</span>
+                                        <span class="text-danger"
+                                              th:if="${!enrollment.subscriptionStatus}">Inactive</span>
+                                    </td>
+                                    <td th:text="${enrollment.subscriptionType}"></td>
+                                    <td th:text="${enrollment.formattedPaymentDate}"></td>
+                                    <td th:text="${enrollment.formattedSubscriptionEndDate}"></td>
+                                    <td>
+                                        <a th:href="@{'/app/enrollments/view-detail-enrollment/' + ${enrollment.id}}"
+                                           class="btn btn-sm btn-primary">View Detail</a>
                                     </td>
                                 </tr>
                                 </tbody>

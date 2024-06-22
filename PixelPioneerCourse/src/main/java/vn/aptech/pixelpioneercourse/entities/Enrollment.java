@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -46,4 +47,19 @@ public class Enrollment {
 
     @Column
     private LocalDateTime subscriptionEndDate; // Subscription end date
+    
+    @Setter
+    @Transient
+    private String formattedPaymentDate;
+    
+    @Setter
+    @Transient
+    private String formattedSubscriptionEndDate;
+    
+    public boolean isSubcriptionActive() {
+        LocalDateTime now = LocalDateTime.now();
+        long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(now, subscriptionEndDate);
+        return daysBetween > 0;
+    }
+
 }

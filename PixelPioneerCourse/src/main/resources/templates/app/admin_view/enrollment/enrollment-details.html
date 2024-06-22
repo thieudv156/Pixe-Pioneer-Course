@@ -6,6 +6,77 @@
     <title>Enrollment Details</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .page-separator {
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 20px;
+        }
+
+        .page-separator__text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding-bottom: 10px;
+            color: #495057;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h5 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #343a40;
+        }
+
+        .card-body div {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #495057;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 <div class="content-wrapper" layout:fragment="contents">
@@ -19,11 +90,19 @@
                     <div class="card mb-lg-32pt">
                         <div class="card-body">
                             <h5>Enrollment Detail</h5>
-                            <div><strong>Full Name:</strong> <span th:text="${enrollment.user.getFullName()}"></span></div>
-                            <div><strong>Subscription Status:</strong> <span th:text="${enrollment.subscriptionStatus ? 'Active' : 'Inactive'}"></span></div>
-                            <div><strong>Subscription Type:</strong> <span th:text="${enrollment.subscriptionType}"></span></div>
-                            <div><strong>Payment Date:</strong> <span th:text="${enrollment.paymentDate}"></span></div>
-                            <div><strong>Subscription End Date:</strong> <span th:text="${enrollment.subscriptionEndDate}"></span></div>
+                            <div><strong>Full Name:</strong> <span th:text="${enrollment.user.getFullName()}"></span>
+                            </div>
+                            <div><strong>Subscription Status:
+                            </strong>
+                                <span th:if="${enrollment.subscriptionStatus}" class="text-success">Active</span>
+                                <span
+                                        th:if="${!enrollment.subscriptionStatus}" class="text-danger">Inactive</span></div>
+                            <div><strong>Subscription Type:</strong> <span
+                                    th:text="${enrollment.subscriptionType}"></span></div>
+                            <div><strong>Payment Date:</strong> <span
+                                    th:text="${enrollment.formattedPaymentDate}"></span></div>
+                            <div><strong>Subscription End Date:</strong> <span
+                                    th:text="${enrollment.formattedSubscriptionEndDate}"></span></div>
                             <a href="/admin/enrollments" class="btn btn-primary mt-3">Back to Enrollments</a>
                         </div>
                     </div>

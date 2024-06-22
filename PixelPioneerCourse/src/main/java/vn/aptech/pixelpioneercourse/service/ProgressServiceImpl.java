@@ -126,15 +126,13 @@ public class ProgressServiceImpl implements ProgressService {
         return lastProgress.getSubLesson();
     }
 
-<<<<<<< Updated upstream
     public List<Progress> findByUserId(Integer uid) {
     	return progressRepository.findByUserId(uid);
     }
-=======
+    
     public Boolean checkIfUserHasProgress(Integer courseId, Integer userId) {
         List<Progress> progresses = progressRepository.findByCourseIdAndUserId(courseId, userId);
         return !progresses.isEmpty();
     }
 
->>>>>>> Stashed changes
 }

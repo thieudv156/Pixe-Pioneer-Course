@@ -15,17 +15,20 @@
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
+
         .page-section {
             background: #fff;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
+
         .page-separator__text {
             font-size: 24px;
             font-weight: bold;
@@ -33,27 +36,33 @@
             border-bottom: 2px solid #007bff;
             display: inline-block;
         }
+
         .card {
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .card-body {
             padding: 20px;
         }
+
         .card-body h5 {
             font-size: 20px;
             margin-bottom: 20px;
             color: #007bff;
         }
+
         .card-body div {
             margin-bottom: 10px;
             font-size: 16px;
         }
+
         .card-body strong {
             color: #333;
         }
+
         .btn-primary {
             background-color: #007bff;
             color: #fff;
@@ -63,16 +72,20 @@
             border-radius: 4px;
             transition: background-color 0.3s;
         }
+
         .btn-primary:hover {
             background-color: #0056b3;
         }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
             }
+
             .page-section {
                 padding: 15px;
             }
+
             .card-body {
                 padding: 15px;
             }
@@ -90,12 +103,21 @@
                     </div>
                     <div class="card mb-lg-32pt">
                         <div class="card-body">
-                            <div><strong>Full Name:</strong> <span th:text="${enrollment.user.getFullName()}"></span></div>
-                            <div><strong>Subscription Status:</strong> <span th:text="${enrollment.subscriptionStatus ? 'Active' : 'Inactive'}"></span></div>
-                            <div><strong>Subscription Type:</strong> <span th:text="${enrollment.subscriptionType}"></span></div>
-                            <div><strong>Payment Date:</strong> <span th:text="${enrollment.paymentDate}"></span></div>
-                            <div><strong>Subscription End Date:</strong> <span th:text="${enrollment.subscriptionEndDate}"></span></div>
-                            <a href="/app/enrollments/user-history-enrollment" class="btn btn-primary mt-3">Back to Enrollments</a>
+                            <div><strong>Full Name:</strong> <span th:text="${enrollment.user.getFullName()}"></span>
+                            </div>
+                            <div><strong>Subscription Status:
+                            </strong> 
+                                <span th:if="${enrollment.subscriptionStatus}" class="text-success">Active</span>
+                                <span
+                                        th:if="${!enrollment.subscriptionStatus}" class="text-danger">Inactive</span></div>
+                            <div><strong>Subscription Type:</strong> <span
+                                    th:text="${enrollment.subscriptionType}"></span></div>
+                            <div><strong>Payment Date:</strong> <span
+                                    th:text="${enrollment.formattedPaymentDate}"></span></div>
+                            <div><strong>Subscription End Date:</strong> <span
+                                    th:text="${enrollment.formattedSubscriptionEndDate}"></span></div>
+                            <a href="/app/enrollments/user-history-enrollment" class="btn btn-primary mt-3">Back to
+                                Enrollments</a>
                         </div>
                     </div>
                 </div>

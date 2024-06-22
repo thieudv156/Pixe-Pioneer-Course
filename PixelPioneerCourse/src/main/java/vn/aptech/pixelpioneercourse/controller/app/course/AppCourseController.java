@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 @Controller("clientCourseController")
 @RequestMapping("/app/course")
-public class AppCourseController{
+public class AppCourseController {
     @Value("${api.base.url}")
     private String apiBaseUrl;
 
@@ -100,7 +100,6 @@ public class AppCourseController{
     }
 
 
-
     @GetMapping("/category")
     public String sortByCategory(Model model,
                                  @RequestParam(value = "page", defaultValue = "1") int page,
@@ -147,41 +146,39 @@ public class AppCourseController{
     @GetMapping("/view/{id}")
     public String showCourseByIdAndLessonId(Model model,
                                             @PathVariable("id") Integer id,
-                                            @RequestParam(value = "lessonOrder",defaultValue = "1") Integer lessonOrder,
-                                            @RequestParam(value = "subLessonId",required = false) Integer subLessonId,
-                                            @SessionAttribute("userId") Integer userId){
+                                            @RequestParam(value = "lessonOrder", defaultValue = "1") Integer lessonOrder,
+                                            @RequestParam(value = "subLessonId", required = false) Integer subLessonId,
+                                            @SessionAttribute("userId") Integer userId) {
         RestTemplate restTemplate = new RestTemplate();
         Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
-        if(course.isEmpty()){
+        if (course.isEmpty()) {
             return "redirect:/app/course";
         }
         List<Lesson> lessons = course.get().getLessons();
-        HashMap<Integer,SubLesson> subLessonHashMap = new HashMap<>();
+        HashMap<Integer, SubLesson> subLessonHashMap = new HashMap<>();
         for (Lesson lesson : lessons) {
             for (SubLesson subLesson : lesson.getSubLessons()) {
-                subLessonHashMap.put(subLesson.getId(),subLesson);
+                subLessonHashMap.put(subLesson.getId(), subLesson);
             }
         }
 
 
-        if(subLessonId == null)
-        {
-            SubLesson currentSubLesson = progressService.getCurrentSubLessonByCourseId(id,userId);
-            model.addAttribute("currentSubLesson",currentSubLesson);
-            model.addAttribute("currentLesson",currentSubLesson.getLesson());
-        }
-        else{
+        if (subLessonId == null) {
+            SubLesson currentSubLesson = progressService.getCurrentSubLessonByCourseId(id, userId);
+            model.addAttribute("currentSubLesson", currentSubLesson);
+            model.addAttribute("currentLesson", currentSubLesson.getLesson());
+        } else {
             Lesson currentLesson = lessons.stream().filter(lesson -> lesson.getOrderNumber().equals(lessonOrder)).toList().getFirst();
             SubLesson currentSubLesson = currentLesson.getSubLessons().stream()
                     .filter(subLesson -> subLesson.getId().equals(subLessonId))
                     .findFirst()
                     .orElse(null);
-            model.addAttribute("currentLesson",currentLesson);
-            model.addAttribute("currentSubLesson",currentSubLesson);
+            model.addAttribute("currentLesson", currentLesson);
+            model.addAttribute("currentSubLesson", currentSubLesson);
         }
-        Double currentProgress = progressService.getCurrentProgressByCourseId(id,userId);
-        model.addAttribute("currentProgress",currentProgress);
-        model.addAttribute("subLessonHashMap",subLessonHashMap);
+        Double currentProgress = progressService.getCurrentProgressByCourseId(id, userId);
+        model.addAttribute("currentProgress", currentProgress);
+        model.addAttribute("subLessonHashMap", subLessonHashMap);
         model.addAttribute("lessons", lessons);
         model.addAttribute("course", course.get());
         model.addAttribute("pageTitle", "Course detail");
@@ -189,7 +186,7 @@ public class AppCourseController{
     }
 
     @GetMapping("/instructor/courses/{instructorId}")
-    public String showCourseByInstructorId(Model model, @PathVariable("instructorId") Integer instructorId){
+    public String showCourseByInstructorId(Model model, @PathVariable("instructorId") Integer instructorId) {
         RestTemplate restTemplate = new RestTemplate();
         Course[] courseArray = restTemplate.getForObject(courseApiUrl + "/instructor/" + instructorId, Course[].class);
         List<Course> courseList = Arrays.asList(courseArray);
@@ -201,11 +198,11 @@ public class AppCourseController{
 
 
     @GetMapping("/instructor/view/{id}")
-        public String showCourseById(Model model, @PathVariable("id") Integer id, @SessionAttribute("userId") Integer userId){
+    public String showCourseById(Model model, @PathVariable("id") Integer id, @SessionAttribute("userId") Integer userId) {
         RestTemplate restTemplate = new RestTemplate();
         Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
-        if(course.isEmpty()){
-            return "redirect:/app/course/instructor/courses/"+userId;
+        if (course.isEmpty()) {
+            return "redirect:/app/course/instructor/courses/" + userId;
         }
         Optional<Category[]> categories = Optional.ofNullable(restTemplate.getForObject(apiBaseUrl + "/category", Category[].class));
         List<Category> categoryList = Arrays.asList(categories.get());
@@ -215,18 +212,18 @@ public class AppCourseController{
         } else {
             model.addAttribute("oldImageUrl", imageApiUrl + "/" + course.get().getFrontPageImage().getImageName());
         }
-        if((course.get().getCategory()) != null){
+        if ((course.get().getCategory()) != null) {
             model.addAttribute("categoryId", course.get().getCategory().getId());
         }
         List<Lesson> lessons = course.get().getLessons();
-        HashMap<Integer,SubLesson> subLessonHashMap = new HashMap<>();
+        HashMap<Integer, SubLesson> subLessonHashMap = new HashMap<>();
         for (Lesson lesson : lessons) {
             for (SubLesson subLesson : lesson.getSubLessons()) {
-                subLessonHashMap.put(subLesson.getId(),subLesson);
+                subLessonHashMap.put(subLesson.getId(), subLesson);
             }
         }
         model.addAttribute("isPublished", course.get().getIsPublished());
-        model.addAttribute("subLessonHashMap",subLessonHashMap);
+        model.addAttribute("subLessonHashMap", subLessonHashMap);
         model.addAttribute("courseCreateDto", courseCreateDto);
         model.addAttribute("courseId", course.get().getId());
         model.addAttribute("categories", categoryList);
@@ -237,10 +234,10 @@ public class AppCourseController{
 
     @PostMapping("/instructor/{id}/update")
     public String updateCourse(@ModelAttribute CourseCreateDto courseCreateDto,
-                               @RequestParam(value = "image",required = false) MultipartFile image,
+                               @RequestParam(value = "image", required = false) MultipartFile image,
                                @PathVariable("id") Integer id,
                                RedirectAttributes redirectAttributes,
-                               @SessionAttribute("userId") Integer userId){
+                               @SessionAttribute("userId") Integer userId) {
         try {
             // Convert CourseCreateDto to JSON string
             String courseData = objectMapper.writeValueAsString(courseCreateDto);
@@ -264,15 +261,15 @@ public class AppCourseController{
 
             // Make the API call to update the course
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<Course> response = restTemplate.exchange(courseApiUrl + "/" + id+ "/update", HttpMethod.PUT, requestEntity, Course.class);
+            ResponseEntity<Course> response = restTemplate.exchange(courseApiUrl + "/" + id + "/update", HttpMethod.PUT, requestEntity, Course.class);
             Course updatedCourse = response.getBody();
 
-            if(updatedCourse == null){
+            if (updatedCourse == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Course not found!");
                 return "redirect:/app/course/instructor/view/" + id;  // Redirect back to the course update form
             }
             redirectAttributes.addFlashAttribute("successMessage", "Course updated successfully!");
-            return "redirect:/app/course/instructor/courses/"+userId;  // Redirect to the course detail page
+            return "redirect:/app/course/instructor/courses/" + userId;  // Redirect to the course detail page
         } catch (Exception e) {
             // Add error message
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -282,14 +279,14 @@ public class AppCourseController{
     }
 
     @GetMapping("/instructor/create-course")
-    public String createCourse(RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId){
+    public String createCourse(RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId) {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Course course = restTemplate.getForObject(courseApiUrl + "/create-course/"+userId, Course.class);
+            Course course = restTemplate.getForObject(courseApiUrl + "/create-course/" + userId, Course.class);
             if (course == null) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Error creating course");
-                return "redirect:/app/course/instructor/"+userId;
+                return "redirect:/app/course/instructor/" + userId;
             }
             redirectAttributes.addFlashAttribute("successMessage", "Course created successfully");
             return "redirect:/app/course/instructor/view/" + course.getId();
@@ -299,20 +296,20 @@ public class AppCourseController{
     }
 
     @GetMapping("/instructor/{id}/delete")
-    public String deleteCourse(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes,@SessionAttribute("userId") Integer userId){
+    public String deleteCourse(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.delete(courseApiUrl + "/" + id + "/delete");
             redirectAttributes.addFlashAttribute("successMessage", "Course deleted successfully");
-            return "redirect:/app/course/instructor/courses/"+userId;
+            return "redirect:/app/course/instructor/courses/" + userId;
         } catch (RestClientException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error deleting course: " + e.getMessage());
-            return "redirect:/app/course/instructor/view/"+id;
+            return "redirect:/app/course/instructor/view/" + id;
         }
     }
 
     @GetMapping("/instructor/{courseId}/publish")
-    public String publishCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId){
+    public String publishCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, @SessionAttribute("userId") Integer userId) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.put(courseApiUrl + "/" + courseId + "/publish", null);
@@ -325,7 +322,7 @@ public class AppCourseController{
     }
 
     @GetMapping("/instructor/{courseId}/unpublish")
-    public String unpublishCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes){
+    public String unpublishCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.put(courseApiUrl + "/" + courseId + "/unpublish", null);
@@ -338,18 +335,18 @@ public class AppCourseController{
     }
 
     @GetMapping("/preview/{courseId}")
-    public String previewCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, Model model, @SessionAttribute("userId") Integer userId){
-        try{
+    public String previewCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, Model model, @SessionAttribute("userId") Integer userId) {
+        try {
             RestTemplate restTemplate = new RestTemplate();
             Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
-            if(course.isEmpty()) {
+            if (course.isEmpty()) {
                 return "redirect:/app/course";
             }
             List<Lesson> lessons = course.get().getLessons();
 
             // Limit to the first 4 lessons
             List<Lesson> limitedLessons = lessons.stream().limit(4).collect(Collectors.toList());
-            Double progress = progressService.getCurrentProgressByCourseId(courseId,userId);
+            Double progress = progressService.getCurrentProgressByCourseId(courseId, userId);
 
             HashMap<Integer, SubLesson> subLessonHashMap = new HashMap<>();
             for (Lesson lesson : limitedLessons) {
@@ -363,7 +360,7 @@ public class AppCourseController{
             model.addAttribute("pageTitle", "Course detail");
             model.addAttribute("currentProgress", progress);
             return "app/user_view/course/course-preview";
-        } catch (Exception e){
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/app/error/500";
         }
@@ -377,7 +374,7 @@ public class AppCourseController{
                 return "redirect:/app/course/";
             }
             return "redirect:/app/course/view/" + courseId;
-        } catch (Exception e){
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/app/error/500";
         }
@@ -428,7 +425,7 @@ public class AppCourseController{
             model.addAttribute("totalCourses", totalCourses);
             model.addAttribute("courseProgressMap", courseProgressMap);
             return "app/user_view/course/my-courses";
-        } catch (Exception e){
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "app/error/500";
         }
@@ -440,7 +437,7 @@ public class AppCourseController{
                                           @RequestParam(value = "category", required = false) Integer category,
                                           @SessionAttribute("userId") Integer userId,
                                           RedirectAttributes redirectAttributes) {
-        try{
+        try {
             int pageSize = 12; // Number of courses per page
             RestTemplate restTemplate = new RestTemplate();
             List<Course> courseList = courseService.getEnrolledCourses(userId);
@@ -484,8 +481,7 @@ public class AppCourseController{
             model.addAttribute("totalCourses", totalCourses);
             model.addAttribute("selectedCategory", category);
             return "app/user_view/course/my-courses";
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/app/error/500";
         }
@@ -500,8 +496,7 @@ public class AppCourseController{
                 return "redirect:/app/course/my-courses";
             }
             return "redirect:/app/course/view/" + subLesson.getLesson().getCourse().getId();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/app/error/500";
         }
