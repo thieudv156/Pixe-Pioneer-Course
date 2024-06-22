@@ -69,16 +69,15 @@ public class DiscussionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Discussion> updateDiscussion(@Valid @PathVariable Integer id, String content) {
-        Discussion updatedDiscussion = discussionService.findById(id);
-        DiscussionCreateDto discussion = mapper.map(updatedDiscussion, DiscussionCreateDto.class);
-        if (updatedDiscussion == null) {
+    public ResponseEntity<Discussion> updateDiscussion(@Valid @PathVariable Integer id, @RequestBody DiscussionCreateDto discussionCreateDto) {
+        Discussion existingDiscussion = discussionService.findById(id);
+        if (existingDiscussion == null) {
             return ResponseEntity.notFound().build();
         }
-        discussion.setContent(content);
-        discussion.setCreatedAt(LocalDateTime.now());
-        discussionService.updateDiscussion(id, discussion);
-        return ResponseEntity.ok(updatedDiscussion);
+        existingDiscussion.setContent(discussionCreateDto.getContent());
+        existingDiscussion.setCreatedAt(LocalDateTime.now());
+        discussionService.updateDiscussion(id, discussionCreateDto);
+        return ResponseEntity.ok(existingDiscussion);
     }
 
     @DeleteMapping("/{id}")

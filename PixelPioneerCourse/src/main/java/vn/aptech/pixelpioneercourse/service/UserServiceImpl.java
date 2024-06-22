@@ -267,6 +267,13 @@ public class UserServiceImpl implements UserService{
         userRepository.save(acc);
         return true;
     }
+    
+    public boolean updateAdmin(Role r, Integer uid) {
+    	User acc = userRepository.findById(uid).orElseThrow(() -> new UsernameNotFoundException("Account not found"));
+    	acc.setRole(r);
+    	userRepository.save(acc);
+    	return true;
+    }
 
     public void delete(User u){
         userRepository.deleteById(u.getId());;

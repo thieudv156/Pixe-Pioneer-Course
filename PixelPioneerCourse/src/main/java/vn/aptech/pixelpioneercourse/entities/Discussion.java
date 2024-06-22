@@ -34,7 +34,7 @@ public class Discussion {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties({"enrollments", "createdAt", "password", "phone", "courses", "tests", "provider", "grantedAuthorities", "reviews", "discussions"})
+    @JsonIgnoreProperties({"enrollments", "progresses", "createdAt", "password", "phone", "courses", "tests", "provider", "grantedAuthorities", "reviews", "discussions"})
     private User user;
 
     @ManyToOne
@@ -50,6 +50,7 @@ public class Discussion {
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JsonManagedReference(value = "parent-discussion")
+    @JsonIgnoreProperties({"sublesson"})
     private List<Discussion> children;
 
 }

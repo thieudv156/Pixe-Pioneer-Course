@@ -367,6 +367,53 @@
                     </a>
                 </li>
             </ul>
+            <div class="sidebar-heading" th:if="${session.isAdmin}">Admin - Management</div>
+            <ul class="sidebar-menu" th:if="${session.isAdmin}">
+                <li class="sidebar-menu-item">
+                    <a class="sidebar-menu-button"
+                       data-toggle="collapse"
+                       href="#user_menu">
+                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box</span>
+                        User
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                    </a>
+                    <ul class="sidebar-submenu collapse sm-indent"
+                        id="user_menu">
+		                <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/admin/users}">
+                                <span class="sidebar-menu-text">General</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/admin/users/create}">
+                                <span class="sidebar-menu-text">Create</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a class="sidebar-menu-button"
+                       data-toggle="collapse"
+                       href="#role_menu">
+                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">work</span>
+                        Role
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                    </a>
+                    <ul class="sidebar-submenu collapse sm-indent"
+                        id="role_menu">
+		                <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/admin/role}">
+                                <span class="sidebar-menu-text">General</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/admin/role/create}">
+                                <span class="sidebar-menu-text">Create</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
 
             <div class="sidebar-heading" th:if="${session.user != null}">Components</div>
             <ul class="sidebar-menu" th:if="${session.user != null}">

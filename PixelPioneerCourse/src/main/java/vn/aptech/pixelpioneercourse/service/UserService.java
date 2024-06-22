@@ -5,6 +5,7 @@ import vn.aptech.pixelpioneercourse.dto.LoginDto;
 import vn.aptech.pixelpioneercourse.dto.UserCreateDto;
 import vn.aptech.pixelpioneercourse.dto.UserDto;
 import vn.aptech.pixelpioneercourse.dto.UserInformation;
+import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public interface UserService {
     boolean create(User user);
     boolean update(UserCreateDto u, int id);
     boolean updateWithRole(User u, int uID);
+    boolean updateAdmin(Role r, Integer uid);
     void delete(User u);
     String codeGeneratorForEmailVerification();
     boolean checkCode(String codeGenerated, String inputCode);

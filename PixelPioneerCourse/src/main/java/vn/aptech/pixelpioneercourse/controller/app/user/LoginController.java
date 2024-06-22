@@ -137,7 +137,7 @@ public class LoginController {
             }
         } catch (Exception e) {
         	redirectAttributes.addFlashAttribute("loginErrorCondition", true);
-            redirectAttributes.addFlashAttribute("loginError", e.getMessage());
+            redirectAttributes.addFlashAttribute("loginError", "Incorrect username/email or password");
             return "redirect:/app/login";
         }
     }

@@ -12,4 +12,7 @@ public interface ProgressService {
     SubLesson getCurrentSubLessonByCourseId(Integer courseId, Integer userId);
     void addProgressForNewSubLesson(Integer subLessonId);
     List<Progress> findByUserId(Integer uid);
+    Boolean checkIfUserHasProgress(Integer courseId, Integer userId);
+    List<Progress> checkAndCreateProgressForMissingSubLessons(Integer courseId, Integer userId);
+    List<Progress> findProgressByCourseIdAndUserId(Integer courseId, Integer userId);
 }

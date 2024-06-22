@@ -44,8 +44,11 @@ public class RoleManagingController {
 	}
 	
 	@GetMapping("/create")
-	public String createPage() {
-		return "app/admin_view/roles/create";
+	public String createPage(HttpSession session) {
+		if (session.getAttribute("isAdmin") != null) {
+			return "app/admin_view/roles/create";
+		}
+		return "redirect:/";
 	}
 	
 	@PostMapping("/create")
@@ -65,10 +68,13 @@ public class RoleManagingController {
 	}
 	
 	@PostMapping("/update")
-	public String updatePage(@RequestParam("id") String rID, Model model) {
-	    Role r = mapper.map(roleService.findById(Integer.parseInt(rID)).get(), Role.class);
-	    model.addAttribute("roleInfo", r);
-	    return "app/admin_view/roles/update";
+	public String updatePage(@RequestParam("id") String rID, Model model, HttpSession session) {
+	    if (session.getAttribute("isAdmin") != null) {
+	    	Role r = mapper.map(roleService.findById(Integer.parseInt(rID)).get(), Role.class);
+		    model.addAttribute("roleInfo", r);
+		    return "app/admin_view/roles/update";
+	    }
+	    return "redirect:/";
 	}
 	
 	@PostMapping("/update/updateCheck")

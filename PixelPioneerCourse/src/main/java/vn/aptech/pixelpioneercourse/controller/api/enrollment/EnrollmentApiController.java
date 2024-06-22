@@ -114,4 +114,23 @@ public class EnrollmentApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    
+    @PostMapping("/credit-card-payment")
+    public ResponseEntity<?> creditCardPayment(@SessionAttribute("userId") Integer userId, @Valid @RequestBody PaymentRequest paymentRequest) {
+        try {
+            if (userId == null) {
+                return ResponseEntity.status(401).body("User not authenticated");
+            }
+
+            boolean paymentSuccessful = paymentService.processCreditCardPayment(paymentRequest.getCardNumber(), paymentRequest.getExpiration(), paymentRequest.getCvv(), paymentRequest.getPrice(), "USD");
+            if (paymentSuccessful) {
+                enrollmentService.enrollUser(userId, SubscriptionType.valueOf(paymentRequest.getSubscriptionType()), paymentRequest.getPaymentMethod());
+                return ResponseEntity.ok("Payment successful");
+            } else {
+                throw new RuntimeException("Credit card payment failed");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Subscription failed: " + e.getMessage());
+        }
+    }
 }

@@ -131,6 +131,15 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+    
+    @GetMapping("/enrolled")
+    public ResponseEntity<?> findEnrolledCourseByUserId(@RequestParam("userId") Integer uid) {
+    	try {
+    		return ResponseEntity.status(HttpStatus.OK).body(courseService.getEnrolledCourses(uid)); //return a List<Course> type
+    	} catch (Exception e) {
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    	}
+    }
 
     @PutMapping("/{id}/update")
     public ResponseEntity<?> update(

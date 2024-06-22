@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -17,10 +18,12 @@ public class Progress {
 
     @ManyToOne
     @JoinColumn(name = "sub_lesson_id")
+    @ToString.Exclude
     private SubLesson subLesson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User user;
 
     private Boolean isCompleted;

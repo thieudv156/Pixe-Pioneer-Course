@@ -54,6 +54,7 @@ import vn.aptech.pixelpioneercourse.dto.*;
 @EnableMethodSecurity
 public class SecurityConfig{
     private UserDetailsService userDetailsService;
+    private UserService uService;
 
     @Autowired
     private ModelMapper mapper;
@@ -255,10 +256,14 @@ public class SecurityConfig{
                     user.setProvider(Provider.GOOGLE);
                     user.setFullName(fullname);
                     user.setUsername(generateUsername(fullname));
-                    user.setPassword(passwordEncoder().encode("123456"));
+//                    user.setPassword(passwordEncoder().encode("123456"));
+                    user.setPassword("123456");
                     user.setEmail(email);
+                    User u = mapper.map(user, User.class);
+                    System.out.println(u);
+//                    userRepository.save(u);
+                    uService.create(u);
                     System.out.println("check2");
-                    userRepository.save(mapper.map(user, User.class));
                     createdYet = false;
                     session.setAttribute("user", opUser.get());
                 	session.setAttribute("userId", opUser.get().getId());

@@ -25,7 +25,7 @@ public class Lesson {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    @JsonIgnoreProperties({"lessons", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","price","description","isPublished","imageUrl"})
+    @JsonIgnoreProperties({"lessons", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","price","description","isPublished","imageUrl", "title", "testFormat"})
     private Course course;
 
     @Column

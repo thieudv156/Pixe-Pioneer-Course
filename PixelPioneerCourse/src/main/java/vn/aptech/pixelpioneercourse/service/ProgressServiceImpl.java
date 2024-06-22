@@ -58,7 +58,6 @@ public class ProgressServiceImpl implements ProgressService {
     }
 
     public void finishSubLesson(Integer subLessonId, Integer userId) {
-
         try {
             Optional<Progress> progressOpt = progressRepository.findBySubLessonIdAndUserId(subLessonId, userId);
             System.out.println(progressOpt);
@@ -71,7 +70,6 @@ public class ProgressServiceImpl implements ProgressService {
         catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
-
     }
 
     public Double getCurrentProgressByCourseId(Integer courseId, Integer userId) {
@@ -115,7 +113,6 @@ public class ProgressServiceImpl implements ProgressService {
                 progress.setIsCompleted(false);
 
                 progressRepository.save(progress);
-                return;
             }
         }
     }
@@ -138,5 +135,33 @@ public class ProgressServiceImpl implements ProgressService {
         return !progresses.isEmpty();
     }
 
-
+    public List<Progress> checkAndCreateProgressForMissingSubLessons(Integer courseId, Integer userId) {
+        List<Progress> existingProgress = progressRepository.findByCourseIdAndUserId(courseId, userId);
+        if (existingProgress.isEmpty()) {
+            return createProgressByCourseId(courseId, userId);
+        }
+        
+        Optional<Course> courseOpt = courseRepository.findById(courseId);
+        if (courseOpt.isPresent()) {
+            Course course = courseOpt.get();
+            for (Lesson lesson : course.getLessons()) {
+                for (SubLesson subLesson : lesson.getSubLessons()) {
+                    if (existingProgress.stream().noneMatch(p -> p.getSubLesson().getId().equals(subLesson.getId()))) {
+                        Progress progress = new Progress();
+                        progress.setSubLesson(subLesson);
+                        progress.setUser(userRepository.findById(userId).get());
+                        progress.setIsCompleted(false);
+                        progressRepository.save(progress);
+                        existingProgress.add(progress);
+                    }
+                }
+            }
+        }
+        
+        return existingProgress;
+    }
+    
+    public List<Progress> findProgressByCourseIdAndUserId(Integer courseId, Integer userId) {
+        return progressRepository.findByCourseIdAndUserId(courseId, userId);
+    }
 }

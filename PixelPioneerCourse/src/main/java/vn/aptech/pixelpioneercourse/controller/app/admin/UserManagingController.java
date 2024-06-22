@@ -102,8 +102,11 @@ public class UserManagingController {
 	}
 	
 	@GetMapping("/create")
-	public String createPage() {
-		return "app/admin_view/users/create";
+	public String createPage(HttpSession session) {
+		if (session.getAttribute("isAdmin") != null) {
+			return "app/admin_view/users/create";
+		}
+		return "redirect:/";
 	}
 	
 	@PostMapping("/create")
@@ -129,20 +132,26 @@ public class UserManagingController {
 	}
 	
 	@GetMapping("/update") //prevent error
-	public String updatePage() {
-		return "redirect:/app/admin/users";
+	public String updatePage(HttpSession session) {
+		if (session.getAttribute("isAdmin") != null) {
+			return "redirect:/app/admin/users";
+		}
+		return "redirect:/";
 	}
 	
 	@PostMapping("/update")
-	public String updatePage(@RequestParam("id") String id, RedirectAttributes ra, Model model) {
+	public String updatePage(@RequestParam("id") String id, RedirectAttributes ra, Model model, HttpSession session) {
 		try {
-			int uid = Integer.parseInt(id);
-			User u = userService.findById(uid);
-			List<RoleDto> allRoles = roleService.findAll();
-			model.addAttribute("allRoles", allRoles);
-			model.addAttribute("userInfo", u);
-			model.addAttribute("uid", uid);
-			return "app/admin_view/users/update";
+			if (session.getAttribute("isAdmin") != null) {
+				int uid = Integer.parseInt(id);
+				User u = userService.findById(uid);
+				List<RoleDto> allRoles = roleService.findAll();
+				model.addAttribute("allRoles", allRoles);
+				model.addAttribute("userInfo", u);
+				model.addAttribute("uid", uid);
+				return "app/admin_view/users/update";
+			}
+			return "redirect:/";
 		} catch (Exception e) {
 			ra.addFlashAttribute("ErrorCondition", true);
 			ra.addFlashAttribute("ErrorError", e.getMessage());
@@ -153,18 +162,9 @@ public class UserManagingController {
 	@PostMapping("/update/updateCheck")
 	public String update(@ModelAttribute("userInfo") User user, RedirectAttributes ra) {
 		try {
-			if (user.getPassword().indexOf("$") != 0) {
-				user.setPassword(encoder.encode(user.getPassword()));
-			}
-			if (!user.getPhone().matches("\\d+")) {
-				ra.addFlashAttribute("ErrorCondtion", true);
-				ra.addFlashAttribute("ErrorError", "Phone must contain only digits");
-				return "redirect:/app/admin/users";
-			}
 			Role role = mapper.map(roleService.findById(user.getRole().getId()).get(), Role.class);
 			System.out.println(user.getId());
-			user.setRole(role);
-			userService.updateWithRole(user, user.getId());
+			userService.updateAdmin(role, user.getId());
 			ra.addFlashAttribute("SuccessCondition", true);
 			ra.addFlashAttribute("SuccessSuccess", "Update user successfully");
 			return "redirect:/app/admin/users";
@@ -176,17 +176,23 @@ public class UserManagingController {
 	}
 	
 	@GetMapping("/delete")
-	public String deletePage() {
-		return "redirect:/app/admin/users";
+	public String deletePage(HttpSession session) {
+		if (session.getAttribute("isAdmin") != null) {
+			return "redirect:/app/admin/users";
+		}
+		return "redirect:/";
 	}
 	
 	@PostMapping("/delete")
-	public String delete(@ModelAttribute("uid") String uid, RedirectAttributes ra) {
+	public String delete(@ModelAttribute("uid") String uid, RedirectAttributes ra, HttpSession session) {
 		try {
-			userService.delete(userService.findById(Integer.parseInt(uid)));
-			ra.addFlashAttribute("SuccessCondition", true);
-			ra.addFlashAttribute("SuccessSuccess", "Successfully delete user.");
-			return "redirect:/app/admin/users";
+			if (session.getAttribute("isAdmin") != null) {
+				userService.delete(userService.findById(Integer.parseInt(uid)));
+				ra.addFlashAttribute("SuccessCondition", true);
+				ra.addFlashAttribute("SuccessSuccess", "Successfully delete user.");
+				return "redirect:/app/admin/users";
+			}
+			return "redirect:/";
 		} catch (Exception e) {
 			ra.addFlashAttribute("ErrorCondition", true);
 			ra.addFlashAttribute("ErrorError", e.getMessage()+".");
