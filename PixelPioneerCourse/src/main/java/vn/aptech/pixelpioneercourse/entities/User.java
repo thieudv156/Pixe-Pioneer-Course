@@ -40,7 +40,7 @@ public class User {
     @Column(nullable = false, name = "full_name")
     private String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String phone;
 
     @Column(nullable = false, name = "active_status")

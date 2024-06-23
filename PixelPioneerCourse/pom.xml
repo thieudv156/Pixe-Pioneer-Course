@@ -186,11 +186,6 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
-		<dependency>
-		  <groupId>com.google.api-client</groupId>
-		  <artifactId>google-api-client</artifactId>
-		  <version>1.31.2</version>
-		</dependency>
     </dependencies>
 
 

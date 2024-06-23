@@ -25,8 +25,10 @@ import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
 import vn.aptech.pixelpioneercourse.entities.*;
 import vn.aptech.pixelpioneercourse.service.CourseService;
 import vn.aptech.pixelpioneercourse.service.ProgressService;
+import vn.aptech.pixelpioneercourse.service.ReviewService;
 import vn.aptech.pixelpioneercourse.service.SubLessonService;
 import vn.aptech.pixelpioneercourse.service.SubLessonServiceImpl;
+import vn.aptech.pixelpioneercourse.service.UserService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,14 +46,18 @@ public class AppCourseController {
     private final ProgressService progressService;
     private final CourseService courseService;
     private final SubLessonService subLessonService;
+    private final ReviewService reviewService;
+    private final UserService userService;
 
     @Autowired
-    public AppCourseController(ModelMapper modelMapper, ObjectMapper objectMapper, ProgressService progressService, CourseService courseService, SubLessonService subLessonService) {
+    public AppCourseController(ModelMapper modelMapper, UserService uService, ReviewService reService, ObjectMapper objectMapper, ProgressService progressService, CourseService courseService, SubLessonService subLessonService) {
         this.modelMapper = modelMapper;
         this.objectMapper = objectMapper;
         this.progressService = progressService;
         this.courseService = courseService;
         this.subLessonService = subLessonService;
+        reviewService = reService;
+        userService = uService;
     }
 
     @PostConstruct
@@ -338,12 +344,12 @@ public class AppCourseController {
     public String previewCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, Model model, @SessionAttribute("userId") Integer userId) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
+//            Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
+            Optional<Course> course = Optional.ofNullable(courseService.findById(courseId));
             if (course.isEmpty()) {
                 return "redirect:/app/course";
             }
             List<Lesson> lessons = course.get().getLessons();
-
             // Limit to the first 4 lessons
             List<Lesson> limitedLessons = lessons.stream().limit(4).collect(Collectors.toList());
             Double progress = progressService.getCurrentProgressByCourseId(courseId, userId);
@@ -354,17 +360,45 @@ public class AppCourseController {
                     subLessonHashMap.put(subLesson.getId(), subLesson);
                 }
             }
+            
+            List<Review> listReviewRelatedToCourse = reviewService.findByCourseId(courseId);
+            Double averageRating = reviewService.average(listReviewRelatedToCourse);
+            Integer five_count = 0;
+            Integer four_count = 0;
+            Integer three_count = 0;
+            Integer two_count = 0;
+            Integer one_count = 0;
+            for (Review r : listReviewRelatedToCourse) {
+            	if (r.getRating() == 5) {
+            		five_count++;
+            	} else if (r.getRating() == 4) {
+            		four_count++;
+            	} else if (r.getRating() == 3) {
+            		three_count++;
+            	} else if (r.getRating() == 2) {
+            		two_count++;
+            	} else {
+            		one_count++;
+            	}
+            }
             model.addAttribute("subLessonHashMap", subLessonHashMap);
             model.addAttribute("lessons", limitedLessons);
             model.addAttribute("course", course.get());
             model.addAttribute("pageTitle", "Course detail");
             model.addAttribute("currentProgress", progress);
+            model.addAttribute("reviews", listReviewRelatedToCourse);
+            model.addAttribute("averageRating", averageRating);
+            model.addAttribute("fiveCount", five_count);
+            model.addAttribute("fourCount", four_count);
+            model.addAttribute("threeCount", three_count);
+            model.addAttribute("twoCount", two_count);
+            model.addAttribute("oneCount", one_count);
             return "app/user_view/course/course-preview";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            e.printStackTrace();
             return "redirect:/app/error/500";
         }
-
     }
 
     @GetMapping("/{courseId}/start-course")

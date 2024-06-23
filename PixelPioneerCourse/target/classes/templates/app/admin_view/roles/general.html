@@ -27,7 +27,7 @@
 					  </div>
 					  <br>
 					  <br>
-					  <div class="card mb-lg-32pt">
+					  <div class="card mb-lg-32pt" style="width: 40vw; text-align: center;">
 					    <div class="table-responsive" data-toggle="lists" data-lists-sort-by="js-lists-values-employee-name" data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
 					      <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
 					        <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
@@ -38,10 +38,10 @@
 					      <table class="table mb-0 thead-border-top-0 table-nowrap">
 					        <thead>
 					          <tr>
-					            <th><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-id">ID</a></th>
-					            <th style="width: 150px;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-id">Role Name</a></th>
+					            <th style="width: 0.2vw;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-id">ID</a></th>
+					            <th style="width: 1vw;"><a href="javascript:void(0)" class="sort" data-sort="js-lists-values-id">Role Name</a></th>
 					            <th>Action</th>
-					            <th style="width: 24px;" class="pl-0"></th>
+					            
 					          </tr>
 					        </thead>
 					        <tbody class="list" id="rolesList">
@@ -178,6 +178,7 @@
 					    </script>
 					  </div>
 				  </div>
+			</div>
 	</div>
 </body>
 </html>

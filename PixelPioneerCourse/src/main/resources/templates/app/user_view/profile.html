@@ -38,13 +38,9 @@
 							    <div class="card border-0 mb-lg-0">
 							        <div class="card-header d-flex align-items-center">
 							            <div class="h2 mb-0 mr-3">COURSES</div>
-							            <div class="flex" th:if="${session.isInstructor != null}">
+							            <div class="flex">
 							                <p class="card-title">List of</p>
-							                <p class="card-subtitle text-50">created courses</p>
-							            </div>
-							            <div class="flex" th:if="${session.isUser != null || session.isAdmin != null}">
-							                <p class="card-title">List of</p>
-							                <p class="card-subtitle text-50">enrolled courses</p>
+							                <p class="card-subtitle text-50">created/enrolled courses</p>
 							            </div>
 							        </div>
 							        <div class="card-body p-24pt">
