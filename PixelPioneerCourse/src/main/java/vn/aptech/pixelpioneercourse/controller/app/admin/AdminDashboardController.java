@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import vn.aptech.pixelpioneercourse.entities.Enrollment;
+import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.service.AdminDashboardService;
 import vn.aptech.pixelpioneercourse.service.EnrollmentService;
 
@@ -52,7 +54,7 @@ public class AdminDashboardController {
         model.addAttribute("dailySalesThisWeek", dailySalesThisWeek);
         model.addAttribute("dailySalesLastWeek", dailySalesLastWeek);
         model.addAttribute("enrollments", enrollments);
-
+        
         // Convert the map to a format that can be used in JavaScript
         model.addAttribute("dailySalesThisWeekValues", new ArrayList<>(dailySalesThisWeek.values()));
         model.addAttribute("dailySalesThisWeekLabels", dailySalesThisWeek.keySet().stream().map(LocalDate::toString).collect(Collectors.toList()));

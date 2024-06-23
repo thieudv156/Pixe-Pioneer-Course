@@ -323,12 +323,7 @@
                         <span class="sidebar-menu-text">Enrollment</span>
                     </a>
                 </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/}">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">search</span>
-                        <span class="sidebar-menu-text">Payment History</span>
-                    </a>
-                </li>
+                
             </ul>
 
             <div class="sidebar-heading" th:if="${session.isInstructor}">Instructor</div>
@@ -340,7 +335,7 @@
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/instructor-courses.html}">
+                    <a class="sidebar-menu-button" th:href="@{'/app/course' + {}" >
                                 <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">import_contacts
                                 </span>
                         <span class="sidebar-menu-text">Manage Courses</span>
@@ -352,30 +347,30 @@
                         <span class="sidebar-menu-text">Enrollment Management</span>
                     </a>
                 </li>
+<!--                <li class="sidebar-menu-item">-->
+<!--                    <a class="sidebar-menu-button" th:href="@{/instructor-earnings.html}">-->
+<!--                                <span class="material-icons sidebar-menu-icon sidebar-menu-icon&#45;&#45;left">trending_up-->
+<!--                                </span>-->
+<!--                        <span class="sidebar-menu-text">Earnings</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="sidebar-menu-item">-->
+<!--                    <a class="sidebar-menu-button" th:href="@{/instructor-statement.html}">-->
+<!--                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon&#45;&#45;left">receipt</span>-->
+<!--                        <span class="sidebar-menu-text">Statement</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--                <li class="sidebar-menu-item">-->
+<!--                    <a class="sidebar-menu-button" th:href="@{/instructor-edit-course.html}">-->
+<!--                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon&#45;&#45;left">post_add</span>-->
+<!--                        <span class="sidebar-menu-text">Edit Course</span>-->
+<!--                    </a>-->
+<!--                </li>-->
                 <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/instructor-earnings.html}">
-                                <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">trending_up
-                                </span>
-                        <span class="sidebar-menu-text">Earnings</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/instructor-statement.html}">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">receipt</span>
-                        <span class="sidebar-menu-text">Statement</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/instructor-edit-course.html}">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">post_add</span>
-                        <span class="sidebar-menu-text">Edit Course</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/instructor-edit-quiz.html}">
+                    <a class="sidebar-menu-button" th:href="@{/logout}">
                                 <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">format_shapes
                                 </span>
-                        <span class="sidebar-menu-text">Edit Quiz</span>
+                        <span class="sidebar-menu-text">Logout</span>
                     </a>
                 </li>
             </ul>
