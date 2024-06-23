@@ -6,30 +6,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tests")
-public class Test {
+@Table("course_complete")
+public class CourseComplete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "testFormat_id", nullable = false)
-    private TestFormat testFormat;
+    @JoinColumn(name = course_id)
+    private Course course;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column
-    private Double score;
-
-    @Column
-    private LocalDateTime testDate=LocalDateTime.now();
-
+    private LocalDateTime completedDate = LocalDateTime.now();
 }

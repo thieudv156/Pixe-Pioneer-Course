@@ -6,6 +6,7 @@ import com.nimbusds.oauth2.sdk.Role;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.validation.Validator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
+import vn.aptech.pixelpioneercourse.dto.TestDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.service.CategoryService;
 import vn.aptech.pixelpioneercourse.service.CourseService;
+import vn.aptech.pixelpioneercourse.service.TestService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 import vn.aptech.pixelpioneercourse.until.ControllerUtils;
 import java.io.IOException;
@@ -37,13 +40,15 @@ public class CourseController {
     private final Validator validator;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final TestService testService;
 
-    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator, UserService userService, ModelMapper modelMapper) {
+    public CourseController(CourseService courseService, CategoryService categoryService, Validator validator, UserService userService, ModelMapper modelMapper, TestService testService) {
         this.courseService = courseService;
         this.categoryService = categoryService;
         this.validator = validator;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.testService = testService;
     }
 
 
@@ -248,4 +253,5 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+
 }

@@ -6,6 +6,7 @@ import vn.aptech.pixelpioneercourse.dto.QuestionCreateDto;
 import vn.aptech.pixelpioneercourse.dto.QuestionDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Question;
+import vn.aptech.pixelpioneercourse.entities.TestFormat;
 import vn.aptech.pixelpioneercourse.repository.QuestionRepository;
 
 import java.util.ArrayList;
@@ -18,11 +19,13 @@ public class QuestionServiceImpl implements QuestionService{
     private final ModelMapper modelMapper;
     private final QuestionRepository questionRepository;
     private final CourseService courseService;
+    private final TestFormatService testFormatService;
 
-    public QuestionServiceImpl(ModelMapper modelMapper, QuestionRepository questionRepository, CourseService courseService) {
+    public QuestionServiceImpl(ModelMapper modelMapper, QuestionRepository questionRepository, CourseService courseService, TestFormatService testFormatService) {
         this.modelMapper = modelMapper;
         this.questionRepository = questionRepository;
         this.courseService = courseService;
+        this.testFormatService = testFormatService;
     }
 
     public Question toQuestion(QuestionCreateDto dto){return modelMapper.map(dto, Question.class);}
@@ -101,5 +104,33 @@ public class QuestionServiceImpl implements QuestionService{
         dto.setAnswer4(answers.get(3));
         System.out.println(dto);
         return dto;
+    }
+
+    public double checkAnswers(List<QuestionDto> questions, Integer formatId)
+    {
+        TestFormat testFormat = testFormatService.findById(formatId);
+        if(formatId==null)
+        {
+            throw new IllegalArgumentException("TestFormat not found");
+        }
+        if(questions.size()!=testFormat.getTotalQuestion())
+        {
+            throw new IllegalArgumentException("Total question do not match with the amount of question!");
+        }
+        Double scorePerQuestion = (double) (testFormat.getTotalQuestion()/100);
+        Double totalScore = 0.0;
+        for(QuestionDto questionDto: questions)
+        {
+            if(checkAnswer(questionDto)){
+                totalScore += scorePerQuestion;
+            }
+        }
+        return totalScore;
+    }
+
+    public boolean checkAnswer(QuestionDto questionDto)
+    {
+        Question question = findById(questionDto.getId());
+        return questionDto.equals(question.getCorrectAnswer());
     }
 }

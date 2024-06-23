@@ -75,6 +75,9 @@ public class User {
     @ToString.Exclude
     private List<Progress> progresses;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseComplete> courseCompletes;
+
     public List<String> getAuthorities() {
         if(role == null)
             return Collections.singletonList("ROLE_USER");

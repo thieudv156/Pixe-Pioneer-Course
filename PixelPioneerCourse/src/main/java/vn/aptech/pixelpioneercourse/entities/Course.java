@@ -66,6 +66,10 @@ public class Course {
     @JsonIgnoreProperties("course")
     @ToString.Exclude
     private TestFormat testFormat;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseComplete> courseCompletes;
+
     
     public String getImageUrl() {
         if (this.frontPageImage != null) {

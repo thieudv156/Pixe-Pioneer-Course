@@ -14,4 +14,5 @@ public interface QuestionService {
     Question update(QuestionCreateDto dto, Integer id);
     List<Question> findByCourseId(Integer courseId);
     List<QuestionDto> mapRandomAnswer(Integer courseId, Integer totalQuestion);
+    double checkAnswers(List<QuestionDto> questions, Integer formatId);
 }
