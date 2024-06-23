@@ -381,6 +381,24 @@
                 <li class="sidebar-menu-item">
                     <a class="sidebar-menu-button"
                        data-toggle="collapse"
+                       href="#admin_dashboard">
+                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box</span>
+                        Dashboard
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                    </a>
+                    <ul class="sidebar-submenu collapse sm-indent"
+                        id="admin_dashboard">
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/admin/dashboard}">
+                                <span class="sidebar-menu-text">View Dashboard</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a class="sidebar-menu-button"
+                       data-toggle="collapse"
                        href="#user_menu">
                         <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box</span>
                         User
@@ -420,6 +438,28 @@
                                 <span class="sidebar-menu-text">Create</span>
                             </a>
                         </li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a class="sidebar-menu-button"
+                       data-toggle="collapse"
+                       href="#enrollment_menu">
+                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">work</span>
+                        Manage Enrollment
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                    </a>
+                    <ul class="sidebar-submenu collapse sm-indent"
+                        id="enrollment_menu">
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/admin/enrollments}">
+                                <span class="sidebar-menu-text">View Enrollment</span>
+                            </a>
+                        </li>
+<!--                        <li class="sidebar-menu-item">-->
+<!--                            <a class="sidebar-menu-button" th:href="@{/app/admin/role/create}">-->
+<!--                                <span class="sidebar-menu-text">Create</span>-->
+<!--                            </a>-->
+<!--                        </li>-->
                     </ul>
                 </li>
             </ul>

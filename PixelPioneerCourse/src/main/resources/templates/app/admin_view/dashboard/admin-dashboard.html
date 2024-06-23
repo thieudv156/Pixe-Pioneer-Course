@@ -64,58 +64,77 @@
                 </div>
             </div>
 
+            <div class="mdk-header-layout__content page-content">
+                <div class="page-section container page__container">
+                    <div class="col-lg-10 p-0 mx-auto">
+                        <div class="page-separator">
+                            <div class="page-separator__text">Enrollments</div>
+                        </div>
+                        <div class="card mb-lg-32pt">
+                            <div class="table-responsive">
+                                <table id="enrollmentTable" class="table mb-0 thead-border-top-0 table-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Status</th>
+                                        <th>Subscription Type</th>
+                                        <th>Payment Date</th>
+                                        <th>Subscription End Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="enrollment : ${enrollments}">
+                                        <td th:text="${enrollment.user.getFullName()}"></td>
+                                        <td>
+                                            <span class="text-success" th:if="${enrollment.subscriptionStatus}">Active</span>
+                                            <span class="text-danger"
+                                                  th:if="${!enrollment.subscriptionStatus}">Inactive</span>
+                                        </td>
+                                        <td th:text="${enrollment.subscriptionType}"></td>
+                                        <td th:text="${enrollment.formattedPaymentDate}"></td>
+                                        <td th:text="${enrollment.formattedSubscriptionEndDate}"></td>
+                                        <td>
+                                            <a th:href="@{'/app/enrollments/view-detail-enrollment/' + ${enrollment.id}}"
+                                               class="btn btn-sm btn-primary">View Detail</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="container page__container page-section">
+
                 <div class="page-separator">
                     <div class="page-separator__text">Earnings</div>
                 </div>
-<!--                <div class="card card-body mb-32pt">-->
-<!--                    <div id="legend" class="chart-canvas"></div>-->
-<!--                    <div class="chart" style="height: 320px;">-->
-<!--&lt;!&ndash;                        <canvas id="myNewLineChart" class="chart-canvas js-update-chart-bar"&ndash;&gt;-->
-<!--&lt;!&ndash;                                data-chart-legend="#legend"&ndash;&gt;-->
-<!--&lt;!&ndash;                                data-chart-line-background-color="gradient:primary,gray"&ndash;&gt;-->
-<!--&lt;!&ndash;                                &ndash;&gt;-->
-<!--&lt;!&ndash;                                ></canvas>&ndash;&gt;-->
-<!--                    </div>-->
-<!--                </div>-->
+                <div class="card card-body mb-32pt">
+                    <div id="legend"
+                         class="chart-legend mt-0 mb-24pt justify-content-start"></div>
+                    <div class="chart"
+                         style="height: 320px;">
+                        <canvas id="earningsChart"
+                                class="chart-canvas js-update-chart-bar"
+                                data-chart-legend="#legend"
+                                data-chart-line-background-color="gradient:primary,gray"
+                                data-chart-prefix="$"
+                                data-chart-suffix="k"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div>
-        <p>Test</p>
-        <span th:text="${dailySalesThisWeek.values()}"></span>
-        <span th:text="${dailySalesThisWeek.keySet()}"></span>
-    </div>
-    <div class="chart">
-    <canvas id="myNewLineChart" class="chart-canvas"></canvas>
+    
 </div>
-</div>
-<script>
-    $(document).ready(function () {
-        var ctx = document.getElementById('myNewLineChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['2024-06-23', '2024-06-22', '2024-06-21', '2024-06-20', '2024-06-19', '2024-06-18', '2024-06-17'],
-                datasets: [{
-                    label: 'My First dataset',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: [0.0, 0.0, 9.0, 9.0, 0.0, 0.0, 0.0]
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
-            }
-        });
-    });
-</script>
-
+<script th:src="@{https://cdn.jsdelivr.net/npm/chart.js}"></script>
+<script th:src="@{https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels}"></script>
+<script th:src="@{https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation}"></script>
+<script th:src="@{https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom}"></script>
+<script th:src="@{/public/js/page.instructor-dashboard.js}"></script>
+<script th:src="@{/public/js/page.ui-charts.js}"></script>
 </body>
 </html>

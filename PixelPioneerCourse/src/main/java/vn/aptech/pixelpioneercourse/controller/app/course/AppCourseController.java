@@ -338,12 +338,16 @@ public class AppCourseController {
     public String previewCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, Model model, @SessionAttribute("userId") Integer userId) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
+            System.out.println("check");
+//            Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
+            Optional<Course> course = Optional.ofNullable(courseService.findById(courseId));
+            System.out.println("check");
             if (course.isEmpty()) {
                 return "redirect:/app/course";
             }
+            System.out.println("check");
             List<Lesson> lessons = course.get().getLessons();
-
+            System.out.println("check");
             // Limit to the first 4 lessons
             List<Lesson> limitedLessons = lessons.stream().limit(4).collect(Collectors.toList());
             Double progress = progressService.getCurrentProgressByCourseId(courseId, userId);
@@ -362,6 +366,7 @@ public class AppCourseController {
             return "app/user_view/course/course-preview";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            e.printStackTrace();
             return "redirect:/app/error/500";
         }
 

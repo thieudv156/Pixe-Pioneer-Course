@@ -48,6 +48,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
             "WHERE e.enrolledAt BETWEEN :startDate AND :endDate " +
             "GROUP BY e.enrolledAt")
     List<Object[]> findDailySalesBetweenDates(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    List<Enrollment> findTop10ByOrderByEnrolledAtDesc();
 }
 
     

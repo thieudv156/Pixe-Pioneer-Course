@@ -102,5 +102,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollmentRepository.deleteById(id);
     }
 
+    public List<Enrollment> get10LatestEnrollments() {
+        return enrollmentRepository.findTop10ByOrderByEnrolledAtDesc();
+    }
     
 }
