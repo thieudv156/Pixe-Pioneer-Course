@@ -32,4 +32,6 @@ public class AppTestController {
         redirectAttributes.addFlashAttribute("successMessage", "Create Test successfully, you now have"+createTestDto.getDuration()+" minutes to finish the test");
         return "app/user_view/course/test";
     }
+
+
 }

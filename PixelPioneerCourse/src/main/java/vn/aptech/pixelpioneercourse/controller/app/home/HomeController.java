@@ -29,17 +29,17 @@ public class HomeController {
     @GetMapping
     public String index(HttpSession session, Model model) {
         List<Category> categories = categoryService.findAll();
-        Map<Category, List<Course>> categoryCourses = new HashMap<>();
+
 
         for (Category category : categories) {
             List<Course> courses = courseService.findTop8ByCategoryOrderByCreatedAtDesc(category);
             System.out.println(courses);
             if (!courses.isEmpty()) {
+                Map<Category, List<Course>> categoryCourses = new HashMap<>();
                 categoryCourses.put(category, courses);
+                model.addAttribute("categoryCourses", categoryCourses);
             }
         }
-
-        model.addAttribute("categoryCourses", categoryCourses);
         return "app/index";
     }
 }

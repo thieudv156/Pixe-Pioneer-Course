@@ -23,9 +23,4 @@ public class CourseCreateDto {
     @Size(max = 5000, message = "Description cannot exceed 5000 characters")
     private String description;
 
-    @NotNull(message = "Price is mandatory")
-    @Min( value = 1,message = "Price must be 1 or positive")
-    private Double price;
-
-
 }

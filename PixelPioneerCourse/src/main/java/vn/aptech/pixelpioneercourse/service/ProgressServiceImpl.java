@@ -92,9 +92,11 @@ public class ProgressServiceImpl implements ProgressService {
     public SubLesson getCurrentSubLessonByCourseId(Integer courseId, Integer userId) {
         List<SubLesson> currentSubLessonOpt = progressRepository.findFirstIncompleteSubLessonByUserIdAndCourseId(courseId, userId);
         if (currentSubLessonOpt.isEmpty()) {
+            System.out.println(findLastSubLessonByCourseId(courseId, userId));
             return findLastSubLessonByCourseId(courseId, userId);
         }
         Optional<SubLesson> currentSubLesson = Optional.ofNullable(currentSubLessonOpt.get(0));
+        System.out.println(currentSubLesson);
         return currentSubLesson.orElse(null);
     }
 
@@ -118,13 +120,13 @@ public class ProgressServiceImpl implements ProgressService {
     }
 
     public SubLesson findLastSubLessonByCourseId(Integer courseId, Integer userId){
-        List<Progress> progresses = progressRepository.findNextIncompleteProgressByUserIdAndCourseId(courseId, userId);
-        if (progresses.isEmpty()) {
-            Progress lastProgress = progressRepository.findByCourseIdAndUserId(courseId, userId).getLast();
-            return lastProgress.getSubLesson();
+        List<SubLesson> subLessons = progressRepository.findFirstIncompleteSubLessonByUserIdAndCourseId(courseId, userId);
+        if(subLessons.isEmpty())
+        {
+            List<Progress> progresses = progressRepository.findByCourseIdAndUserId(courseId, userId);
+            return progresses.getLast().getSubLesson();
         }
-        Progress lastProgress = progressRepository.findNextIncompleteProgressByUserIdAndCourseId(userId, courseId).getFirst();
-        return lastProgress.getSubLesson();
+        return subLessons.getFirst();
     }
 
     public List<Progress> findByUserId(Integer uid) {

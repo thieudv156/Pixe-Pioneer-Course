@@ -36,9 +36,6 @@ public class Course {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
-    private Double price = 1.0;
-
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
     @JsonIgnoreProperties({"id","username","password","reviews","discussions","courses","enrollments","tests","provider","grantedAuthorities","authorities","progresses"})

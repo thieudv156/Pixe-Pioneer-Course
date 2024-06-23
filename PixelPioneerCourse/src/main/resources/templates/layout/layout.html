@@ -121,6 +121,7 @@
                         Courses
                     </a>
                     <div class="dropdown-menu">
+                        <a th:if="${session.isInstructor}" th:href="@{/app/course/instructor/courses/{userId}(userId=${session.userId})}" class="dropdown-item">Instructor Courses Dashboard</a>
                         <a th:href="@{/app/course/}" class="dropdown-item">Browse Courses</a>
                         <a th:href="@{/app/course/my-courses}" class="dropdown-item">My Courses</a>
                     </div>

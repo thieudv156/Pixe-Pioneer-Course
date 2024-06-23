@@ -92,7 +92,7 @@ public class AppLessonController {
             }
 
             redirectAttributes.addFlashAttribute("successMessage", "Lesson updated successfully!");
-            return "redirect:/app/course/instructor/view/" + updatedLesson.getCourse().getId();
+            return "redirect:/app/lesson/instructor/view/" + lessonId;
         } catch (Exception e) {
             // Add error message
             redirectAttributes.addFlashAttribute("errorMessage", "Error updating lesson: " + e.getMessage());

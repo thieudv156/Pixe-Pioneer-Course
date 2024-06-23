@@ -136,6 +136,7 @@ public class CourseServiceImpl implements CourseService{
             newCourse.setTitle("New Course");
             newCourse.setDescription("Description");
             newCourse.setInstructor(userService.findById(userId));
+            newCourse.setCategory(categoryService.findById(1));
             courseRepository.save(newCourse);
             TestFormat testFormat = new TestFormat();
             testFormat.setCourse(newCourse);
@@ -172,7 +173,6 @@ public class CourseServiceImpl implements CourseService{
         try{
             Course existedCourse = courseRepository.findById(id).orElseThrow(()-> new RuntimeException("Course not found!"));
             existedCourse.setTitle(dto.getTitle());
-            existedCourse.setPrice(dto.getPrice());
             existedCourse.setDescription(dto.getDescription());
             existedCourse.setCategory(categoryService.findById(dto.getCategoryId()));
             if (image != null) {
@@ -244,7 +244,7 @@ public class CourseServiceImpl implements CourseService{
     }
 
     public List<Course> findTop8ByCategoryOrderByCreatedAtDesc(Category category) {
-        return courseRepository.findTop8ByCategoryOrderByCreatedAtDesc(category);
+        return courseRepository.findTop8ByCategoryAndIsPublishedIsTrueOrderByCreatedAtDesc(category);
     }
 
 }

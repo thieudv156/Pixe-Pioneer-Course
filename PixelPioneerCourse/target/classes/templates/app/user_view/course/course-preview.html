@@ -28,7 +28,7 @@
                         <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
                             <div th:each="lesson : ${lessons}" class="accordion__item">
                                 <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${lesson.id}" data-parent="#parent">
-                                    <span class="btn" th:text="${lesson.orderNumber} + ' - ' + ${lesson.title}" th:onclick="'window.location.href=\'/app/lesson/instructor/view/' + ${lesson.id} + '\''"></span>
+                                    <span class="btn" th:text="${lesson.orderNumber} + ' - ' + ${lesson.title}" th:onclick="'window.location.href=\'/app/course/view/' + ${course.id} + '\''"></span>
                                     <span class="flex"></span>
                                     <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
                                 </a>
@@ -39,7 +39,7 @@
                                     </div>
                                     <div th:each="subLesson : ${lesson.subLessons}" class="accordion__menu-link">
                                         <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
-                                        <a class="flex" th:href="@{/app/lesson/instructor/view/{id}(id=${lesson.id})}" th:text="${subLesson.orderNumber} + ' - ' + ${subLesson.title}">Sub-Lesson Detail</a>
+                                        <a class="flex" th:href="@{/app/course/view/{id}(id=${course.id},subLessonId=${subLesson.id},lessonOrder=${lesson.orderNumber})}" th:text="${subLesson.orderNumber} + ' - ' + ${subLesson.title}">Sub-Lesson Detail</a>
                                     </div>
                                 </div>
                             </div>

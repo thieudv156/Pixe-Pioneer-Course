@@ -19,18 +19,14 @@ public interface ProgressRepository extends JpaRepository<Progress, Integer>{
     @Query("SELECT COUNT(p) FROM Progress p WHERE p.user.id = :userId AND p.subLesson.lesson.course.id = :courseId AND p.isCompleted = true")
     Integer countCompletedSubLessonsByCourseAndUser(@Param("courseId") Integer courseId, @Param("userId") Integer userId);
 
-
-    @Query("SELECT p.subLesson FROM Progress p WHERE p.user.id = :userId AND p.subLesson.lesson.course.id = :courseId AND p.isCompleted = false ORDER BY p.id ASC")
-    List<SubLesson> findFirstIncompleteSubLessonByUserIdAndCourseId(@Param("userId") Integer userId, @Param("courseId") Integer courseId);
+    @Query("SELECT p.subLesson FROM Progress p WHERE p.user.id = :userId AND p.subLesson.lesson.course.id = :courseId AND p.isCompleted = false ORDER BY p.subLesson.lesson.id ASC")
+    List<SubLesson> findFirstIncompleteSubLessonByUserIdAndCourseId(@Param("courseId") Integer courseId, @Param("userId") Integer userId);
 
     @Query("SELECT DISTINCT p.user FROM Progress p WHERE p.subLesson.lesson.course.id = :courseId")
     List<User> findUsersByCourseId(@Param("courseId") Integer courseId);
 
     @Query("SELECT p FROM Progress p WHERE p.user.id = :userId AND p.subLesson.lesson.course.id = :courseId")
     List<Progress> findByCourseIdAndUserId(@Param("courseId") Integer courseId, @Param("userId") Integer userId);
-
-    @Query("SELECT p FROM Progress p WHERE p.user.id = :userId AND p.subLesson.lesson.course.id = :courseId AND p.isCompleted = false ORDER BY p.id ASC")
-    List<Progress> findNextIncompleteProgressByUserIdAndCourseId(@Param("userId") Integer userId, @Param("courseId") Integer courseId);
 
     List<Progress> findByUserId(Integer id);
 }

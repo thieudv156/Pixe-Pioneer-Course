@@ -20,5 +20,6 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     List<Course> findByInstructorIdAndIsPublishedIsTrue(Integer instructorId);
     List<Course> findByInstructorIdAndIsPublishedIsFalse(Integer instructorId);
     List<Course> findDistinctByLessons_SubLessons_Progresses_User_Id(Integer userId);
-    List<Course> findTop8ByCategoryOrderByCreatedAtDesc(Category category);
+
+    List<Course> findTop8ByCategoryAndIsPublishedIsTrueOrderByCreatedAtDesc(Category category);
 }
