@@ -187,8 +187,11 @@
                         <i class="material-icons">lock_open</i>
                     </a>
                 </li>
-                <li class="nav-item" th:if="${session.enrollment==null || session.enrollment.subscriptionStatus == false}">
+                <li class="nav-item" th:if="${(session.enrollment==null || session.enrollment.subscriptionStatus == false) && session.user != null}">
                     <a th:href="@{/app/enrollments}" class="btn btn-outline-white">Get Started</a>
+                </li>
+                <li class="nav-item" th:if="${session.user == null}">
+                    <a th:href="@{/app/register}" class="btn btn-outline-white">Register</a>
                 </li>
             </ul>
         </div>
@@ -494,6 +497,7 @@
                     </ul>
                 </li>
             </ul>
+            <div class="sidebar-heading" th:if="${session.user == null}" style="text-align: center;">Please login/register to gain access to our applications.</div>
 
             <!-- // END Sidebar Content -->
 

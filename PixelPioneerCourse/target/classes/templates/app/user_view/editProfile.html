@@ -102,10 +102,10 @@
                             <div class="form-group">
 						        <label class="form-label" for="codeChecker">Verification Code:</label>
 						        <input required id="codeChecker" type="text" class="form-control" name="codeChecker" placeholder="Enter the code you received via email">
-						        <button class="btn btn-primary" type="submit">Verify Code</button>
+						        <button class="btn btn-primary mt-2" type="submit">Verify Code</button>
 						    </div>
 						</form>
-						<form th:action="@{/app/reset-password/cancel}" class="col-md-5 p-0 mx-auto" method="post">
+						<form th:action="@{/app/reset-password/cancel}" class="p-0 mt-1" method="post">
 							<button class="btn btn-secondary" formaction="/app/users/profile/edit-my-profile/cancel" type="submit">Cancel</button>
 						</form>
                     </div>

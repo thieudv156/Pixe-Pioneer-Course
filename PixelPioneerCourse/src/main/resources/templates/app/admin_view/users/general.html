@@ -7,9 +7,9 @@
   </head>
   <body>
     <div class="content-wrapper" layout:fragment="contents">
-      <div class="container"></div>
-      <div class="">
-        <div class="container page__container page-section" style="width: 300vw;">
+      <div class="container">
+      	<div class="">
+        <div class="container page__container page-section">
           <div class="page-separator">
             <div class="page-separator__text">Users</div>
           </div>
@@ -30,35 +30,35 @@
               <table class="table mb-0 thead-border-top-0 table-nowrap">
                 <thead>
                   <tr>
-                    <th>
+                    <th style="width: 0.4vw;">
                       <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">ID</a>
                     </th>
-                    <th style="width: 150px;">
+                    <th style="width: 4vw;">
                       <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Full Name</a>
                     </th>
-                    <th style="width: 150px;">
+                    <th style="width: 4vw;">
                       <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Username</a>
                     </th>
-                    <th style="width: 150px;">
+                    <th style="width: 4vw;">
                       <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Email</a>
                     </th>
-                    <th style="width: 150px;">
+                    <th style="width: 4vw;">
                       <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Phone</a>
                     </th>
-                    <th style="width: 150px;">Status</th>
-                    <th style="width: 120px;">
+                    <th style="width: 1vw;">Status</th>
+                    <th style="width: 3vw;">
                       <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Created At</a>
                     </th>
-                    <th style="width: 150px;">
+                    <th style="width: 1vw;">
                       <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Provider</a>
                     </th>
-                    <th style="width: 150px;">
+                    <th style="width: 3vw;">
                       <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Action</a>
                     </th>
                   </tr>
                 </thead>
                 <tbody class="list" id="usersList">
-                  <tr th:each="user : ${users}" class="selected">
+                  <tr th:each="user : ${users}" class="selected" style="height: 0.4vh;">
                     <td>
                       <strong class="js-lists-values-employee-name" th:text="${user.id}">ID</strong>
                     </td>
@@ -90,7 +90,7 @@
                       <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
                         <div th:if="${user.id != session.userId and user.role.roleName == 'ROLE_ADMIN'}">
                           <div th:if="${user.activeStatus and user.id != userId}">
-                            <form id="deactivate" th:action="@{/app/admin/users/deactivate}" method="post" style="margin: 0;">
+                            <form id="deactivate" th:action="@{/app/admin/users/deactivate}" method="post" style="margin: 0; margin-bottom: 1px">
                               <input type="hidden" name="uid" th:value="${user.id}" />
                               <button type="submit" class="btn btn-secondary btn-rounded">Deactivate</button>
                             </form>
@@ -249,6 +249,8 @@
           showPage(1);
         });
       </script>
+      </div>
+      
     </div>
   </body>
 </html>

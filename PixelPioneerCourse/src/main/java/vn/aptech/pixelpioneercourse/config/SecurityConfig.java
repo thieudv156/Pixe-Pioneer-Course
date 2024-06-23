@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,13 +25,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -47,32 +44,17 @@ import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.middle.AuthenticationMiddleware;
 import vn.aptech.pixelpioneercourse.until.*;
+import vn.aptech.pixelpioneercourse.controller.CustomAuthenticationSuccessHandler;
 import vn.aptech.pixelpioneercourse.dto.*;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig{
-    private UserDetailsService userDetailsService;
+public class SecurityConfig {
+	private UserDetailsService userDetailsService;
     private UserService uService;
-
     @Autowired
     private ModelMapper mapper;
-
-    @Autowired
-    private RoleService rService;
-
-
-//    @Autowired
-//    public SecurityConfig(UserDetailsService userDetailsService) {
-//        this.userDetailsService = userDetailsService;
-//    }
-
-//	@Override
-//	@Order(1)
-//	public void configure(HttpSecurity http) throws Exception {
-//		http.csrf(AbstractHttpConfigurer::disable);
-//    }
 
     @Autowired
     private UserRepository userRepository;
@@ -82,7 +64,7 @@ public class SecurityConfig{
 
     @Autowired
     private AuthenticationMiddleware authenticationMiddleware;
-    
+
     @Autowired
     private HttpSession session;
 
@@ -90,13 +72,10 @@ public class SecurityConfig{
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    
     public void globalConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
-
-    @Autowired
-    private HttpServletRequest requests;
 
     @Bean
     @Order(1)
@@ -105,36 +84,25 @@ public class SecurityConfig{
                 .securityMatcher("/**")
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(HttpMethod.GET, "/app/register", "/app/login").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/app/course/**").permitAll() // Allows anonymous, USER, and INSTRUCTOR roles
+                        .requestMatchers(HttpMethod.GET, "/app/course/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/app/login/checkLogin", "/app/register").anonymous()
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> {
-                    oauth.loginPage("/app/login");
+                    oauth.loginPage("/app/register")
+                         .loginPage("/app/login");
                     oauth.userInfoEndpoint(o -> o.userService(customOAuth2UserService));
-                    oauth.successHandler(new AuthenticationSuccessHandler() {
-                        @Override
-                        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                            DefaultOidcUser oauthUser = (DefaultOidcUser) authentication.getPrincipal();
-                            if (processOAuthPostLogin(oauthUser.getAttribute("email"), oauthUser.getAttribute("given_name"))) {
-                                response.sendRedirect("/app/login");
-                            } else {
-                                response.sendRedirect("/");
-                            }
-                        }
-                    });
+                    oauth.successHandler(customAuthenticationSuccessHandler());
                 })
-                .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage("/app/403"))
+                .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage("/error"))
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                         .logoutSuccessHandler(new LogoutSuccessHandler() {
                             @Override
                             public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-                                // Invalidate session and clear cookies
                                 if (authentication != null && authentication.getPrincipal() instanceof DefaultOidcUser) {
                                     request.getSession().invalidate();
-                                    // Clear any additional cookies related to the session or OIDC
                                     for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
                                         cookie.setMaxAge(0);
                                         cookie.setPath("/");
@@ -152,144 +120,96 @@ public class SecurityConfig{
                 .build();
     }
 
+    @Bean
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler(this);
+    }
 
     @Bean
-    @Order(2) //thu tu chay
-    public SecurityFilterChain api(HttpSecurity http) throws Exception{
+    @Order(2)
+    public SecurityFilterChain api(HttpSecurity http) throws Exception {
         PublicRoutes.PublicRoutesManager.publicRoutes()
                 .add(HttpMethod.GET, "/api/accounts")
                 .add(HttpMethod.POST, "/api/login", "/api/register")
                 .injectOn(http);
         http.csrf(AbstractHttpConfigurer::disable)
                 .securityMatcher("/**")
-                .authorizeHttpRequests(request-> request.anyRequest().authenticated())
-                .sessionManagement(sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authenticationMiddleware, UsernamePasswordAuthenticationFilter.class)
-//                .exceptionHandling(hdl->hdl.authenticationEntryPoint(
-//                        (req, res, ex) -> ResponseEntity.status(403).build()))
-                .cors(configurer-> new CorsConfiguration().applyPermitDefaultValues());
+                .cors(configurer -> new CorsConfiguration().applyPermitDefaultValues());
         return http.build();
     }
 
     public String generateUsername(String fullName) {
-        // Split the full name into first and last names
         String[] names = fullName.trim().split("\\s+");
         String firstName = names[0];
         String lastName = names.length > 1 ? names[names.length - 1] : "";
 
-        // Get the current year
         LocalDateTime now = LocalDateTime.now();
         String day = now.format(DateTimeFormatter.ofPattern("dd"));
         String month = now.format(DateTimeFormatter.ofPattern("MM"));
 
-        // Generate username by combining last name, first initial, and year
         String username = lastName + "." + firstName.charAt(0) + "." + day + month;
 
-        // Alternatively, generate username by combining first name and current date in dMyyyy format
         String date = now.format(DateTimeFormatter.ofPattern("dMyyyy"));
         String alternativeUsername = firstName + date;
 
-        // Return the preferred username format
-        return username.toLowerCase(); // or return alternativeUsername.toLowerCase();
+        return username.toLowerCase();
     }
-
-//    @Autowired
-//    @Lazy
-//    private UserService userService;
-//
-//    public String generateUniquePhoneNumber() {
-//        Random random = new Random();
-//        String phoneNumber;
-//        do {
-//            // Generate a 10-digit phone number starting with '0'
-//            phoneNumber = "0" + random.ints(9, 0, 10) //10 digit, ranges from 0 to 9
-//                    .mapToObj(Integer::toString)
-//                    .reduce("", (a, b) -> a + b);
-//        } while (!userService.checkPhone(phoneNumber)); // Check if the phone number already exists
-//        return phoneNumber;
-//    }
 
     @Autowired
     private RoleRepository roleRepository;
 
     public boolean processOAuthPostLogin(String email, String fullname) {
-    	Optional<User> opUser = null;
-    	boolean createdYet = false;
-    	try {
-        	opUser = userRepository.findByEmail(email);
-        	if (opUser.isEmpty()) throw new NotFoundException("Cannot find account");
-            if (opUser.isPresent()) {
-            	session.setAttribute("user", opUser.get());
-            	session.setAttribute("userId", opUser.get().getId());
-                session.setAttribute("isUser", true);
-                session.setAttribute("isAdmin", null);
-                session.setAttribute("isInstructor", null);
-                return false; // User exists
-            } else {
-                Role student = roleRepository.findByRoleName("ROLE_USER").orElseThrow();
-                UserCreateDtoV2 user = new UserCreateDtoV2();
-                user.setRole(student);
-                user.setActiveStatus(true);
-                user.setCreatedAt(LocalDate.now());
-                user.setProvider(Provider.GOOGLE);
-                user.setFullName(fullname);
-                user.setUsername(generateUsername(fullname));
-                user.setPassword(passwordEncoder().encode("123456"));
-                user.setEmail(email);
-                createdYet = true;
-                userRepository.save(mapper.map(user, User.class));
-                session.setAttribute("user", opUser.get());
-            	session.setAttribute("userId", opUser.get().getId());
-                session.setAttribute("isUser", true);
-                session.setAttribute("isAdmin", null);
-                session.setAttribute("isInstructor", null);
-                return false; // User created, proceed normally
-            }
-        } catch (Exception e){
-        	if (createdYet == false) {
-        		try {
-            		Role student = roleRepository.findByRoleName("ROLE_USER").orElseThrow();
-                    UserCreateDtoV2 user = new UserCreateDtoV2();
-                    user.setRole(student);
-                    user.setActiveStatus(true);
-                    user.setCreatedAt(LocalDate.now());
-                    user.setProvider(Provider.GOOGLE);
+        Optional<User> opUser = null;
+        boolean createdYet = false;
+        try {
+            opUser = userRepository.findByEmail(email);
+            if (opUser.isEmpty()) throw new NotFoundException("Cannot find account");
+            session.setAttribute("user", opUser.get());
+            session.setAttribute("userId", opUser.get().getId());
+            session.setAttribute("isUser", true);
+            session.setAttribute("isAdmin", null);
+            session.setAttribute("isInstructor", null);
+            return false;
+        } catch (Exception e) {
+            if (createdYet == false) {
+                try {
+                    UserCreateDto user = new UserCreateDto();
                     user.setFullName(fullname);
                     user.setUsername(generateUsername(fullname));
-//                    user.setPassword(passwordEncoder().encode("123456"));
-                    user.setPassword("123456");
+                    user.setPassword(passwordEncoder().encode("123456"));
                     user.setEmail(email);
                     User u = mapper.map(user, User.class);
-                    System.out.println(u);
-//                    userRepository.save(u);
-                    uService.create(u);
-                    System.out.println("check2");
-                    createdYet = false;
-                    session.setAttribute("user", opUser.get());
-                	session.setAttribute("userId", opUser.get().getId());
+                    u.setActiveStatus(true);
+                    u.setCreatedAt(LocalDate.now());
+                    u.setProvider(Provider.GOOGLE);
+                    u.setPhone(null);
+                    List<Role> listRole = roleRepository.findAll();
+                    u.setRole(null); //incase there is no "ROLE_USER" in db;
+                    for (Role role : listRole) {
+                        if (role.getRoleName().equals("ROLE_USER")) u.setRole(role);
+                    }
+                    userRepository.save(u);
+                    createdYet = true;
+                    session.setAttribute("user", u);
+                    session.setAttribute("userId", u.getId());
                     session.setAttribute("isUser", true);
                     session.setAttribute("isAdmin", null);
                     session.setAttribute("isInstructor", null);
                     return false;
-        		} catch (Exception e2) {
-        			if (!createdYet) {
-        				session.setAttribute("user", opUser.get());
-                    	session.setAttribute("userId", opUser.get().getId());
-                        session.setAttribute("isUser", true);
-                        session.setAttribute("isAdmin", null);
-                        session.setAttribute("isInstructor", null);
-        				return false;
-        			}
-        			else return true;
-        		}
-        	} else {
-        		session.setAttribute("user", opUser.get());
-            	session.setAttribute("userId", opUser.get().getId());
+                } catch (Exception e2) {
+                	return true;
+                }
+            } else {
+                session.setAttribute("user", opUser.get());
+                session.setAttribute("userId", opUser.get().getId());
                 session.setAttribute("isUser", true);
                 session.setAttribute("isAdmin", null);
                 session.setAttribute("isInstructor", null);
-        		return false;
-        	}
+                return false;
+            }
         }
     }
 }

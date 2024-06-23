@@ -111,7 +111,7 @@ public class ProfileController {
 	        userService.update(updatedDto, Integer.parseInt(uid));
 	        User u = userService.findById(Integer.parseInt(uid));
 	        session.setAttribute("user", u);
-	        return "redirect:/app/users/profile";
+	        return "redirect:/app/users/profile/"+uid;
 	    } catch (Exception e) {
 	        ra.addAttribute("ErrorCondition", true);
 	        ra.addAttribute("ErrorError", e.getMessage());
@@ -130,7 +130,7 @@ public class ProfileController {
 		        session.setAttribute("user", u);
 		        session.removeAttribute("emailChangeCondition");
 		        session.removeAttribute("updatedUser");
-		        return "redirect:/app/users/profile";
+		        return "redirect:/app/users/profile/"+uid;
 		    } else {
 		        ra.addAttribute("ErrorCondition", true);
 		        ra.addAttribute("ErrorError", "Invalid code");
