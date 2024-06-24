@@ -75,7 +75,7 @@ public class User {
     @ToString.Exclude
     private List<Progress> progresses;
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseComplete> courseCompletes;
 
     public List<String> getAuthorities() {

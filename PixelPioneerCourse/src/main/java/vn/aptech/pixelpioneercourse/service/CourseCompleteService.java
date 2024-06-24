@@ -9,16 +9,20 @@ import vn.aptech.pixelpioneercourse.repository.CourseCompleteRepository;
 @Service
 public class CourseCompleteService {
     private final CourseCompleteRepository courseCompleteRepository;
+    private final CourseService courseService;
+    private final UserService userService;
 
-    public CourseCompleteService(CourseCompleteRepository courseCompleteRepository) {
+    public CourseCompleteService(CourseCompleteRepository courseCompleteRepository, CourseService courseService, UserService userService) {
         this.courseCompleteRepository = courseCompleteRepository;
+        this.courseService = courseService;
+        this.userService = userService;
     }
 
-    public CourseComplete create(User user, Course course)
+    public CourseComplete create(Integer userId, Integer courseId)
     {
         CourseComplete cc = new CourseComplete();
-        cc.setUser(user);
-        cc.setCourse(course);
+        cc.setUser(userService.findById(userId));
+        cc.setCourse(courseService.findById(courseId));
         return courseCompleteRepository.save(cc);
     }
 }

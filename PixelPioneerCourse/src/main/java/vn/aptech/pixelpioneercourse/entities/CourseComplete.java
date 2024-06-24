@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table("course_complete")
+@Table(name="course_complete")
 public class CourseComplete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = course_id)
+    @JoinColumn(name = "course_id")
     private Course course;
 
     @ManyToOne

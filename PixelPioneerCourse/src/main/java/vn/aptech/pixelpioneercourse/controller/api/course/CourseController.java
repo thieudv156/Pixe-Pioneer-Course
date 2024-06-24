@@ -1,23 +1,18 @@
 package vn.aptech.pixelpioneercourse.controller.api.course;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.oauth2.sdk.Role;
-
 import lombok.Getter;
 import lombok.Setter;
-
-import org.springframework.data.relational.core.sql.In;
-import org.springframework.validation.Validator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
-import vn.aptech.pixelpioneercourse.dto.TestDto;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.User;
@@ -26,6 +21,7 @@ import vn.aptech.pixelpioneercourse.service.CourseService;
 import vn.aptech.pixelpioneercourse.service.TestService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 import vn.aptech.pixelpioneercourse.until.ControllerUtils;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +29,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/course")
 public class CourseController {
-
     private final CourseService courseService;
     private final CategoryService categoryService;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -42,6 +37,7 @@ public class CourseController {
     private final ModelMapper modelMapper;
     private final TestService testService;
 
+    @Autowired
     public CourseController(CourseService courseService, CategoryService categoryService, Validator validator, UserService userService, ModelMapper modelMapper, TestService testService) {
         this.courseService = courseService;
         this.categoryService = categoryService;
@@ -50,8 +46,6 @@ public class CourseController {
         this.modelMapper = modelMapper;
         this.testService = testService;
     }
-
-
 
     @GetMapping("")
     public ResponseEntity<?> index() {
@@ -67,11 +61,7 @@ public class CourseController {
     public ResponseEntity<?> getAllInstructors() {
         try {
             List<User> instructors = userService.findAll();
-            for (int i = 0; i < instructors.size(); i++) {
-                if (!instructors.get(i).getRole().equals(modelMapper.map("ROLE_INSTRUCTOR", Role.class))) {
-                    instructors.remove(i);
-                }
-            }
+            instructors.removeIf(instructor -> !instructor.getRole().equals("ROLE_INSTRUCTOR"));
             return ResponseEntity.ok(instructors);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
@@ -79,7 +69,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable("id") Integer id){
+    public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
         try {
             Optional<Course> result = Optional.ofNullable(courseService.findById(id));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -98,7 +88,7 @@ public class CourseController {
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<?> findCourseByCategoryId(@PathVariable("categoryId") Integer categoryId){
+    public ResponseEntity<?> findCourseByCategoryId(@PathVariable("categoryId") Integer categoryId) {
         try {
             Optional<List<Course>> result = Optional.ofNullable(courseService.findByCategoryId(categoryId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -108,7 +98,7 @@ public class CourseController {
     }
 
     @GetMapping("/categoryDto/{categoryId}")
-    public ResponseEntity<?> findCourseByCategoryDtoId(@PathVariable("categoryId") Integer categoryId){
+    public ResponseEntity<?> findCourseByCategoryDtoId(@PathVariable("categoryId") Integer categoryId) {
         try {
             List<Course> courses = courseService.findByCategoryId(categoryId);
             return ResponseEntity.ok(courses);
@@ -118,7 +108,7 @@ public class CourseController {
     }
 
     @GetMapping("/instructor/{instructorId}")
-    public ResponseEntity<?> findCourseByInstructorId(@PathVariable("instructorId") Integer instructorId){
+    public ResponseEntity<?> findCourseByInstructorId(@PathVariable("instructorId") Integer instructorId) {
         try {
             Optional<List<Course>> result = Optional.ofNullable(courseService.findByInstructorId(instructorId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -128,7 +118,7 @@ public class CourseController {
     }
 
     @GetMapping("/search/{title}")
-    public ResponseEntity<?> findByTitle(@PathVariable("title") String keyword){
+    public ResponseEntity<?> findByTitle(@PathVariable("title") String keyword) {
         try {
             Optional<List<Course>> result = Optional.ofNullable(courseService.findByTitle(keyword));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -136,14 +126,14 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
-    
+
     @GetMapping("/enrolled")
     public ResponseEntity<?> findEnrolledCourseByUserId(@RequestParam("userId") Integer uid) {
-    	try {
-    		return ResponseEntity.status(HttpStatus.OK).body(courseService.getEnrolledCourses(uid)); //return a List<Course> type
-    	} catch (Exception e) {
-    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-    	}
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(courseService.getEnrolledCourses(uid));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}/update")
@@ -159,7 +149,7 @@ public class CourseController {
             // Set the image file to the DTO
             BindingResult bindingResult = new BeanPropertyBindingResult(courseCreateDto, "courseCreateDto");
             validator.validate(courseCreateDto, bindingResult);
-            if(bindingResult.hasErrors()){
+            if (bindingResult.hasErrors()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ControllerUtils.getErrorMessages(bindingResult));
             }
             Course updatedCourse = courseService.update(id, courseCreateDto, image);
@@ -215,7 +205,7 @@ public class CourseController {
     }
 
     @GetMapping("/instructors/{instructorId}/published")
-    public ResponseEntity<?> findPublishedCoursesByInstructorId(@PathVariable("instructorId") Integer instructorId){
+    public ResponseEntity<?> findPublishedCoursesByInstructorId(@PathVariable("instructorId") Integer instructorId) {
         try {
             Optional<List<Course>> result = Optional.ofNullable(courseService.findPublishedCoursesByInstructorId(instructorId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -225,7 +215,7 @@ public class CourseController {
     }
 
     @GetMapping("/instructors/{instructorId}/unpublished")
-    public ResponseEntity<?> findUnPublishedCoursesByInstructorId(@PathVariable("instructorId") Integer instructorId){
+    public ResponseEntity<?> findUnPublishedCoursesByInstructorId(@PathVariable("instructorId") Integer instructorId) {
         try {
             Optional<List<Course>> result = Optional.ofNullable(courseService.findUnPublishedCoursesByInstructorId(instructorId));
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -235,7 +225,7 @@ public class CourseController {
     }
 
     @GetMapping("/create-course/{instructorId}")
-    public ResponseEntity<?> createNewCourse(@PathVariable("instructorId") Integer instructorId){
+    public ResponseEntity<?> createNewCourse(@PathVariable("instructorId") Integer instructorId) {
         try {
             Optional<Course> course = Optional.ofNullable(courseService.createNewCourse(instructorId));
             return course.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -245,7 +235,7 @@ public class CourseController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<?> getAllCategories(){
+    public ResponseEntity<?> getAllCategories() {
         try {
             Optional<List<Category>> result = Optional.ofNullable(categoryService.findAll());
             return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -253,5 +243,4 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
-
 }
