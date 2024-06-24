@@ -42,7 +42,7 @@ public class LoginController {
             } else if (session.getAttribute("isAdmin") != null) {
                 return "redirect:/app/admin";
             } else if (session.getAttribute("isInstructor") != null) {
-                return "redirect:/app/course/instructor/";
+                return "redirect:/app/course";
             }
         }
         return "app/guest_view/login";

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test Result</title>
+    <!-- Include any necessary CSS -->
+</head>
+<body>
+<div class="container">
+    <h2>Test Result</h2>
+    <div th:if="${submittedTest.score >= submittedTest.testFormat.passingScore}">
+        <p>Congratulations! You have passed the test with a score of <span th:text="${submittedTest.score}"></span>.</p>
+    </div>
+    <div th:if="${submittedTest.score < submittedTest.testFormat.passingScore}">
+        <p>Unfortunately, you did not pass the test. Your score is <span th:text="${submittedTest.score}"></span>.</p>
+    </div>
+    <a href="/app/tests/start/{testFormatId}" class="btn btn-primary">Take Another Test</a>
+</div>
+</body>
+</html>

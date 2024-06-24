@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Start Test</title>
+    <!-- Include any necessary CSS -->
+</head>
+<body>
+<div class="container">
+    <h2>Start Test</h2>
+    <form th:action="@{/app/tests/submit}" th:object="${testDto}" method="post">
+        <input type="hidden" th:field="*{testFormat.id}">
+        <div>
+            <label>Test Format:</label>
+            <span th:text="${testDto.testFormat.course}"></span>
+        </div>
+        <div>
+            <label>Duration:</label>
+            <span th:text="${testDto.duration}"></span> minutes
+        </div>
+        <!-- Display questions for the test -->
+        <div th:each="questionDto, iterStat : *{questions}">
+            <div>
+                <label th:text="${'Question ' + (iterStat.index + 1)}"></label>
+                <span th:text="${questionDto.question}"></span>
+            </div>
+            <div>
+                <!-- Display answer choices -->
+                <input type="radio" th:id="'answer' + ${iterStat.index + 1} + '1'" th:field="*{questions[__${iterStat.index}__].answer1}">
+                <label th:for="'answer' + ${iterStat.index + 1} + '1'" th:text="${questionDto.answer1}"></label><br>
+
+                <input type="radio" th:id="'answer' + ${iterStat.index + 1} + '2'" th:field="*{questions[__${iterStat.index}__].answer2}">
+                <label th:for="'answer' + ${iterStat.index + 1} + '2'" th:text="${questionDto.answer2}"></label><br>
+
+                <input type="radio" th:id="'answer' + ${iterStat.index + 1} + '3'" th:field="*{questions[__${iterStat.index}__].answer3}">
+                <label th:for="'answer' + ${iterStat.index + 1} + '3'" th:text="${questionDto.answer3}"></label><br>
+
+                <input type="radio" th:id="'answer' + ${iterStat.index + 1} + '4'" th:field="*{questions[__${iterStat.index}__].answer4}">
+                <label th:for="'answer' + ${iterStat.index + 1} + '4'" th:text="${questionDto.answer4}"></label><br>
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Submit Test</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

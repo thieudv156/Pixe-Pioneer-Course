@@ -1,37 +1,36 @@
 package vn.aptech.pixelpioneercourse.controller.app.course;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.*;
 import vn.aptech.pixelpioneercourse.dto.TestDto;
-import vn.aptech.pixelpioneercourse.entities.Question;
+import vn.aptech.pixelpioneercourse.entities.Test;
 import vn.aptech.pixelpioneercourse.service.TestService;
 
-import java.util.List;
-
 @Controller
-@RequestMapping("/app/test")
+@RequestMapping("/app/tests")
 public class AppTestController {
 
     private final TestService testService;
 
+    @Autowired
     public AppTestController(TestService testService) {
         this.testService = testService;
     }
 
-
-    @GetMapping("/{testFormatId}")
-    public String createTest(@PathVariable("testFormatId") Integer testFormatId, @SessionAttribute("userId") Integer userId, Model model, RedirectAttributes redirectAttributes){
-        TestDto createTestDto = testService.createTestDto(testFormatId, userId);
-        System.out.println(createTestDto);
-        model.addAttribute("test", createTestDto);
-        redirectAttributes.addFlashAttribute("successMessage", "Create Test successfully, you now have"+createTestDto.getDuration()+" minutes to finish the test");
-        return "app/user_view/course/test";
+    @GetMapping("/start/{testFormatId}")
+    public String startTest(@SessionAttribute("userId") Integer userId, @PathVariable Integer testFormatId, Model model) {
+        TestDto testDto = testService.createTestDto(testFormatId, userId);
+        model.addAttribute("testDto", testDto);
+        return "app/user_view/test/start"; // Thymeleaf template for starting the test
     }
 
-
+    @PostMapping("/submit")
+    public String submitTest(@SessionAttribute("userId") Integer userId, @ModelAttribute("testDto") TestDto testDto, Model model) {
+        // Assuming userId is retrieved from authentication or session
+        Test submittedTest = testService.submitTest(testDto, userId);
+        model.addAttribute("submittedTest", submittedTest);
+        return "app/user_view/test/result";
+    }
 }
