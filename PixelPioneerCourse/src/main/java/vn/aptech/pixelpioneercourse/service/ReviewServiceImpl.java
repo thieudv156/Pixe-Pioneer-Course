@@ -31,6 +31,11 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> findByUserId(Integer id) {
         return reviewRepository.findByUserId(id);
     }
+    
+    @Override
+    public Review findById(Integer rid) {
+    	return reviewRepository.findById(rid).orElseThrow(() -> new RuntimeException("Review not found"));
+    }
 
     @Override
     public Double average(List<Review> rv) {
