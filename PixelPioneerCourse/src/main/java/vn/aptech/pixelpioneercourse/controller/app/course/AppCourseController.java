@@ -343,8 +343,6 @@ public class AppCourseController {
     @GetMapping("/preview/{courseId}")
     public String previewCourse(@PathVariable("courseId") Integer courseId, RedirectAttributes redirectAttributes, Model model, @SessionAttribute("userId") Integer userId) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
-//            Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + courseId, Course.class));
             Optional<Course> course = Optional.ofNullable(courseService.findById(courseId));
             if (course.isEmpty()) {
                 return "redirect:/app/course";
@@ -360,7 +358,7 @@ public class AppCourseController {
                     subLessonHashMap.put(subLesson.getId(), subLesson);
                 }
             }
-            
+
             List<Review> listReviewRelatedToCourse = reviewService.findByCourseId(courseId);
             Double averageRating = reviewService.average(listReviewRelatedToCourse);
             Integer five_count = 0;
@@ -369,18 +367,26 @@ public class AppCourseController {
             Integer two_count = 0;
             Integer one_count = 0;
             for (Review r : listReviewRelatedToCourse) {
-            	if (r.getRating() == 5) {
-            		five_count++;
-            	} else if (r.getRating() == 4) {
-            		four_count++;
-            	} else if (r.getRating() == 3) {
-            		three_count++;
-            	} else if (r.getRating() == 2) {
-            		two_count++;
-            	} else {
-            		one_count++;
-            	}
+                if (r.getRating() == 5) {
+                    five_count++;
+                } else if (r.getRating() == 4) {
+                    four_count++;
+                } else if (r.getRating() == 3) {
+                    three_count++;
+                } else if (r.getRating() == 2) {
+                    two_count++;
+                } else {
+                    one_count++;
+                }
             }
+            
+            int totalReviews = listReviewRelatedToCourse.size();
+            double fivePercentage = (totalReviews > 0) ? (five_count * 100.0 / totalReviews) : 0;
+            double fourPercentage = (totalReviews > 0) ? (four_count * 100.0 / totalReviews) : 0;
+            double threePercentage = (totalReviews > 0) ? (three_count * 100.0 / totalReviews) : 0;
+            double twoPercentage = (totalReviews > 0) ? (two_count * 100.0 / totalReviews) : 0;
+            double onePercentage = (totalReviews > 0) ? (one_count * 100.0 / totalReviews) : 0;
+
             model.addAttribute("subLessonHashMap", subLessonHashMap);
             model.addAttribute("lessons", limitedLessons);
             model.addAttribute("course", course.get());
@@ -393,6 +399,12 @@ public class AppCourseController {
             model.addAttribute("threeCount", three_count);
             model.addAttribute("twoCount", two_count);
             model.addAttribute("oneCount", one_count);
+            model.addAttribute("fivePercentage", fivePercentage);
+            model.addAttribute("fourPercentage", fourPercentage);
+            model.addAttribute("threePercentage", threePercentage);
+            model.addAttribute("twoPercentage", twoPercentage);
+            model.addAttribute("onePercentage", onePercentage);
+
             return "app/user_view/course/course-preview";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
