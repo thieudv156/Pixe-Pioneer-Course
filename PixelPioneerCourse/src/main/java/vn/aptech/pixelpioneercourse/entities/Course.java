@@ -68,6 +68,7 @@ public class Course {
     private TestFormat testFormat;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("course")
     private List<CourseComplete> courseCompletes;
 
     
