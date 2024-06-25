@@ -36,6 +36,7 @@ public interface UserService {
     boolean checkPhone(String phone);
     Authentication processLogin(LoginDto body);
     Authentication processLogin(String email, String password);
+    boolean sendRequestInstructor(Integer userId, String request);
     List<UserInformation> getAllInstructors(); //profile api
     String generateUsername(String fullName);
     String generateUniquePhoneNumber();

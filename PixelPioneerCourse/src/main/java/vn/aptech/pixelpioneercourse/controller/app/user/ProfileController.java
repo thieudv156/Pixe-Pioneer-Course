@@ -150,5 +150,20 @@ public class ProfileController {
 	    session.removeAttribute("updatedUser");
 	    requested_code = null;
 	    return "redirect:/app/users/profile/edit-my-profile";
-	}	
+	}
+	
+	@PostMapping("/profile/requestInstructor")
+	public String requestInstructor(@RequestParam("userId") Integer userId, @RequestParam("request") String request, RedirectAttributes ra) {
+		try {
+			userService.sendRequestInstructor(userId, request);
+			ra.addFlashAttribute("successCondition", true);
+			ra.addFlashAttribute("success", "Successfully send your request, we will review and response soon.");
+			return "redirect:/app/users/profile/"+userId.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			ra.addFlashAttribute("failCondition", true);
+			ra.addFlashAttribute("fail", "Some thing is wrong, please contact us directly via email.");
+			return "redirect:/app/users/profile"+userId.toString();
+		}
+	}
 }

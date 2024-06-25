@@ -328,6 +328,16 @@ public class UserServiceImpl implements UserService{
     		throw new Exception(e1.getMessage());
     	}
     }
+    
+    public boolean sendRequestInstructor(Integer userId, String request) {
+    	User existedUser = findById(userId);
+    	if (existedUser == null) return false;
+    	else {
+    		existedUser.setRequestInstructor(request);
+    		userRepository.save(existedUser);
+    		return true;
+    	}
+    }
 
     // =========================================================================================================
     /*

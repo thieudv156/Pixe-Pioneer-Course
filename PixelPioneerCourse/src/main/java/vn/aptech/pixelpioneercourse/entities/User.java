@@ -92,4 +92,7 @@ public class User {
     @Setter
     @Enumerated(EnumType.STRING)
     private Provider provider;
+    
+    @Column(nullable = true, unique = false)
+    private String requestInstructor;
 }

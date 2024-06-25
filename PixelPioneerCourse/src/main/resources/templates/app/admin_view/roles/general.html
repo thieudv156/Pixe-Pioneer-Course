@@ -21,9 +21,6 @@
 					    <form id="search-form" class="search-form search-form--black mx-16pt pr-0 pl-16pt" style="color: white;">
 					      <input type="text" id="search-input" style="color: white;" name="query" class="form-control pl-0" placeholder="Search roles">
 					    </form>
-					    <a class="btn btn-accent btn-rounded" th:href="@{/app/admin/role/create}">
-					      <span>Add a new role</span>
-					    </a>
 					  </div>
 					  <br>
 					  <br>
@@ -52,11 +49,7 @@
 					              <div style="display: flex;">
 					                <form id="update" th:action="@{/app/admin/role/update}" method="post" style="margin: 0; padding-right: 1vh;">
 					                  <input type="hidden" th:value="${role.id}" name="id" />
-					                  <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
-					                </form>
-					                <form id="delete" th:action="@{/app/admin/role/delete}" method="post" style="margin: 0;">
-					                  <input type="hidden" th:value="${role.id}" name="id" />
-					                  <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+					                  <button type="submit" class="btn btn-primary btn-rounded">Rename role</button>
 					                </form>
 					              </div>
 					            </td>
