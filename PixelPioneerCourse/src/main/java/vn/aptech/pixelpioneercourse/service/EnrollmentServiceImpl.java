@@ -1,5 +1,10 @@
 package vn.aptech.pixelpioneercourse.service;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -11,7 +16,12 @@ import vn.aptech.pixelpioneercourse.entities.User;
 import vn.aptech.pixelpioneercourse.repository.EnrollmentRepository;
 import vn.aptech.pixelpioneercourse.repository.UserRepository;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -110,5 +120,40 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public List<Enrollment> findAllByUserId(Integer id) {
     	return enrollmentRepository.findAllByUserId(id, Sort.by(Sort.Direction.DESC, "enrolledAt"));
     }
-    
+
+    public ByteArrayInputStream exportEnrollmentsToExcel(List<Enrollment> enrollments) throws IOException {
+        String[] COLUMNs = {"ID", "Name", "Payment Date","Payment Method", "Subscription End Date", "Status"};
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = workbook.createSheet("Enrollments");
+
+            // Header
+            Row headerRow = sheet.createRow(0);
+            for (int col = 0; col < COLUMNs.length; col++) {
+                Cell cell = headerRow.createCell(col);
+                cell.setCellValue(COLUMNs[col]);
+            }
+
+            int rowIdx = 1;
+            for (Enrollment enrollment : enrollments) {
+                Row row = sheet.createRow(rowIdx++);
+
+                row.createCell(0).setCellValue(enrollment.getId());
+                row.createCell(1).setCellValue(enrollment.getUser().getFullName());
+                row.createCell(2).setCellValue(enrollment.getPaymentDate().toLocalDate().format(formatter));
+                row.createCell(3).setCellValue(enrollment.getPaymentMethod().toString());
+                row.createCell(4).setCellValue(enrollment.getSubscriptionEndDate().toLocalDate().format(formatter));
+                row.createCell(5).setCellValue(enrollment.isSubcriptionActive() ? "Active" : "Inactive");
+            }
+
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+        }
+    }
+
+    @Override
+    public List<Enrollment> findByDateRange(LocalDate start, LocalDate end) {
+        return enrollmentRepository.findAllByPaymentDateBetween(start.atStartOfDay(), end.atTime(23, 59, 59));
+    }
 }

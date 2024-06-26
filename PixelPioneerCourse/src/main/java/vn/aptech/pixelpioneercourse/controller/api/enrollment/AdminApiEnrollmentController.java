@@ -43,4 +43,6 @@ public class AdminApiEnrollmentController {
         enrollmentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    
+    
 }

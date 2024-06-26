@@ -6,6 +6,18 @@
     <title>Pixel Pioneer Course</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .div-excel {
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+    </style>
 </head>
 <body>
 <div class="content-wrapper" layout:fragment="contents">
@@ -15,6 +27,21 @@
                 <div class="col-lg-10 p-0 mx-auto">
                     <div class="page-separator">
                         <div class="page-separator__text">Enrollments Management</div>
+                    </div>
+                    
+                    <div class="div-excel">
+                        <form action="/admin/enrollments/export" method="get">
+                            <label for="startDate">Start Date:</label>
+                                <input type="date" id="startDate" name="startDate" required>
+                            <label for="endDate">End Date:</label>
+                                <input type="date" id="endDate" name="endDate" required>
+                            <button class="btn-rounded btn-primary" type="submit">Export to Excel</button>
+                        </form>
+
+                        <!-- Error message display -->
+                        <div th:if="${error}" class="error-message">
+                            <p th:text="${error}"></p>
+                        </div>
                     </div>
                     <div class="card mb-lg-32pt">
                         <div class="table-responsive">
@@ -40,8 +67,8 @@
                                     <td th:text="${enrollment.formattedPaymentDate}"></td>
                                     <td th:text="${enrollment.formattedSubscriptionEndDate}"></td>
                                     <td>
-                                        <a th:href="@{'/admin/enrollments/details/' + ${enrollment.id}}" class="btn btn-sm btn-primary">View Detail</a>
-                                        <a th:href="@{'/admin/enrollments/delete/' + ${enrollment.id}}" class="btn btn-sm btn-danger">Delete</a>
+                                        <a th:href="@{'/admin/enrollments/details/' + ${enrollment.id}}" class="btn btn-sm btn-primary btn-rounded">View Detail</a>
+                                        <a th:href="@{'/admin/enrollments/delete/' + ${enrollment.id}}" class="btn btn-sm btn-danger btn-rounded">Delete</a>
                                     </td>
                                 </tr>
                                 </tbody>

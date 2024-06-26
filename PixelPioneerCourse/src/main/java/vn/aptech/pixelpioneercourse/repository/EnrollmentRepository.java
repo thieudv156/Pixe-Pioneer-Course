@@ -53,6 +53,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
     List<Enrollment> findTop10ByOrderByEnrolledAtDesc();
     
     List<Enrollment> findAllByUserId(Integer id, Sort sort);
+
+    List<Enrollment> findAllByPaymentDateBetween(LocalDateTime localDateTime, LocalDateTime localDateTime1);
 }
 
     

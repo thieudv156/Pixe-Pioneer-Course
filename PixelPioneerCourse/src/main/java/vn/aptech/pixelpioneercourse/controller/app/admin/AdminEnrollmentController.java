@@ -1,5 +1,7 @@
 package vn.aptech.pixelpioneercourse.controller.app.admin;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -8,10 +10,11 @@ import vn.aptech.pixelpioneercourse.entities.Enrollment;
 import vn.aptech.pixelpioneercourse.service.EmailService;
 import vn.aptech.pixelpioneercourse.service.EnrollmentService;
 
-import java.time.LocalDateTime;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.function.BiFunction;
 
 @Controller("adminEnrollmentController")
 @RequestMapping("/admin/enrollments")
@@ -86,5 +89,28 @@ public class AdminEnrollmentController {
         enrollmentService.deleteById(id);
         return "redirect:/admin/enrollments";
     }
+
+    @GetMapping("/export")
+    public String exportToExcel(@RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate, HttpServletResponse response, RedirectAttributes redirectAttributes) throws IOException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate start = LocalDate.parse(startDate, formatter);
+        LocalDate end = LocalDate.parse(endDate, formatter);
+
+        if (start.isAfter(end)) {
+            redirectAttributes.addFlashAttribute("error", "Start date must be before or equal to end date");
+            return "redirect:/admin/enrollments";  // Redirect to the enrollment page or an appropriate page
+        }
+
+        List<Enrollment> enrollments = enrollmentService.findByDateRange(start, end);
+        ByteArrayInputStream in = enrollmentService.exportEnrollmentsToExcel(enrollments);
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=enrollments.xlsx");
+
+        IOUtils.copy(in, response.getOutputStream());
+        response.flushBuffer();
+        return null;  // Since the response is handled directly, return null
+    }
+
 
 }
