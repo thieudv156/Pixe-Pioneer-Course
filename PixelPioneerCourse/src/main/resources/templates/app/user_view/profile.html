@@ -6,14 +6,18 @@
     <title>Pixel Pioneer Course - Profile</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 </head>
-<body>
+<body th:if="${user.activeStatus == true}">
 	<div class="content-wrapper" layout:fragment="contents">
 	    <div class="container">
 	        
 	    </div>
-	    <div th:if="${ErrorCondition}" class="alert alert-success" role="alert">
+	    <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
 			<span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+		</div>
+		<div th:if="${SuccessCondition}" class="alert alert-success" role="alert">
+			<span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
 		</div>
         <div class="page-section bg-primary border-bottom-white">
             <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-md-left">
@@ -54,38 +58,51 @@
 							        </div>
 							    </div>
 							</div>
-		                      <div class="col-lg-6">
+		                      <div class="col-lg-6" th:if="${session.user.id == user.id and (session.isAdmin == null and session.isInstructor == null)}">
 		
 		                          <div class="card border-0 mb-lg-0">
-		                          	<textarea rows="25" cols="100" name="editor1" placeholder="Write a brief letter, introducing yourself, and why should we choose you as one of our instructor.">
-		                          	</textarea>
-		                          	<script>
-										CKEDITOR.replace('editor1');
-		                          	</script>
-		                          </div>
+									    <div class="mb-0 mr-3"></div>
+									    <div class="flex ml-2">
+									        <p class="card-title">Instructor Request</p>
+									        <p class="card-subtitle">Send request to be one of our Instructors</p>
+									    </div>
+									    <form id="requestForm" action="/app/users/profile/requestInstructor" class="mb-0" method="post">
+									        <input type="hidden" name="userId" th:value="${user.id}">
+									        <textarea name="request" id="editor1" rows="20" cols="100">
+									            Please write a brief letter about you, what's your purpose and why should we choose you. We will review and respond to you soon.
+									        </textarea>
+									        <button type="submit" class="btn btn-accent mr-2" style="float: right;">Send Request</button>
+									    </form>
+									</div>
+									
+									<script>
+									    CKEDITOR.replace('editor1', {
+									        toolbar: [
+									            { name: 'basicstyles', items: ['Bold', 'Italic'] },
+									            { name: 'paragraph', items: ['Indent', 'Outdent'] }
+									        ],
+									        removePlugins: 'resize'
+									    });
+									</script>
+		                          <br/>
 		
-		                          <div class="card border-0 mb-lg-0">
-		                              <div class="card-header d-flex align-items-center border-0">
-		                                  <div class="h2 mb-0 mr-3">432</div>
-		                                  <div class="flex">
-		                                      <p class="card-title">Experience IQ</p>
-		                                      <p class="card-subtitle text-50">4 days streak this week</p>
-		                                  </div>
-		                                  <i class="material-icons text-muted ml-2">trending_up</i>
-		                              </div>
-		                              <div class="card-body pt-0">
-		                                  <div class="chart"
-		                                       style="height: 128px;">
-		                                      <canvas id="iqChart"
-		                                              class="chart-canvas js-update-chart-line"
-		                                              data-chart-hide-axes="false"
-		                                              data-chart-points="true"
-		                                              data-chart-suffix="pt"
-		                                              data-chart-line-border-color="primary"
-		                                              data-chart-dark-mode="false"></canvas>
-		                                  </div>
-		                              </div>
+		                          
+		                      </div>
+		                      <div class="col-lg-6" th:if="${session.user.id != user.id}">
+		
+		                          <div class="card border-0 mb-lg-0" style="height: 88.5vh;">
+		                          	<h1 class="ml-2 card-title">Welcome to <span th:text="${user.fullName}"></span>'s profile!</h1>
+		                          	<img height="500vh" alt="hello-gif" src="https://www.desicomments.com/wp-content/uploads/2017/07/Hello.gif">
 		                          </div>
+		                          <br/>
+		                      </div>
+		                      <div class="col-lg-6" th:if="${session.user.id == user.id and (session.isAdmin == true or session.isInstructor == true)}">
+		
+		                          <div class="card border-0 mb-lg-0" style="height: 88.5vh;">
+		                          	<h1 class="ml-2 card-title">Your profile seems brilliant, keep up the good work!</h1>
+		                          	<img height="500vh" alt="hello-gif" src="https://th.bing.com/th/id/R.e2568f80d03372522f118d09f3478be5?rik=HTbipFSnxR%2bA3A&pid=ImgRaw&r=0">
+		                          </div>
+		                          <br/>
 		                      </div>
 		                  </div>
 		              </div>

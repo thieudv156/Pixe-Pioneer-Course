@@ -132,6 +132,16 @@ public class UserServiceImpl implements UserService{
         return new org.springframework.security.core.userdetails.User(tbUser.getUsername(), tbUser.getPassword(), true, true, true, true, Collections.singleton(tbUser.getGrantedAuthorities()));
 
     }
+    
+    public List<User> findByRequestInstructorNotNull(){
+    	List<User> listu = userRepository.findAll();
+    	for (User removeU : listu) {
+    		if (removeU.getRequestInstructor().isEmpty()) {
+    			listu.remove(removeU);
+    		}
+    	}
+    	return listu;
+    }
 
     private Role convertToRoleFromDto(RoleDto dto) {
         return mapper.map(dto, Role.class);

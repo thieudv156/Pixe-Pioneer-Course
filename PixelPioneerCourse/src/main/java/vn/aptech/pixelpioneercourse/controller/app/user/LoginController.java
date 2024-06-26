@@ -58,6 +58,11 @@ public class LoginController {
     public String checkLogin(@RequestParam("info") String emailorusername, @RequestParam("password") String password, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
         	User u = userService.checkLogin(emailorusername, password);
+        	if (u.isActiveStatus() == false) {
+        		redirectAttributes.addFlashAttribute("loginErrorCondition", true);
+        		redirectAttributes.addFlashAttribute("loginError", "Your account has been deactivated, please contact us via contact information for further support.");
+        		return "redirect:/app/login";
+        	}
         	Enrollment e = null;
         	try {
         		e = enrollmentService.findByUserId(u.getId());
@@ -85,6 +90,7 @@ public class LoginController {
                         session.setAttribute("enrollment", e);
                         session.setAttribute("isUser", null);
                         session.setAttribute("isInstructor", null);
+                        session.setAttribute("showFilteredRequestUsers", false);
                         return "redirect:/app/admin/users";
                     } else if (u.getRole().getRoleName().equals("ROLE_INSTRUCTOR") && session.getAttribute("isInstructor") == null) {
                     	session.setAttribute("user", u);

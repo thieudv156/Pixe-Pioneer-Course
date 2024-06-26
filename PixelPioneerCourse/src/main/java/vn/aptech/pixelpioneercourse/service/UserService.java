@@ -22,6 +22,7 @@ public interface UserService {
     User findUserByPassword(String password);
     List<User> searchByQuery(String query);
     User checkLogin(String EmailorUsername, String password);
+    List<User> findByRequestInstructorNotNull();
     UserDetails loadUserByEmailorUsername(String EmailorUsername) throws UsernameNotFoundException;
     boolean create(UserCreateDto u);
     boolean create(User user);

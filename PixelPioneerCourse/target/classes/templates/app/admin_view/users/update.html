@@ -30,6 +30,7 @@
 										data-toggle="select"
 										data-minimum-results-for-search="-1">
 										<option th:each="role : ${allRoles}"
+												th:if="${role.roleName != 'ROLE_ADMIN'}"
 												th:value="${role.id}"
 												th:text="${role.roleName}"
 												th:selected="${role.roleName == userInfo.role.roleName}"></option>

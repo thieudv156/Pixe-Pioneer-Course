@@ -1,9 +1,19 @@
 package vn.aptech.pixelpioneercourse.controller.app.admin;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.safety.Safelist;
+import org.jsoup.safety.Whitelist;
+import org.jsoup.select.Elements;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +28,7 @@ import jakarta.servlet.http.HttpSession;
 import vn.aptech.pixelpioneercourse.dto.RoleDto;
 import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
+import vn.aptech.pixelpioneercourse.service.EmailService;
 import vn.aptech.pixelpioneercourse.service.RoleService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
@@ -33,6 +44,9 @@ public class UserManagingController {
 	
 	@Autowired
 	private PasswordEncoder encoder;
+	
+	@Autowired
+    private JavaMailSender mailSender;
 	
 	@Autowired
 	private RoleService roleService;
@@ -58,6 +72,33 @@ public class UserManagingController {
 		    }
 	    } catch (Exception e) {
 	    	return "redirect:/logout";
+	    }
+	}
+	
+	@GetMapping("/filterRequestUsers")
+	public String filterRequestUsers(Model model, HttpSession session, @RequestParam("userId") String uid) {
+	    try {
+	        Boolean showFilteredRequestUsers = (Boolean) session.getAttribute("showFilteredRequestUsers");
+	        if (Boolean.FALSE.equals(showFilteredRequestUsers)) { // return filtered users
+	            List<User> ulist = new ArrayList<>(userService.findAll()); // Create a modifiable copy
+	            for (Iterator<User> iterator = ulist.iterator(); iterator.hasNext();) {
+	                User user = iterator.next();
+	                if (user.getRequestInstructor() == null || 
+	                    user.getRequestInstructor().isBlank() || 
+	                    user.getRequestInstructor().isEmpty()) {
+	                    iterator.remove(); // Use iterator to remove elements safely
+	                }
+	            }
+	            model.addAttribute("users", ulist);
+	            session.setAttribute("showFilteredRequestUsers", true);
+	            return "app/admin_view/users/general";
+	        } else {
+	            session.setAttribute("showFilteredRequestUsers", false);
+	            return "redirect:/app/admin/users";
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "redirect:/app/admin/users";
 	    }
 	}
 
@@ -163,7 +204,6 @@ public class UserManagingController {
 	public String update(@ModelAttribute("userInfo") User user, RedirectAttributes ra) {
 		try {
 			Role role = mapper.map(roleService.findById(user.getRole().getId()).get(), Role.class);
-			System.out.println(user.getId());
 			userService.updateAdmin(role, user.getId());
 			ra.addFlashAttribute("SuccessCondition", true);
 			ra.addFlashAttribute("SuccessSuccess", "Update user successfully");
@@ -196,6 +236,67 @@ public class UserManagingController {
 		} catch (Exception e) {
 			ra.addFlashAttribute("ErrorCondition", true);
 			ra.addFlashAttribute("ErrorError", e.getMessage()+".");
+			return "redirect:/app/admin/users";
+		}
+	}
+	
+	private void sendSimpleMessage(String receiverEmail, String name, String content) {
+	    // Convert HTML content to plain text with basic formatting
+	    String plainTextContent = convertHtmlToPlainText(content);
+
+	    SimpleMailMessage message = new SimpleMailMessage();
+	    message.setFrom("bot@PIXELPIONEERCOURSE.com");
+	    message.setTo(receiverEmail); 
+	    message.setSubject("RequestInstructor notification for " + name + " from Pixel Pioneer Course Administrator"); 
+	    message.setText(plainTextContent);
+	    mailSender.send(message);
+	}
+
+	private String convertHtmlToPlainText(String html) {
+	    Document document = Jsoup.parse(html);
+	    Elements boldElements = document.select("b, strong");
+	    for (Element bold : boldElements) {
+	        bold.prependText("**").appendText("**");
+	    }
+	    Elements italicElements = document.select("i, em");
+	    for (Element italic : italicElements) {
+	        italic.prependText("_").appendText("_");
+	    }
+	    Elements lineBreaks = document.select("br");
+	    for (Element br : lineBreaks) {
+	        br.after("\n");
+	    }
+	    return document.text();
+	}
+
+	@PostMapping("/notifyRequest")
+	public String notifyRequest(@RequestParam("userId") String uid, @RequestParam("content") String content, RedirectAttributes ra) {
+	    try {
+	        User u = userService.findById(Integer.parseInt(uid));
+	        sendSimpleMessage(u.getEmail(), u.getFullName(), content);
+	        ra.addFlashAttribute("SuccessCondition", true);
+	        ra.addFlashAttribute("SuccessSuccess", "Notification successfully sent to user");
+	        return "redirect:/app/admin/users";
+	    } catch (Exception e) {
+	        ra.addFlashAttribute("ErrorCondition", true);
+	        ra.addFlashAttribute("ErrorError", "Could not send notification to user.");
+	        return "redirect:/app/admin/users";
+	    }
+	}
+	
+	@PostMapping("/removeRequest")
+	public String removeRequest(@RequestParam("id") String userId, RedirectAttributes ra) {
+		try {
+			Integer uid = Integer.parseInt(userId);
+			User u = userService.findById(uid);
+			u.setRequestInstructor(null);
+			userService.updateWithRole(u, uid);
+			ra.addFlashAttribute("SuccessCondtion", true);
+			ra.addFlashAttribute("SuccessSuccess", "Successfully remove the request, if you have not notified the user's request, please do it.");
+			return "redirect:/app/admin/users";
+		} catch (Exception e) {
+			ra.addFlashAttribute("ErrorCondition", true);
+			ra.addFlashAttribute("ErrorError", "Cannot remove request, possibly database exception.");
 			return "redirect:/app/admin/users";
 		}
 	}

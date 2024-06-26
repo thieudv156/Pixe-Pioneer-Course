@@ -85,8 +85,12 @@ public class ProfileController {
     }
 	
 	@GetMapping("/profile/edit-my-profile")
-	public String editPage(Model model, @SessionAttribute("userId") int userid) {
+	public String editPage(Model model, @SessionAttribute("userId") Integer userid) {
 		try {
+			User user = userService.findById(userid);
+			if (user.isActiveStatus() == false) {
+				return "redirect:/";
+			}
 			UserCreateDto dto = mapper.map(userService.findById(userid), UserCreateDto.class);
 			model.addAttribute("user", dto);
 			return "app/user_view/editProfile";
@@ -107,6 +111,18 @@ public class ProfileController {
 	            session.setAttribute("updatedUser", updatedDto);
 	            requested_code = mailer.requestedCode;
 	            return "redirect:/app/users/profile/edit-my-profile";
+	        }
+	        try {
+	        	int textPhone = Integer.parseInt(updatedDto.getPhone());
+	        	if (updatedDto.getPhone().length() < 9 || updatedDto.getPhone().length() > 11) {
+	        		ra.addFlashAttribute("ErrorCondition", true);
+	        		ra.addFlashAttribute("ErrorError", "Phone should only contain 9 to 11 digits");
+	        		return "redirect:/app/users/profile/edit-my-profile";
+	        	}
+	        } catch (Exception e) {
+	        	ra.addFlashAttribute("ErrorCondition", true);
+	        	ra.addFlashAttribute("ErrorError", "Phone should contain only digits");
+	        	return "redirect:/app/users/profile/edit-my-profile";
 	        }
 	        userService.update(updatedDto, Integer.parseInt(uid));
 	        User u = userService.findById(Integer.parseInt(uid));
@@ -153,16 +169,17 @@ public class ProfileController {
 	}
 	
 	@PostMapping("/profile/requestInstructor")
-	public String requestInstructor(@RequestParam("userId") Integer userId, @RequestParam("request") String request, RedirectAttributes ra) {
+	public String requestInstructor(@RequestParam("userId") String userId, @RequestParam("request") String request, RedirectAttributes ra) {
 		try {
-			userService.sendRequestInstructor(userId, request);
-			ra.addFlashAttribute("successCondition", true);
-			ra.addFlashAttribute("success", "Successfully send your request, we will review and response soon.");
+			int uid = Integer.parseInt(userId);
+			userService.sendRequestInstructor(uid, request);
+			ra.addFlashAttribute("SuccessCondition", true);
+			ra.addFlashAttribute("SuccessSuccess", "Successfully send your request to the adminstrator, we will review and response to you via your registered contact information soon. Please stay updated to receive news from us.");
 			return "redirect:/app/users/profile/"+userId.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
-			ra.addFlashAttribute("failCondition", true);
-			ra.addFlashAttribute("fail", "Some thing is wrong, please contact us directly via email.");
+			ra.addFlashAttribute("ErrorCondition", true);
+			ra.addFlashAttribute("ErrorError", "Some thing is wrong, please contact us directly via email.");
 			return "redirect:/app/users/profile"+userId.toString();
 		}
 	}

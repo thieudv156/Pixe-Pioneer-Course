@@ -415,23 +415,6 @@
                 <li class="sidebar-menu-item">
                     <a class="sidebar-menu-button"
                        data-toggle="collapse"
-                       href="#role_menu">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">work</span>
-                        Role
-                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                    </a>
-                    <ul class="sidebar-submenu collapse sm-indent"
-                        id="role_menu">
-		                <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/app/admin/role}">
-                                <span class="sidebar-menu-text">General</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button"
-                       data-toggle="collapse"
                        href="#enrollment_menu">
                         <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">work</span>
                         Manage Enrollment
@@ -465,6 +448,11 @@
                     </a>
                     <ul class="sidebar-submenu collapse sm-indent"
                         id="components_menu">
+                        <li class="sidebar-menu-item">
+                        	<a class="sidebar-menu-button" th:href="@{/app/users/profile/{id}(id=${session.userId})}">
+		                        <span class="sidebar-menu-text">My Profile</span>
+		                    </a>
+                        </li>
 		                <li class="sidebar-menu-item">
                             <a class="sidebar-menu-button" th:href="@{/app/users/profile/edit-my-profile}">
                                 <span class="sidebar-menu-text">Edit Profile</span>

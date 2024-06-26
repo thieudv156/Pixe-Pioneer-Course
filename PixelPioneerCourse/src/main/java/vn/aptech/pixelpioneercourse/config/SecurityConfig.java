@@ -29,6 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -160,6 +161,12 @@ public class SecurityConfig {
 
     @Autowired
     private RoleRepository roleRepository;
+    
+//    private String accountDeactivate(RedirectAttributes ra) {
+//    	ra.addFlashAttribute("loginErrorCondition", true);
+//    	ra.addFlashAttribute("loginError", "Your account has been deactivated, please contact us via contact information for further support.");
+//    	return "redirect:/app/login";
+//    }
 
     public boolean processOAuthPostLogin(String email, String fullname) {
         Optional<User> opUser = null;
