@@ -1,6 +1,7 @@
 package vn.aptech.pixelpioneercourse.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.aptech.pixelpioneercourse.entities.Enrollment;
@@ -104,6 +105,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     public List<Enrollment> get10LatestEnrollments() {
         return enrollmentRepository.findTop10ByOrderByEnrolledAtDesc();
+    }
+    
+    public List<Enrollment> findAllByUserId(Integer id) {
+    	return enrollmentRepository.findAllByUserId(id, Sort.by(Sort.Direction.DESC, "enrolledAt"));
     }
     
 }

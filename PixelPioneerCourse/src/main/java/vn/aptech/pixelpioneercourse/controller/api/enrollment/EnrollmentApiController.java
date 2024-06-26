@@ -3,6 +3,7 @@ package vn.aptech.pixelpioneercourse.controller.api.enrollment;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,7 +115,7 @@ public class EnrollmentApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    
+
     @PostMapping("/credit-card-payment")
     public ResponseEntity<?> creditCardPayment(@SessionAttribute("userId") Integer userId, @Valid @RequestBody PaymentRequest paymentRequest) {
         try {
@@ -131,6 +132,28 @@ public class EnrollmentApiController {
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Subscription failed: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-user-enrollments")
+    public ResponseEntity<?> getEnrollments(@RequestParam("userId") Integer userId) {
+        if (userId == null) {
+            return ResponseEntity.status(401).body("User not authenticated");
+        }
+        try {
+            List<Enrollment> enrollments = enrollmentService.findAllByUserId(userId);
+            List<Map<String, Object>> response = new ArrayList<>();
+            for (Enrollment enrollment : enrollments) {
+                Map<String, Object> enrollmentData = new HashMap<>();
+                enrollmentData.put("paymentDate", enrollment.getPaymentDate());
+                enrollmentData.put("paymentMethod", enrollment.getPaymentMethod());
+                enrollmentData.put("subscriptionType", enrollment.getSubscriptionType());
+                enrollmentData.put("subscriptionEndDate", enrollment.getSubscriptionEndDate());
+                response.add(enrollmentData);
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

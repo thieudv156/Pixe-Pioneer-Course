@@ -17,5 +17,5 @@ public interface EnrollmentService {
     List<Enrollment> findEnrollmentsByUserID(Integer id);
     void deleteById(Integer id);
     List<Enrollment> get10LatestEnrollments();
-    
+    List<Enrollment> findAllByUserId(Integer id);
 }

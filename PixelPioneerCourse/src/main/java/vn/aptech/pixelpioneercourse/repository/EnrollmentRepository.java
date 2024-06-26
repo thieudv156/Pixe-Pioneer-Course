@@ -1,5 +1,6 @@
 package vn.aptech.pixelpioneercourse.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -50,6 +51,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
     List<Object[]> findDailySalesBetweenDates(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     List<Enrollment> findTop10ByOrderByEnrolledAtDesc();
+    
+    List<Enrollment> findAllByUserId(Integer id, Sort sort);
 }
 
     
