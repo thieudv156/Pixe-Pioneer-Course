@@ -2,7 +2,6 @@ package vn.aptech.pixelpioneercourse.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -55,6 +54,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @JsonIgnoreProperties("user")
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -63,11 +63,12 @@ public class User {
     private List<Discussion> discussions;
 
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"instructor", "category", "enrollments", "frontPageImage", "createdAt", "reviews", "price", "description", "isPublished","progresses","tests"})
+    @JsonIgnoreProperties({"instructor", "category", "enrollments", "frontPageImage", "createdAt", "reviews", "price", "description", "isPublished", "progresses", "tests", "courseCompletes"})
     private List<Course> courses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("user")
+    @ToString.Exclude
     private List<Test> tests;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -76,10 +77,12 @@ public class User {
     private List<Progress> progresses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @JsonIgnoreProperties({"user"})
     private List<CourseComplete> courseCompletes;
 
     public List<String> getAuthorities() {
-        if(role == null)
+        if (role == null)
             return Collections.singletonList("ROLE_USER");
         return Collections.singletonList(role.getRoleName());
     }
@@ -92,7 +95,7 @@ public class User {
     @Setter
     @Enumerated(EnumType.STRING)
     private Provider provider;
-    
+
     @Column(nullable = true, unique = false)
     private String requestInstructor;
 }

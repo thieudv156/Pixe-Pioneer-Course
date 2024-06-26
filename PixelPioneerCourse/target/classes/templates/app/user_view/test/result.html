@@ -1,19 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Result</title>
-    <!-- Include any necessary CSS -->
+    <style>
+        .result-card {
+            margin-top: 50px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h2>Test Result</h2>
-    <div th:if="${submittedTest.score >= submittedTest.testFormat.passingScore}">
-        <p>Congratulations! You have passed the test with a score of <span th:text="${submittedTest.score}"></span>.</p>
+<div class="container" layout:fragment="contents">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card result-card">
+                <div class="card-body text-center">
+                    <h2 class="card-title">Test Result</h2>
+                    <div th:if="${submittedTest.score >= submittedTest.testFormat.passingScore}">
+                        <p class="result-message text-success">Congratulations! You have passed the test with a score of <span th:text="${submittedTest.score}"></span>.</p>
+                    </div>
+                    <div th:if="${submittedTest.score < submittedTest.testFormat.passingScore}">
+                        <p class="result-message text-danger">Unfortunately, you did not pass the test. Your score is <span th:text="${submittedTest.score}"></span>.</p>
+                    </div>
+                    <a th:href="@{/}" class="btn btn-outline-accent-electric-violet">Return to Home Page</a>
+                    <a th:href="@{/app/test/start/{testFormatId}(testFormatId=${submittedTest.testFormat.id})}" class="btn btn-outline-accent">Take Another Test</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div th:if="${submittedTest.score < submittedTest.testFormat.passingScore}">
-        <p>Unfortunately, you did not pass the test. Your score is <span th:text="${submittedTest.score}"></span>.</p>
-    </div>
-    <a href="/app/tests/start/{testFormatId}" class="btn btn-primary">Take Another Test</a>
 </div>
 </body>
 </html>

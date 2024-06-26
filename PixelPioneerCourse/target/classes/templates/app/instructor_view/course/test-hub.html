@@ -9,6 +9,9 @@
     .accordion__toggle {
       cursor: pointer;
     }
+    .alert-accent {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -19,9 +22,9 @@
         <div class="mb-24pt mb-sm-0 mr-sm-24pt">
           <h2 class="mb-0">Test Hub</h2>
           <ol class="breadcrumb p-0 m-0">
-            <li class="breadcrumb-item"><a th:href="@{/index.html}">Home</a></li>
-            <li class="breadcrumb-item "><a th:href="@{/app/course/instructor/courses/{instructorId}(instructorId=${session.userId})}">My Courses</a></li>
-            <li class="breadcrumb-item "><a th:href="@{/app/course/instructor/view/{courseId}(courseId=${courseId})}">Edit Course</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/app/course/instructor/courses/{instructorId}(instructorId=${session.userId})}">My Courses</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/app/course/instructor/view/{courseId}(courseId=${courseId})}">Edit Course</a></li>
             <li class="breadcrumb-item active">Test-Hub</li>
           </ol>
         </div>
@@ -38,14 +41,14 @@
             </div>
             <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
               <div th:each="question : ${questions}" class="accordion__item">
-                <a th:href="@{/app/question/view/${question.id}}" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${question.id}" data-parent="#parent">
-                  <span class="btn" th:text="${question.question}" th:onclick="'window.location.href=\'/app/question/instructor/' + ${question.id} +'/update' '\''"></span>
+                <a th:href="@{/app/question/view/{questionId}(questionId=${question.id})}" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${question.id}" data-parent="#parent">
+                  <span class="btn" th:text="${question.question}" th:onclick="'window.location.href=\'/app/question/' + ${question.id} + '/update\''"></span>
                   <span class="flex"></span>
                 </a>
               </div>
             </div>
             <div class="form-group">
-              <a th:href="@{/app/question/{courseId}/create(courseId = ${courseId})}" class="btn btn-outline-secondary mb-24pt mb-sm-0" id="addLessonBtn">Add Question</a>
+              <a th:href="@{/app/question/{courseId}/create(courseId=${courseId})}" class="btn btn-outline-secondary mb-24pt mb-sm-0" id="addLessonBtn">Add Question</a>
             </div>
           </div>
           <div class="col-md-4">
@@ -55,14 +58,27 @@
             <label class="form-label">Test total questions</label>
             <div class="form-group mb-24pt">
               <input type="number" th:field="*{totalQuestion}" class="form-control form-control-lg" placeholder="Course title">
+              <span class="alert-accent" th:if="${#fields.hasErrors('totalQuestion')}" th:errors="*{totalQuestion}"></span>
             </div>
-            <label class="form-label">Test duration(minutes)</label>
+            <label class="form-label">Test duration (minutes and seconds)</label>
             <div class="form-group mb-24pt">
-              <input type="number" th:field="*{duration}" class="form-control form-control-lg" placeholder="Course title">
+              <div class="row">
+                <div class="col-md-6">
+                  <input type="number" min="3" th:field="*{durationMinutes}" class="form-control form-control-lg" placeholder="Minutes">
+                  <label>Minutes</label>
+                  <span class="alert-accent" th:if="${#fields.hasErrors('durationMinutes')}" th:errors="*{durationMinutes}"></span>
+                </div>
+                <div class="col-md-6">
+                  <input type="number" min="0" max="59" th:field="*{durationSeconds}" class="form-control form-control-lg" placeholder="Seconds">
+                  <label>Seconds</label>
+                  <span class="alert-accent" th:if="${#fields.hasErrors('durationSeconds')}" th:errors="*{durationSeconds}"></span>
+                </div>
+              </div>
             </div>
             <label class="form-label">Test passing score</label>
             <div class="form-group mb-24pt">
               <input type="number" th:field="*{passingScore}" class="form-control form-control-lg" placeholder="Course title">
+              <span class="alert-accent" th:if="${#fields.hasErrors('passingScore')}" th:errors="*{passingScore}"></span>
             </div>
           </div>
           <div class="col-md-2">

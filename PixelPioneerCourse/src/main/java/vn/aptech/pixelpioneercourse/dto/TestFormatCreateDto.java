@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 public class TestFormatCreateDto {
     private Integer courseId;
 
-    @NotNull(message = "Duration cannot be null")
-    @Min(value = 1, message = "Duration must be at least 1 minute")
     private Integer duration;
 
     @NotNull(message = "Total number of questions cannot be null")
@@ -21,6 +19,13 @@ public class TestFormatCreateDto {
     private Integer totalQuestion;
 
     @NotNull(message = "Passing score cannot be null")
-    @Min(value = 1, message = "Passing score must be at least 1")
+    @Min(value = 40, message = "Passing score must be at least 40")
     private Integer passingScore;
+
+    @NotNull(message = "Duration cannot be null")
+    @Min(value = 3, message = "Duration must be at least 3 minutes")
+    private Integer durationMinutes;
+
+    @Min(value = 0, message = "Seconds must be at least 0")
+    private Integer durationSeconds;
 }

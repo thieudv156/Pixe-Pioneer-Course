@@ -275,7 +275,7 @@ public class AppCourseController {
                 return "redirect:/app/course/instructor/view/" + id;  // Redirect back to the course update form
             }
             redirectAttributes.addFlashAttribute("successMessage", "Course updated successfully!");
-            return "redirect:/app/course/instructor/courses/" + userId;  // Redirect to the course detail page
+            return "redirect:/app/course/instructor/view/" + id;  // Redirect to the course detail page
         } catch (Exception e) {
             // Add error message
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

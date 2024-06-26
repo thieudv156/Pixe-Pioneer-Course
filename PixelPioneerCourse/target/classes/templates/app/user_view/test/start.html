@@ -1,47 +1,114 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
     <title>Start Test</title>
-    <!-- Include any necessary CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .card-header {
+            font-weight: bold;
+        }
+        .submit-btn {
+            display: flex;
+            justify-content: center;
+        }
+        #timer {
+            font-size: 1.5em;
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h2>Start Test</h2>
-    <form th:action="@{/app/tests/submit}" th:object="${testDto}" method="post">
-        <input type="hidden" th:field="*{testFormat.id}">
-        <div>
-            <label>Test Format:</label>
-            <span th:text="${testDto.testFormat.course}"></span>
-        </div>
-        <div>
-            <label>Duration:</label>
-            <span th:text="${testDto.duration}"></span> minutes
-        </div>
-        <!-- Display questions for the test -->
-        <div th:each="questionDto, iterStat : *{questions}">
-            <div>
-                <label th:text="${'Question ' + (iterStat.index + 1)}"></label>
-                <span th:text="${questionDto.question}"></span>
+<div class="container mt-5" layout:fragment="contents">
+    <h1 class="text-center mb-4">Start Test</h1>
+
+    <div id="timer">Time remaining: 00:00</div>
+
+    <form id="testForm" th:action="@{/app/test/submit}" method="post" th:object="${testDto}">
+        <input type="hidden" th:field="*{testFormatId}" />
+        <div class="card" th:each="question, questionStat : ${testDto.questions}">
+            <div class="card-header">
+                Question <span th:text="${questionStat.index + 1}">1</span>
             </div>
-            <div>
-                <!-- Display answer choices -->
-                <input type="radio" th:id="'answer' + ${iterStat.index + 1} + '1'" th:field="*{questions[__${iterStat.index}__].answer1}">
-                <label th:for="'answer' + ${iterStat.index + 1} + '1'" th:text="${questionDto.answer1}"></label><br>
+            <div class="card-body">
+                <div th:text="${question.question}">Question text here</div>
 
-                <input type="radio" th:id="'answer' + ${iterStat.index + 1} + '2'" th:field="*{questions[__${iterStat.index}__].answer2}">
-                <label th:for="'answer' + ${iterStat.index + 1} + '2'" th:text="${questionDto.answer2}"></label><br>
+                <!-- Hidden inputs for question details to ensure they are sent back with the form -->
+                <input type="hidden" th:field="*{questions[__${questionStat.index}__].id}" />
 
-                <input type="radio" th:id="'answer' + ${iterStat.index + 1} + '3'" th:field="*{questions[__${iterStat.index}__].answer3}">
-                <label th:for="'answer' + ${iterStat.index + 1} + '3'" th:text="${questionDto.answer3}"></label><br>
-
-                <input type="radio" th:id="'answer' + ${iterStat.index + 1} + '4'" th:field="*{questions[__${iterStat.index}__].answer4}">
-                <label th:for="'answer' + ${iterStat.index + 1} + '4'" th:text="${questionDto.answer4}"></label><br>
+                <div class="form-group">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" th:id="${'answer' + question.id + '1'}" th:field="*{questions[__${questionStat.index}__].answerChoice}" th:value="${question.answer1}">
+                        <label class="custom-control-label" th:for="${'answer' + question.id + '1'}" th:text="${question.answer1}">Answer 1</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" th:id="${'answer' + question.id + '2'}" th:field="*{questions[__${questionStat.index}__].answerChoice}" th:value="${question.answer2}">
+                        <label class="custom-control-label" th:for="${'answer' + question.id + '2'}" th:text="${question.answer2}">Answer 2</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" th:id="${'answer' + question.id + '3'}" th:field="*{questions[__${questionStat.index}__].answerChoice}" th:value="${question.answer3}">
+                        <label class="custom-control-label" th:for="${'answer' + question.id + '3'}" th:text="${question.answer3}">Answer 3</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" th:id="${'answer' + question.id + '4'}" th:field="*{questions[__${questionStat.index}__].answerChoice}" th:value="${question.answer4}">
+                        <label class="custom-control-label" th:for="${'answer' + question.id + '4'}" th:text="${question.answer4}">Answer 4</label>
+                    </div>
+                </div>
             </div>
         </div>
-        <div>
-            <button type="submit" class="btn btn-primary">Submit Test</button>
+        <div class="submit-btn">
+            <button class="btn btn-primary btn-lg" type="submit">Submit Test</button>
         </div>
     </form>
 </div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        // Timer logic
+        var duration = [[${testDto.duration}]];
+        var timer = document.getElementById('timer');
+        var form = document.getElementById('testForm');
+
+        function startTimer(duration, display) {
+            var start = Date.now(),
+                diff,
+                minutes,
+                seconds;
+
+            function timerFunction() {
+                diff = duration - (((Date.now() - start) / 1000) | 0);
+
+                minutes = (diff / 60) | 0;
+                seconds = (diff % 60) | 0;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = "Time remaining: " + minutes + ":" + seconds;
+
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    form.submit();
+                }
+            };
+
+            timerFunction();
+            var timerInterval = setInterval(timerFunction, 1000);
+        }
+
+        startTimer(duration, timer);
+    </script>
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            $('select').select2();
+        });
+    </script>
+</th:block>
 </body>
 </html>

@@ -31,7 +31,7 @@
     </div>
     <div class="page-section">
         <div class="container page__container">
-            <form th:action="@{/app/question/{id}/create(id=${courseId})}" method="post" th:object="${questionCreateDto}">
+            <form th:action="@{/app/question/{id}/update(id=${questionCreateDto.id})}" method="post" th:object="${questionCreateDto}">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="page-separator">

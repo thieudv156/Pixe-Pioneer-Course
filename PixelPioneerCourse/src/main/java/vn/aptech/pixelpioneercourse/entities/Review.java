@@ -30,7 +30,7 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "user_id")
 //    @JsonBackReference(value = "user-review")
-    @JsonIgnoreProperties({"password", "createdAt", "enrollments", "reviews", "discussions", "courses", "tests", "provider", "grantedAuthorities"})
+    @JsonIgnoreProperties({"id", "username", "password", "reviews", "discussions", "courses", "enrollments", "tests", "provider", "grantedAuthorities", "authorities", "progresses", "courseCompletes","phone","email","activeStatus","createdAt","requestInstructor"})
     private User user;
 
     @Column(nullable = false)

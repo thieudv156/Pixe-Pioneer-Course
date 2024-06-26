@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.QuestionDto;
 import vn.aptech.pixelpioneercourse.dto.TestDto;
 import vn.aptech.pixelpioneercourse.entities.Test;
+import vn.aptech.pixelpioneercourse.entities.TestFormat;
 import vn.aptech.pixelpioneercourse.repository.TestRepository;
 
 import java.util.List;
@@ -29,25 +30,37 @@ public class TestServiceImpl implements TestService {
     }
 
     public TestDto createTestDto(Integer testFormatId, Integer userId) {
-        TestDto test = new TestDto();
-        test.setTestFormat(testFormatService.findById(testFormatId));
-        test.setUser(userService.findById(userId));
-        test.setDuration(testFormatService.findById(testFormatId).getDuration());
-        List<QuestionDto> randomQuestions = questionService.mapRandomAnswer(testFormatService.findById(testFormatId).getCourse().getId(), testFormatService.findById(testFormatId).getTotalQuestion());
-        test.setQuestions(randomQuestions);
-        return test;
+        try {
+            TestDto test = new TestDto();
+            test.setTestFormatId(testFormatId);
+            test.setUser(userService.findById(userId));
+            test.setDuration(testFormatService.findById(testFormatId).getDuration());
+            List<QuestionDto> randomQuestions = questionService.mapRandomAnswer(testFormatService.findById(testFormatId).getCourse().getId(), testFormatService.findById(testFormatId).getTotalQuestion());
+            test.setQuestions(randomQuestions);
+            System.out.println(test);
+            return test;
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public Test submitTest(TestDto testDto, Integer userId) {
         List<QuestionDto> questionDtos = testDto.getQuestions();
-        Double score = questionService.checkAnswers(questionDtos, testDto.getTestFormat().getId());
+        Double score = questionService.checkAnswers(questionDtos, testDto.getTestFormatId());
+        System.out.println(score);
+        TestFormat testFormat = testFormatService.findById(testDto.getTestFormatId());
         Test test = new Test();
         test.setScore(score);
-        test.setTestFormat(testDto.getTestFormat());
+        test.setTestFormat(testFormat);
         test.setUser(userService.findById(userId));
         testRepository.save(test);
-        if (test.getScore() >= testDto.getTestFormat().getPassingScore()) {
-            courseCompleteService.create(userId, testDto.getTestFormat().getCourse().getId());
+        if (test.getScore() >= testFormat.getPassingScore()) {
+            if(!courseCompleteService.checkExisted(userId,testFormat.getCourse().getId()))
+            {
+                courseCompleteService.create(userId, testFormat.getCourse().getId());
+            }
         }
         return test;
     }

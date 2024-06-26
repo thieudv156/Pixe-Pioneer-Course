@@ -24,8 +24,9 @@ public class CourseServiceImpl implements CourseService{
     private final EnrollmentRepository enrollmentRepository;
     private final ProgressService progressService;
     private final TestFormatRepository testFormatRepository;
+    private final QuestionRepository questionRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService, UserRepository userRepository, EnrollmentRepository enrollmentRepository, ProgressService progressService1, TestFormatRepository testFormatRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModelMapper mapper, CategoryService categoryService, UserService userService, ImageService imageService, UserRepository userRepository, EnrollmentRepository enrollmentRepository, ProgressService progressService1, TestFormatRepository testFormatRepository, QuestionRepository questionRepository) {
         this.courseRepository = courseRepository;
         this.mapper = mapper;
         this.categoryService = categoryService;
@@ -35,6 +36,7 @@ public class CourseServiceImpl implements CourseService{
         this.enrollmentRepository = enrollmentRepository;
         this.progressService = progressService1;
         this.testFormatRepository = testFormatRepository;
+        this.questionRepository = questionRepository;
     }
 
     //from CourseCreateDto to Course
@@ -143,6 +145,7 @@ public class CourseServiceImpl implements CourseService{
             testFormatRepository.save(testFormat);
             Question question = new Question();
             question.setCourse(newCourse);
+            questionRepository.save(question);
             return newCourse;
         } catch (Exception e) {
             throw new RuntimeException("Cannot create new course!: "+ e.getMessage());

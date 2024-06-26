@@ -54,65 +54,58 @@
                 <div class="mb-24pt mb-sm-0 mr-sm-24pt">
                     <h2 class="mb-0">Edit Lesson</h2>
                     <ol class="breadcrumb p-0 m-0">
-                        <li class="breadcrumb-item"><a th:href="@{/index.html}">Home</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
                         <li class="breadcrumb-item active"><a th:href="@{/app/course/instructor/courses/{instructorId}(instructorId=${session.userId})}">My Courses</a></li>
                         <li class="breadcrumb-item"><a th:href="@{/app/course/instructor/view/{courseId}(courseId = ${courseId})}">Edit Course</a></li>
-                        <li class="breadcrumb-item active"><a th:href="@{#}">Edit Lesson & Sub-Lesson</a></li>
+                        <li class="breadcrumb-item active"><a th:href="@{#}">Edit Lesson</a></li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
     <div class="page-section border-bottom-2">
-        <div class="container-fluid">
-            <div class="row" style="height: 100%;">
-                <div class="col-md-3">
-
-                </div>
-                <div class="col-md-9">
-                    <form class="row" th:action="@{'/app/lesson/instructor/' + ${lessonId} + '/update'}" th:object="${lessonCreateDto}" method="post" enctype="multipart/form-data">
-                        <div class="col-md-8">
-                            <div class="form-group mb-24pt">
-                                <div class="page-separator">
-                                    <div class="page-separator__text">Lesson Title</div>
-                                </div>
-                                <input type="text" class="form-control form-control-lg" placeholder="Lesson title" th:field="*{title}" required>
-                            </div>
-                            <div class="page-separator">
-                                <div class="page-separator__text">Sub-Lesson List</div>
-                            </div>
-                            <div class="scrollable-sub-lessons">
-                                <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
-                                    <div th:each="subLesson : ${subLessons}" class="accordion__item">
-                                        <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#lesson-toc-' + ${subLesson.id}" data-parent="#parent">
-                                            <span class="btn" th:text="${subLesson.orderNumber}+'-'+${subLesson.title}" th:onclick="'window.location.href=\'/app/sub-lesson/instructor/view/' + ${subLesson.id} + '\''">Sub-Lesson Title</span>
-                                            <span class="flex"></span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="fixed-bottom-btn">
-                                    <button type="button" class="btn btn-outline-secondary mb-24pt mb-sm-0" id="addSubLessonBtn">Add Sub-Lesson</button>
-                                </div>
+        <div class="container">
+            <form class="row" th:action="@{'/app/lesson/instructor/' + ${lessonId} + '/update'}" th:object="${lessonCreateDto}" method="post" enctype="multipart/form-data">
+                <div class="col-md-8">
+                    <div class="form-group mb-24pt">
+                        <div class="page-separator">
+                            <div class="page-separator__text">Lesson Title</div>
+                        </div>
+                        <input type="text" class="form-control form-control-lg" placeholder="Lesson title" th:field="*{title}" required>
+                    </div>
+                    <div class="page-separator">
+                        <div class="page-separator__text">Sub-Lesson List</div>
+                    </div>
+                    <div class="scrollable-sub-lessons">
+                        <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
+                            <div th:each="subLesson : ${subLessons}" class="accordion__item">
+                                <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#lesson-toc-' + ${subLesson.id}" data-parent="#parent">
+                                    <span class="btn" th:text="${subLesson.orderNumber}+'-'+${subLesson.title}" th:onclick="'window.location.href=\'/app/sub-lesson/instructor/view/' + ${subLesson.id} + '\''">Sub-Lesson Title</span>
+                                    <span class="flex"></span>
+                                </a>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="page-separator">
-                                <div class="page-separator__text">Options</div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <button type="submit" class="btn btn-outline-primary-purple">Save changes</button>
-                                </div>
-                                <div class="list-group list-group-flush text-center">
-                                    <div class="list-group-item">
-                                        <a th:href="@{/app/lesson/instructor/{id}/delete(id=${lessonId})}" class="btn btn-outline-accent"><strong>Delete Lesson</strong></a>
-                                    </div>
-                                </div>
+                        <div class="fixed-bottom-btn">
+                            <button type="button" class="btn btn-outline-secondary mb-24pt mb-sm-0" id="addSubLessonBtn">Add Sub-Lesson</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-separator">
+                        <div class="page-separator__text">Options</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <button type="submit" class="btn btn-outline-primary-purple">Save changes</button>
+                        </div>
+                        <div class="list-group list-group-flush text-center">
+                            <div class="list-group-item">
+                                <a th:href="@{/app/lesson/instructor/{id}/delete(id=${lessonId})}" class="btn btn-outline-accent"><strong>Delete Lesson</strong></a>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

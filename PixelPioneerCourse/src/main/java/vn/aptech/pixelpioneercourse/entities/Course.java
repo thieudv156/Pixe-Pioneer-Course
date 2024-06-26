@@ -1,10 +1,6 @@
 package vn.aptech.pixelpioneercourse.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +26,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonIgnoreProperties({"courses","testFormat"})
+    @JsonIgnoreProperties({"courses", "testFormat"})
     private Category category;
 
     @Column(columnDefinition = "TEXT")
@@ -38,7 +34,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"id","username","password","reviews","discussions","courses","enrollments","tests","provider","grantedAuthorities","authorities","progresses"})
+    @JsonIgnoreProperties({"id", "username", "password", "reviews", "discussions", "courses", "enrollments", "tests", "provider", "grantedAuthorities", "authorities", "progresses", "courseCompletes","phone","email","activeStatus","createdAt","requestInstructor"})
     @ToString.Exclude
     private User instructor;
 
@@ -54,10 +50,11 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @JsonIgnoreProperties("course")
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonIgnoreProperties("course")
+    @JsonIgnoreProperties("course")
     @Setter
     @ToString.Exclude
     private List<Lesson> lessons;
@@ -69,9 +66,9 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("course")
+    @ToString.Exclude
     private List<CourseComplete> courseCompletes;
 
-    
     public String getImageUrl() {
         if (this.frontPageImage != null) {
             return this.frontPageImage.getImageUrl();

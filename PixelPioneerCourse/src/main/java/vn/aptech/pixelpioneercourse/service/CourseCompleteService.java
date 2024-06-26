@@ -25,4 +25,9 @@ public class CourseCompleteService {
         cc.setCourse(courseService.findById(courseId));
         return courseCompleteRepository.save(cc);
     }
+
+    public boolean checkExisted(Integer userId, Integer courseId) {
+        CourseComplete cc = courseCompleteRepository.findByUserIdAndCourseId(userId, courseId);
+        return cc != null;
+    }
 }

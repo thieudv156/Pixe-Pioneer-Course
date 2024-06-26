@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class QuestionCreateDto {
     private Integer courseId;
 
+    private Integer id;
+
     @NotBlank(message = "Question cannot be blank")
     private String question;
 

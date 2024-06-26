@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="course_complete")
+@Table(name = "course_complete")
 public class CourseComplete {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +20,12 @@ public class CourseComplete {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
+    @JsonIgnoreProperties({"lessons", "instructor", "category", "enrollments", "frontPageImage", "createdAt","reviews","price","description","isPublished","imageUrl", "title", "testFormat","courseCompletes"})
     private Course course;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"id", "username", "password", "reviews", "discussions", "courses", "enrollments", "tests", "provider", "grantedAuthorities", "authorities", "progresses", "courseCompletes","phone","email","activeStatus","createdAt","requestInstructor"})
     private User user;
 
     @Column

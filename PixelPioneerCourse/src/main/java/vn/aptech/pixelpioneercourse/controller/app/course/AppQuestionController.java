@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.aptech.pixelpioneercourse.dto.QuestionCreateDto;
 import vn.aptech.pixelpioneercourse.dto.TestFormatCreateDto;
+import vn.aptech.pixelpioneercourse.entities.Question;
 import vn.aptech.pixelpioneercourse.service.QuestionService;
 import vn.aptech.pixelpioneercourse.service.TestFormatService;
 
@@ -29,6 +30,9 @@ public class AppQuestionController {
     @GetMapping("/test-hub/{courseId}")
     public String showQuestionByCourseId(@PathVariable("courseId") Integer courseId, Model model){
         TestFormatCreateDto testFormatDto = modelMapper.map(testFormatService.findByCourseId(courseId), TestFormatCreateDto.class);
+        int totalDuration = testFormatDto.getDuration();
+        testFormatDto.setDurationMinutes(totalDuration / 60);
+        testFormatDto.setDurationSeconds(totalDuration % 60);
         model.addAttribute("testFormatDto", testFormatDto);
         model.addAttribute("questions",questionService.findByCourseId(courseId));
         model.addAttribute("courseId",courseId);
@@ -36,21 +40,22 @@ public class AppQuestionController {
     }
 
     @PostMapping("/test-hub/{courseId}/update")
-    public String updateTestFormat(@PathVariable("courseId") Integer courseId, @Valid TestFormatCreateDto testFormatDto, BindingResult result, RedirectAttributes redirectAttributes, Model model){
-        try {
-            if (result.hasErrors()) {
-                return "redirect:/app/question/test-hub/" + courseId;
-            }
-            System.out.println(testFormatDto);
-            testFormatService.update(testFormatDto, courseId);
-            redirectAttributes.addFlashAttribute("successMessage", "Update Test Format successfully");
-            return "redirect:/app/question/test-hub/" + courseId;
-        }
-        catch (Exception e){
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/app/question/test-hub/" + courseId;
+    public String updateTestFormat(@PathVariable("courseId") Integer courseId, @Valid @ModelAttribute("testFormatDto") TestFormatCreateDto testFormatDto, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("questions", questionService.findByCourseId(courseId));
+            model.addAttribute("courseId", courseId);
+            return "/app/instructor_view/course/test-hub";
         }
 
+        try {
+            testFormatDto.setDuration(testFormatDto.getDurationMinutes() * 60 + testFormatDto.getDurationSeconds());
+            testFormatService.update(testFormatDto, courseId);
+            redirectAttributes.addFlashAttribute("successMessage", "Update Test Format successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        return "redirect:/app/question/test-hub/" + courseId;
     }
 
     @GetMapping("/{courseId}/create")
@@ -70,9 +75,19 @@ public class AppQuestionController {
         return "redirect:/app/question/test-hub/" + courseId;
     }
 
-    @PostMapping("/{courseId}/update")
-    public String updateQuestion(@PathVariable("courseId") Integer courseId,@Valid @ModelAttribute QuestionCreateDto question){
-        questionService.save(question);
-        return "redirect:/app/course/instructor/view/"+courseId;
+    @GetMapping("/{questionId}/update")
+    public String updateQuestion(@PathVariable("questionId") Integer questionId, Model model){
+        Question question = questionService.findById(questionId);
+        QuestionCreateDto dto = modelMapper.map(question,QuestionCreateDto.class);
+        model.addAttribute("questionCreateDto",dto);
+        model.addAttribute("courseId",question.getCourse().getId());
+        return "app/instructor_view/course/question-update";
+    }
+
+    @PostMapping("/{questionId}/update")
+    public String updateQuestion(@PathVariable("questionId") Integer questionId,@Valid @ModelAttribute QuestionCreateDto questionCreateDto){
+        System.out.println(questionCreateDto);
+        Question updatedQuestion = questionService.update(questionCreateDto, questionId);
+        return "redirect:/app/question/test-hub/"+updatedQuestion.getCourse().getId();
     }
 }

@@ -9,7 +9,7 @@ import vn.aptech.pixelpioneercourse.entities.Test;
 import vn.aptech.pixelpioneercourse.service.TestService;
 
 @Controller
-@RequestMapping("/app/tests")
+@RequestMapping("/app/test")
 public class AppTestController {
 
     private final TestService testService;
@@ -23,12 +23,12 @@ public class AppTestController {
     public String startTest(@SessionAttribute("userId") Integer userId, @PathVariable Integer testFormatId, Model model) {
         TestDto testDto = testService.createTestDto(testFormatId, userId);
         model.addAttribute("testDto", testDto);
-        return "app/user_view/test/start"; // Thymeleaf template for starting the test
+        return "app/user_view/test/start";
     }
 
     @PostMapping("/submit")
     public String submitTest(@SessionAttribute("userId") Integer userId, @ModelAttribute("testDto") TestDto testDto, Model model) {
-        // Assuming userId is retrieved from authentication or session
+        System.out.println(testDto); // Debugging line to print the submitted TestDto
         Test submittedTest = testService.submitTest(testDto, userId);
         model.addAttribute("submittedTest", submittedTest);
         return "app/user_view/test/result";

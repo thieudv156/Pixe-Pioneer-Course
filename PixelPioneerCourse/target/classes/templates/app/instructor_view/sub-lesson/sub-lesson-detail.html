@@ -30,10 +30,10 @@
                 <div class="mb-24pt mb-sm-0 mr-sm-24pt">
                     <h2 class="mb-0">Edit Sub-Lesson</h2>
                     <ol class="breadcrumb p-0 m-0">
-                        <li class="breadcrumb-item"><a th:href="@{/index.html}">Home</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
                         <li class="breadcrumb-item active"><a th:href="@{/app/course/instructor/courses/{instructorId}(instructorId=${session.userId})}">My Courses</a></li>
                         <li class="breadcrumb-item"><a th:href="@{/app/course/instructor/view/{courseId}(courseId = ${lesson.course.id})}">Edit Course</a></li>
-                        <li class="breadcrumb-item"><a th:href="@{/app/lesson/instructor/view/{lessonId}(lessonId = ${lessonId})}">Edit Lesson</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/app/lesson/instructor/view/{lessonId}(lessonId = ${lesson.id})}">Edit Lesson</a></li>
                         <li class="breadcrumb-item active"><a th:href="@{#}">Edit Sub-Lesson</a></li>
                     </ol>
                 </div>

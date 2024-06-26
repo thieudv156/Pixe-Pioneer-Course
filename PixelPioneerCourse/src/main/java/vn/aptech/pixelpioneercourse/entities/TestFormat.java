@@ -7,9 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,10 +24,10 @@ public class TestFormat {
     private Course course;
 
     @Column
-    private Integer duration = 10;
+    private Integer duration = 300;
 
     @Column
-    private Integer totalQuestion = 5;
+    private Integer totalQuestion = 1;
 
     @Column
     private Integer passingScore = 60;

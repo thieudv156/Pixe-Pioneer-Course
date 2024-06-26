@@ -61,6 +61,7 @@ public class QuestionServiceImpl implements QuestionService {
         if (question == null) {
             throw new IllegalArgumentException("Question not found: " + id);
         }
+        question.setQuestion(dto.getQuestion());
         question.setCorrectAnswer(dto.getCorrectAnswer());
         question.setWrongAnswer1(dto.getWrongAnswer1());
         question.setWrongAnswer2(dto.getWrongAnswer2());
@@ -119,6 +120,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     public boolean checkAnswer(QuestionDto questionDto) {
         Question question = findById(questionDto.getId());
+        if(questionDto.getAnswerChoice()==null)
+        {
+            return false;
+        }
         return questionDto.getAnswerChoice().equals(question.getCorrectAnswer());
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TestDto {
-    private TestFormat testFormat;
+    private Integer testFormatId;
     private User user;
     private Integer duration;
     private List<QuestionDto> questions;
