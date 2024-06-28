@@ -62,4 +62,12 @@ public class Enrollment {
         return daysBetween > 0;
     }
 
+    @Override
+    public String toString() {
+        return "Enrollment{id=" + id + ", enrolledAt=" + enrolledAt + ", paymentDate=" + paymentDate +
+                ", paymentMethod=" + paymentMethod + ", paymentStatus=" + paymentStatus +
+                ", subscriptionStatus=" + subscriptionStatus + ", subscriptionType=" + subscriptionType +
+                ", subscriptionEndDate=" + subscriptionEndDate + "}";
+    }
+
 }
