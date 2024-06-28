@@ -3,10 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
+	<style>
+		textarea {
+			resize: none;
+		}
+	</style>
 </head>
 <body>
     <div class="mdk-header-layout__content page-content" layout:fragment="contents">
+    	<div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
+			<span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+		</div>
+		<div th:if="${SuccessCondition}" class="alert alert-success" role="alert">
+			<span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
+		</div>
         <div class="mdk-box bg-primary js-mdk-box mb-0"
              data-effects="blend-background">
             <div class="mdk-box__content">
@@ -222,7 +232,7 @@
 				            </div>
 				        </div>
 				    </div>
-				    <div class="col-md-9" th:if="${session.user != null}">
+				    <div class="col-11" th:if="${session.user != null}">
 					    <form id="reviewForm" th:action="@{/app/reviews/uploadReview}" method="post">
 					        <!-- Hidden fields for userId and courseId -->
 					        <input type="hidden" name="userId" th:value="${session.userId}" />
@@ -230,12 +240,12 @@
 					
 					        <div class="row align-items-center mb-8pt">
 					            <!-- Textarea for review content -->
-					            <div class="col-md-7 col-sm-6">
+					            <div class="col-9">
 					                <textarea class="form-control" name="content" rows="3" placeholder="Enter your review" required></textarea>
 					            </div>
 					
 					            <!-- Star rating input -->
-								<div class="col-md-2 col-sm-6">
+								<div class="col-2">
 								    <div class="rating rating-24" id="new-star-rating">
 								        <span class="rating__item" onclick="setRating(1)"><span class="material-icons">star_border</span></span>
 								        <span class="rating__item" onclick="setRating(2)"><span class="material-icons">star_border</span></span>
@@ -282,7 +292,7 @@
 								    document.querySelector('textarea[name="content"]').addEventListener('input', checkFormValidity);
 								</script>
 					            <!-- Submit button -->
-					            <div class="col-md-3 col-sm-12 d-flex align-items-center">
+					            <div class="col-1 d-flex align-items-center">
 					                <button type="submit" class="btn btn-primary" id="submitButton" disabled>
 					                    Submit Review
 					                </button>
@@ -294,19 +304,19 @@
 					    <div th:each="review : ${reviews}" class="review-section">
 					        <div class="row align-items-center mb-16pt review-row">
 					            <!-- Reviewer Avatar and Info -->
-					            <div class="col-md-3 mb-16pt mb-md-0 review-avatar">
+					            <div class="col-1 mb-16pt mb-md-0 review-avatar">
 					                <a th:href="@{/app/users/profile/}+${review.user.id}" class="avatar avatar-md mr-12pt">
 					                    <span class="avatar-title" th:text="${review.user.username}">U</span>
 					                </a>
 					                <div class="flex">
 					                    <p class="small text-muted m-0" th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">0 days ago</p>
-					                    <a th:href="@{/app/users/profile/}+${review.user.id}" class="card-title" th:text="${review.user.fullName}">User</a>
 					                </div>
 					            </div>
 					            <!-- Review Content -->
-					            <div class="col-md-9">
+					            <div class="col-11">
+					            	<a th:href="@{/app/users/profile/}+${review.user.id}" class="card-title" th:text="${review.user.fullName}">User</a>
 					                <!-- Reviewer's Star Rating -->
-					                <div class="rating mb-8pt">
+					                <div class="rating mb-4pt">
 					                    <span th:each="i : ${#numbers.sequence(1, review.rating)}">
 					                        <span class="rating__item"><span class="material-icons">star</span></span>
 					                    </span>

@@ -18,4 +18,12 @@ public class SensitiveWordFilter {
         }
         return content;
     }
+    
+    public static boolean sensitiveWordsChecker(String content) {
+    	for (Map.Entry<String, String> entry : SENSITIVE_WORDS_MAP.entrySet()) {
+    		if (entry.getKey().contains(content)) return false;
+    		if (content.indexOf(entry.getKey()) != -1) return false;
+    	}
+    	return true;
+    }
 }

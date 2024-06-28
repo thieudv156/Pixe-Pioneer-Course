@@ -22,95 +22,186 @@
         .editor-container {
             position: relative;
         }
+        textarea {
+            resize: none;
+        }
     </style>
     <!-- Include CKEditor -->
     <script src="https://cdn.ckeditor.com/ckeditor5/35.0.1/decoupled-document/ckeditor.js"></script>
 </head>
 <body>
-<div layout:fragment="contents">
-    <div class="page-section border-bottom-2">
-        <div class="container-fluid page__container">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="mb-24pt mb-sm-0">
-                        <h2 th:text="${course.title}" class="mb-10">Course name</h2>
-                        <div class="page-separator">
-                            <div class="page-separator__text">Course Progress</div>
+    <div layout:fragment="contents">
+        <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
+            <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+        </div>
+        <div th:if="${SuccessCondition}" class="alert alert-success" role="alert">
+            <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
+        </div>
+        <div class="page-section border-bottom-2">
+            <div class="container-fluid page__container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-24pt mb-sm-0">
+                            <h2 th:text="${course.title}" class="mb-10">Course name</h2>
+                            <div class="page-separator">
+                                <div class="page-separator__text">Course Progress</div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" th:style="'width: ' + ${currentProgress} + '%'" th:aria-valuenow="${currentProgress}" aria-valuemin="0" aria-valuemax="100">
+                                            <span th:text="${currentProgress} + '%'">0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" th:style="'width: ' + ${currentProgress} + '%'" th:aria-valuenow="${currentProgress}" aria-valuemin="0" aria-valuemax="100">
-                                        <span th:text="${currentProgress} + '%'">0%</span>
+                        <div class="page-separator">
+                            <div class="page-separator__text">Table of contents</div>
+                        </div>
+                        <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
+                            <div th:each="lesson : ${lessons}" class="accordion__item">
+                                <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${lesson.id}" data-parent="#parent">
+                                    <span class="btn" th:text="${lesson.orderNumber} + ' - ' + ${lesson.title}"></span>
+                                    <span class="flex"></span>
+                                    <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
+                                </a>
+                                <div class="accordion__menu collapse" th:id="'course-toc-' + ${lesson.id}">
+                                    <div th:if="${#lists.isEmpty(lesson.subLessons)}" class="accordion__menu-link">
+                                        <i class="material-icons text-70 icon-16pt icon--left">info</i>
+                                        <span class="flex">There is no sub-lesson</span>
+                                    </div>
+                                    <div th:each="subLesson : ${lesson.subLessons}" class="accordion__menu-link">
+                                        <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
+                                        <a class="flex" th:href="@{/app/course/view/{id}(id=${course.id}, subLessonId=${subLesson.id}, lessonOrder=${lesson.orderNumber})}" th:text="${subLesson.orderNumber} + ' - ' + ${subLesson.title}">Sub-Lesson Detail</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="page-separator">
-                        <div class="page-separator__text">Table of contents</div>
-                    </div>
-                    <div class="accordion js-accordion accordion--boxed mb-24pt" id="parent">
-                        <div th:each="lesson : ${lessons}" class="accordion__item">
-                            <a href="#" class="accordion__toggle collapsed" data-toggle="collapse" th:data-target="'#course-toc-' + ${lesson.id}" data-parent="#parent">
-                                <span class="btn" th:text="${lesson.orderNumber} + ' - ' + ${lesson.title}"></span>
-                                <span class="flex"></span>
-                                <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
-                            </a>
-                            <div class="accordion__menu collapse" th:id="'course-toc-' + ${lesson.id}">
-                                <div th:if="${#lists.isEmpty(lesson.subLessons)}" class="accordion__menu-link">
-                                    <i class="material-icons text-70 icon-16pt icon--left">info</i>
-                                    <span class="flex">There is no sub-lesson</span>
+                    <div class="col-md-9 row">
+                        <div class="col-md-9">
+                            <div class="mb-24pt mb-sm-0">
+                                <h1 th:text="'Lesson '+${currentLesson.orderNumber}+': '+${currentLesson.title}" class="mb-0">Lesson name</h1>
+                            </div>
+                            <div class="content-container card">
+                                <div class="">
+                                    <h2 th:text="'Sub-Lesson '+${currentSubLesson.orderNumber}+': '+${currentSubLesson.title}"></h2>
                                 </div>
-                                <div th:each="subLesson : ${lesson.subLessons}" class="accordion__menu-link">
-                                    <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
-                                    <a class="flex" th:href="@{/app/course/view/{id}(id=${course.id}, subLessonId=${subLesson.id}, lessonOrder=${lesson.orderNumber})}" th:text="${subLesson.orderNumber} + ' - ' + ${subLesson.title}">Sub-Lesson Detail</a>
+                                <div class="page-separator">
+                                    <div class="page-separator__text"></div>
+                                </div>
+                                <div class="scrollable-content editor-container">
+                                    <div id="editor" class="editor" th:utext="${currentSubLesson.content}"></div>
+                                    <textarea name="content" th:field="*{currentSubLesson.content}" hidden></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-24pt mb-sm-0">
+                                <h1 class="mb-0">Options</h1>
+                            </div>
+                            <div class="card">
+                                <div class="list-group list-group-flush text-center">
+                                    <div class="list-group-item">
+                                        <a th:href="@{/app/course/sub-lesson/{id}/finish-sub-lesson(id=${currentSubLesson.id})}" class="btn btn-outline-primary-purple"><strong>Mark as finish</strong></a>
+                                    </div>
+                                </div>
+                                <div class="list-group list-group-flush text-center">
+                                    <div class="list-group-item">
+                                        <a th:href="@{/app/test/start/{id}(id=${course.testFormat.id})}" class="btn btn-outline-accent"><strong>Final Test</strong></a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-9 row">
-                   <div class="col-md-9">
-                       <div class="mb-24pt mb-sm-0">
-                           <h1 th:text="'Lesson '+${currentLesson.orderNumber}+': '+${currentLesson.title}" class="mb-0">Lesson name</h1>
-                       </div>
-                       <div class="content-container card">
-                           <div class="">
-                               <h2 th:text="'Sub-Lesson '+${currentSubLesson.orderNumber}+': '+${currentSubLesson.title}"></h2>
-                           </div>
-                           <div class="page-separator">
-                               <div class="page-separator__text"></div>
-                           </div>
-                           <div class="scrollable-content editor-container">
-                               <div id="editor" class="editor" th:utext="${currentSubLesson.content}"></div>
-                               <textarea name="content" th:field="*{currentSubLesson.content}" hidden></textarea>
-                           </div>
-                       </div>
-                   </div>
-                    <div class="col-md-3">
-                        <div class="mb-24pt mb-sm-0">
-                            <h1 class="mb-0">Options</h1>
-                        </div>
-                        <div class="card">
-                            <div class="list-group list-group-flush text-center">
-                                <div class="list-group-item">
-                                    <a th:href="@{/app/course/sub-lesson/{id}/finish-sub-lesson(id=${currentSubLesson.id})}" class="btn btn-outline-primary-purple"><strong>Mark as finish</strong></a>
-                                </div>
-                            </div>
-                            <div class="list-group list-group-flush text-center">
-                                <div class="list-group-item">
-                                    <a th:href="@{/app/test/start/{id}(id=${course.testFormat.id})}" class="btn btn-outline-accent"><strong>Final Test</strong></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
+        <div class="container page__container">
+            <div>
+                <div class="page-separator__text">Student Discussion</div>
+            </div>
+            <div class="row mb-32pt mt-1">
+                <div class="col-12" th:if="${session.user != null}">
+                    <!-- Comment Form -->
+                    <form id="reviewForm" method="post" th:action="@{/app/course/view/comment}">
+                        <input type="hidden" name="sublessonId" th:value="${currentSubLesson.id}" />
+                        <input type="hidden" name="userId" th:value="${session.userId}" />
+                        <input type="hidden" name="courseId" th:value="${course.id}" />
+                        <input type="hidden" name="discussionId" id="discussionId" />
+                        <div class="row align-items-center mb-8pt">
+                            <div class="col-md-10 col-sm-12">
+                                <div id="replyingTo" class="badge badge-accent" style="display: none;">
+                                    <span id="replyingToUser"></span>
+                                    <button type="button" onclick="cancelReply()">x</button>
+                                </div>
+                                <textarea class="form-control" name="content" rows="3" placeholder="Let us know your question!" required></textarea>
+                            </div>
+                            <div class="col-md-2 col-sm-12 d-flex align-items-center">
+                                <button type="submit" class="btn btn-primary" id="submitButton">
+                                    Comment
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Discussion List -->
+                    <!-- Thymeleaf Fragment for Nested Discussions -->
+			        <th:block th:fragment="discussionTemplate(discussions, discussionMap)">
+			            <div th:each="childDiscussion : ${discussions}" class="discussion-section">
+			                <div class="row align-items-center mb-16pt review-row">
+			                    <div class="col-1 mb-16pt mb-md-0 review-avatar">
+			                        <a th:href="@{/app/users/profile/}+${childDiscussion.user.id}" class="avatar avatar-md mr-12pt">
+			                            <span class="avatar-title" th:text="${childDiscussion.user.username.substring(0,7)}">U</span>
+			                        </a>
+			                        <div class="flex">
+			                            <p class="small text-muted m-0" th:text="${#temporals.format(childDiscussion.createdAt, 'dd/MM/yyyy')}">0 days ago</p>
+			                        </div>
+			                    </div>
+			                    <div class="col-11">
+			                        <a th:href="@{/app/users/profile/}+${childDiscussion.user.id}" class="card-title" th:text="${childDiscussion.user.fullName}">User</a>
+			                        <p class="text-70 mb-0 discussion-content" th:utext="${childDiscussion.content}"></p>
+			                        <div th:if="${childDiscussion.user.id == session.userId}" class="review-actions" style="display: flex;">
+			                            <a th:href="@{/app/course/view/deleteComment(discussionId=${childDiscussion.id}, courseId=${childDiscussion.subLesson.lesson.course.id}, sublessonId=${childDiscussion.subLesson.id})}"
+			                               class="btn btn-outline-danger"
+			                               style="width: 5vw; height: 5vh;"
+			                               onclick="return confirm('Are you sure you want to delete this comment?')">
+			                                Delete
+			                            </a>
+			                        </div>
+			                        <div th:if="${childDiscussion.user.id != session.userId}" class="review-actions">
+			                            <button type="button" class="btn btn-outline-primary" style="width: 5vw; height: 5vh;" th:attr="onclick=|replyToUser(${childDiscussion.id}, '${childDiscussion.user.fullName}')|">
+			                                Reply
+			                            </button>
+			                        </div>
+			                    </div>
+			                </div>
+			                <div th:if="${discussionMap.containsKey(childDiscussion.id)}" class="ml-4">
+			                    <div th:replace="this :: discussionTemplate(${discussionMap.get(childDiscussion.id)}, ${discussionMap})"></div>
+			                </div>
+			            </div>
+			        </th:block>
+                </div>
+            </div>
+        </div>
+
+        <!-- JS for Reply Handling -->
+        <script>
+            function replyToUser(discussionId, userFullName) {
+                document.getElementById('replyingTo').style.display = 'inline-block';
+                document.getElementById('replyingToUser').innerText = `Replying to ${userFullName}`;
+                document.getElementById('discussionId').value = discussionId;
+                document.getElementById('reviewForm').action = '/app/course/view/replyComment';
+            }
+
+            function cancelReply() {
+                document.getElementById('replyingTo').style.display = 'none';
+                document.getElementById('replyingToUser').innerText = '';
+                document.getElementById('discussionId').value = '';
+                document.getElementById('reviewForm').action = '/app/course/view/comment';
+            }
+        </script>
     </div>
-</div>
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {

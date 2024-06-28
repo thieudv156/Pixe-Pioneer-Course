@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import vn.aptech.pixelpioneercourse.dto.ReviewCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Review;
 import vn.aptech.pixelpioneercourse.service.ReviewService;
+import vn.aptech.pixelpioneercourse.until.SensitiveWordFilter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,8 +36,13 @@ public class AppReviewController {
     // Similar changes for other methods...
 
     @PostMapping("/uploadReview")
-    public String uploadReview(@RequestParam("userId") Integer uid, @RequestParam("courseId") Integer courseId, @RequestParam("content") String content, @RequestParam("rating") Integer rating, Model model) {
+    public String uploadReview(@RequestParam("userId") Integer uid, @RequestParam("courseId") Integer courseId, @RequestParam("content") String content, @RequestParam("rating") Integer rating, Model model, RedirectAttributes ra) {
         try {
+        	if (!SensitiveWordFilter.sensitiveWordsChecker(content)) {
+        		ra.addFlashAttribute("ErrorCondition", true);
+        		ra.addFlashAttribute("ErrorError", "Bad word detected.");
+        		return "redirect:/app/course/preview/" + courseId.toString();
+        	}
             // Assuming ReviewCreateDto has setters for content and rating
             ReviewCreateDto dto = new ReviewCreateDto();
             dto.setContent(content);
@@ -53,8 +61,13 @@ public class AppReviewController {
     }
 
     @PostMapping("/editReview")
-    public String editReview(@RequestParam("reviewId") Integer reviewId, @RequestParam("courseId") Integer courseId, @RequestParam("userId") Integer userId, @RequestParam("edited_content") String content, @RequestParam("edited_rating") Integer rating, Model model) {
+    public String editReview(@RequestParam("reviewId") Integer reviewId, @RequestParam("courseId") Integer courseId, @RequestParam("userId") Integer userId, @RequestParam("edited_content") String content, @RequestParam("edited_rating") Integer rating, Model model, RedirectAttributes ra) {
     	try {
+    		if (!SensitiveWordFilter.sensitiveWordsChecker(content)) {
+        		ra.addFlashAttribute("ErrorCondition", true);
+        		ra.addFlashAttribute("ErrorError", "Bad word detected.");
+        		return "redirect:/app/course/preview/" + courseId.toString();
+        	}
     		ReviewCreateDto rvc = mapper.map(reviewService.findById(reviewId), ReviewCreateDto.class);
     		Review updated = reviewService.update(reviewId, rvc);
     		return "redirect:/app/course/preview/"+ updated.getCourse().getId().toString();
