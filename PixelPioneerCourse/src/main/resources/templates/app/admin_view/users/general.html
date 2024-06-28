@@ -6,240 +6,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <style>
-    	.table-responsive {
-		    position: relative;
-		}
-		
-		.request-dropdown {
-		    display: none;
-		    width: 50vw;
-		    max-height: 70vh;
-		    overflow-y: auto;
-		    background-color: white;
-		    border: 1px solid #ccc;
-		    z-index: 1000;
-		    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-		}
-		
-		.dropdown-menu.show {
-		    display: block;
-		}
+      .table-responsive {
+        position: relative;
+      }
+
+      .request-dropdown {
+        display: none;
+        width: 50vw;
+        max-height: 70vh;
+        overflow-y: auto;
+        background-color: white;
+        border: 1px solid #ccc;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .dropdown-menu.show {
+        display: block;
+      }
     </style>
   </head>
   <body>
     <div class="content-wrapper" layout:fragment="contents">
       <div class="container">
-      	<div class="">
-        <div class="container page__container page-section">
-          <div class="page-separator">
-            <div class="page-separator__text">Users</div>
-          </div>
-          <div class="d-flex align-items-center navbar-height">
-            <form id="search-form" class="search-form search-form--black mx-16pt pr-0 pl-16pt" style="color: white;">
-              <input type="text" id="search-input" style="color: white;" name="query" class="form-control pl-0" placeholder="Search users">
-            </form>
-          </div>
-          <div class="">
-       		<div>
-			    <form style="float:right;" id="filterForm" th:action="@{/app/admin/users/filterRequestUsers}" method="get" th:if="${session.showFilteredRequestUsers == false}">
-			        <input type="hidden" th:value="${session.user.id}" name="userId"/>
-			        <button type="submit" class="btn btn-primary">
-			            <span>Display only users who has sent requests to be instructors</span>
-			        </button>
-			    </form>
-			    <form style="float:right;" method="get" th:action="@{/app/admin/users/filterRequestUsers}" id="filterForm" th:if="${session.showFilteredRequestUsers == true}">
-			    	<input type="hidden" th:value="${session.user.id}" name="userId"/>
-			    	<button type="submit" class="btn btn-secondary">
-			            <span>Cancel filter</span>
-			        </button>
-			    </form>
-			</div>
-            <div class="table-responsive" style="width: 90vw;" data-toggle="lists" data-lists-sort-by="js-lists-values-employee-name" data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
-              <!-- Add conditionals for error and success messages -->
-              <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
-                <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+        <div class="">
+          <div class="container page__container page-section">
+            <div class="page-separator">
+              <div class="page-separator__text">Users</div>
+            </div>
+            <div class="d-flex align-items-center navbar-height">
+              <form id="search-form" class="search-form search-form--black mx-16pt pr-0 pl-16pt" style="color: white;">
+                <input type="text" id="search-input" style="color: white;" name="query" class="form-control pl-0" placeholder="Search users">
+              </form>
+            </div>
+            <div class="">
+              <div>
+                <form style="float:right;" id="filterForm" th:action="@{/app/admin/users/filterRequestUsers}" method="get" th:if="${session.showFilteredRequestUsers == false}">
+                  <input type="hidden" th:value="${session.user.id}" name="userId"/>
+                  <button type="submit" class="btn btn-primary">
+                    <span>Display only users who has sent requests to be instructors</span>
+                  </button>
+                </form>
+                <form style="float:right;" method="get" th:action="@{/app/admin/users/filterRequestUsers}" id="filterForm" th:if="${session.showFilteredRequestUsers == true}">
+                  <input type="hidden" th:value="${session.user.id}" name="userId"/>
+                  <button type="submit" class="btn btn-secondary">
+                    <span>Cancel filter</span>
+                  </button>
+                </form>
               </div>
-              <div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
-                <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
-              </div>
-              <table class="table mb-0 thead-border-top-0 table-nowrap">
-                <thead>
-                  <tr>
-                    <th>
-                      <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">ID</a>
-                    </th>
-                    <th>
-                      <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Full Name</a>
-                    </th>
-                    <th>
-                      <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Username</a>
-                    </th>
-                    <th>
-                      <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Email</a>
-                    </th>
-                    <th>
-                      <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Phone</a>
-                    </th>
-                    <th>Status</th>
-                    <th>
-                      <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Created At</a>
-                    </th>
-                    <th>
-                      <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Provider</a>
-                    </th>
-                    <th>
-                      <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Action</a>
-                    </th>
-                    <th>
-					    <a href="javascript:void(0)" class="sort" data-sort="js-lists-values-employee-name">Requests</a>
-					</th>
-                  </tr>
-                </thead>
-                <tbody class="list" id="usersList">
-                  <tr th:each="user : ${users}" class="selected" style="height: 0.4vh;">
-                    <td>
-                      <strong class="js-lists-values-employee-name" th:text="${user.id}">ID</strong>
-                    </td>
-                    <td>
-                      <p class="js-lists-values-employee-name" th:text="${user.fullName}">Fullname</p>
-                    </td>
-                    <td>
-                      <p class="js-lists-values-employee-name" th:text="${user.username}">Username</p>
-                    </td>
-                    <td>
-                      <p class="js-lists-values-employee-name" th:text="${user.email}">Email</p>
-                    </td>
-                    <td>
-                      <p class="js-lists-values-employee-name" th:text="${user.phone}">Phone</p>
-                    </td>
-                    <td>
-                      <p class="js-lists-values-employee-name">
+              <div class="table-responsive" style="width: 90vw;" data-toggle="lists" data-lists-sort-by="js-lists-values-employee-name" data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
+                <!-- Add conditionals for error and success messages -->
+                <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
+                  <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+                </div>
+                <div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
+                  <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
+                </div>
+                <table class="table mb-0 thead-border-top-0 table-nowrap">
+                  <thead>
+                    <tr>
+                      <th><a style="font-size: 16px;">ID</a></th>
+                      <th><a style="font-size: 16px;">Full Name</a></th>
+                      <th><a style="font-size: 16px;">Username</a></th>
+                      <th><a style="font-size: 16px;">Email</a></th>
+                      <th><a style="font-size: 16px;">Phone</a></th>
+                      <th style="font-size: 16px;">Status</th>
+                      <th><a style="font-size: 16px;">Created At</a></th>
+                      <th><a style="font-size: 16px;">Provider</a></th>
+                      <th><a style="font-size: 16px;">Action</a></th>
+                      <th><a style="font-size: 16px;">Requests</a></th>
+                    </tr>
+                  </thead>
+                  <tbody class="list" id="usersList">
+                    <tr th:each="user : ${users}" class="selected" style="height: 0.4vh; font-size: 15px;">
+                      <td><strong class="js-lists-values-employee-name" th:text="${user.id}">ID</strong></td>
+                      <td><p class="js-lists-values-employee-name" th:text="${user.fullName}">Fullname</p></td>
+                      <td><p class="js-lists-values-employee-name" th:text="${user.username}">Username</p></td>
+                      <td><p class="js-lists-values-employee-name" th:text="${user.email}">Email</p></td>
+                      <td><p class="js-lists-values-employee-name" th:text="${user.phone}">Phone</p></td>
+                      <td><p class="js-lists-values-employee-name">
                         <span th:if="${user.activeStatus}" class="badge bg-success" style="height: 3vh; color: white;">Active</span>
                         <span th:if="${!user.activeStatus}" class="badge bg-danger" style="height: 3vh; color: white;">Inactive</span>
-                      </p>
-                    </td>
-                    <td>
-                      <p class="js-lists-values-employee-name" th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy')}">Create at</p>
-                    </td>
-                    <td>
-                      <p class="js-lists-values-employee-name" th:text="${user.provider}">Provider</p>
-                    </td>
-                    <td>
-                      <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
-                        <div th:if="${user.id != session.userId and user.role.roleName == 'ROLE_ADMIN'}">
-                          <div th:if="${user.activeStatus and user.id != userId}">
-                            <form id="deactivate" th:action="@{/app/admin/users/deactivate}" method="post" style="margin: 0; margin-bottom: 1px">
-                              <input type="hidden" name="uid" th:value="${user.id}" />
-                              <button type="submit" class="btn btn-secondary btn-rounded">Deactivate</button>
-                            </form>
+                      </p></td>
+                      <td><p class="js-lists-values-employee-name" th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy')}">Create at</p></td>
+                      <td><p class="js-lists-values-employee-name" th:text="${user.provider}">Provider</p></td>
+                      <td>
+                        <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+                          <div th:if="${user.id != session.userId and user.role.roleName == 'ROLE_ADMIN'}">
+                            <div th:if="${user.activeStatus and user.id != userId}">
+                              <form id="deactivate" th:action="@{/app/admin/users/deactivate}" method="post" style="margin: 0; margin-bottom: 1px">
+                                <input type="hidden" name="uid" th:value="${user.id}" />
+                                <button type="submit" class="btn btn-secondary btn-rounded">Deactivate</button>
+                              </form>
+                            </div>
+                            <div th:if="${!user.activeStatus and user.id != userId}">
+                              <form id="activate" th:action="@{/app/admin/users/activate}" method="post" style="margin: 0;">
+                                <input type="hidden" name="uid" th:value="${user.id}" />
+                                <button type="submit" class="btn btn-accent btn-rounded">Activate</button>
+                              </form>
+                            </div>
                           </div>
-                          <div th:if="${!user.activeStatus and user.id != userId}">
-                            <form id="activate" th:action="@{/app/admin/users/activate}" method="post" style="margin: 0;">
-                              <input type="hidden" name="uid" th:value="${user.id}" />
-                              <button type="submit" class="btn btn-accent btn-rounded">Activate</button>
+                          <div th:if="${user.role.roleName != 'ROLE_ADMIN'}">
+                            <div th:if="${user.activeStatus and user.id != userId}">
+                              <form id="deactivate" th:action="@{/app/admin/users/deactivate}" method="post" style="margin: 0;">
+                                <input type="hidden" name="uid" th:value="${user.id}" />
+                                <button type="submit" class="btn btn-secondary btn-rounded">Deactivate</button>
+                              </form>
+                            </div>
+                            <div th:if="${!user.activeStatus and user.id != userId}">
+                              <form id="activate" th:action="@{/app/admin/users/activate}" method="post" style="margin: 0;">
+                                <input type="hidden" name="uid" th:value="${user.id}" />
+                                <button type="submit" class="btn btn-accent btn-rounded">Activate</button>
+                              </form>
+                            </div>
+                            <form id="delete" th:action="@{/app/admin/users/delete}" method="post" style="margin: 0;">
+                              <input type="hidden" th:value="${user.id}" name="uid"/>
+                              <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
                             </form>
                           </div>
                         </div>
-                        <div th:if="${user.role.roleName != 'ROLE_ADMIN'}">
-                          <div th:if="${user.activeStatus and user.id != userId}">
-                            <form id="deactivate" th:action="@{/app/admin/users/deactivate}" method="post" style="margin: 0;">
-                              <input type="hidden" name="uid" th:value="${user.id}" />
-                              <button type="submit" class="btn btn-secondary btn-rounded">Deactivate</button>
-                            </form>
+                      </td>
+                      <td>
+                        <div th:if="${user.requestInstructor != null}" class="dropdown-container" style="position: relative;">
+                          <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="requestsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              View Request
+                            </button>
+                            <div class="dropdown-menu p-3 request-dropdown" aria-labelledby="requestsDropdown" style="width: 50vw; max-height: 70vh; overflow-y: auto;">
+                              <div class="row">
+                                <div class="col-6">
+                                  <p th:utext="${user.requestInstructor}" style="white-space: pre-wrap;"></p>
+                                  <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                    <form th:if="${user.role.roleName != 'ROLE_ADMIN'}" id="update" th:action="@{/app/admin/users/update}" method="post" style="margin: 0;">
+                                      <input type="hidden" th:value="${user.id}" name="id"/>
+                                      <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
+                                    </form>
+                                    <form method="post" th:action="@{/app/admin/users/removeRequest}">
+                                      <input type="hidden" th:value="${user.id}" name="id"/>
+                                      <button class="btn btn-secondary btn-rounded" type="submit">Remove request</button>
+                                    </form>
+                                  </div>
+                                </div>
+                                <div class="col-6">
+                                  <form action="/app/admin/users/notifyRequest" method="post">
+                                    <button type="submit" class="btn btn-accent mb-2">Send</button>
+                                    <input type="hidden" name="userId" th:value="${user.id}" />
+                                    <textarea name="content" id="notifierContent" class="form-control" rows="5" placeholder="Write a response..."></textarea>
+                                  </form>
+                                </div>
+                                <script>
+                                  CKEDITOR.replace('notifierContent', {
+                                    toolbar: [
+                                      { name: 'basicstyles', items: ['Bold', 'Italic'] },
+                                      { name: 'paragraph', items: ['Indent', 'Outdent'] }
+                                    ],
+                                    removePlugins: 'resize'
+                                  });
+                                </script>
+                              </div>
+                            </div>
                           </div>
-                          <div th:if="${!user.activeStatus and user.id != userId}">
-                            <form id="activate" th:action="@{/app/admin/users/activate}" method="post" style="margin: 0;">
-                              <input type="hidden" name="uid" th:value="${user.id}" />
-                              <button type="submit" class="btn btn-accent btn-rounded">Activate</button>
-                            </form>
-                          </div>
-                          <form id="delete" th:action="@{/app/admin/users/delete}" method="post" style="margin: 0;">
-                            <input type="hidden" th:value="${user.id}" name="uid"/>
-                            <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
-                          </form>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-					    <div th:if="${user.requestInstructor != null}" class="dropdown-container" style="position: relative;">
-					        <div class="dropdown">
-					            <button class="btn btn-primary dropdown-toggle" type="button" id="requestsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					                View Request
-					            </button>
-					            <div class="dropdown-menu p-3 request-dropdown" aria-labelledby="requestsDropdown" style="width: 50vw; max-height: 70vh; overflow-y: auto;">
-					                <div class="row">
-					                    <div class="col-6">
-					                        <p th:utext="${user.requestInstructor}" style="white-space: pre-wrap;"></p>
-					                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-					                            <form th:if="${user.role.roleName != 'ROLE_ADMIN'}" id="update" th:action="@{/app/admin/users/update}" method="post" style="margin: 0;">
-					                                <input type="hidden" th:value="${user.id}" name="id"/>
-					                                <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
-					                            </form>
-					                            <form method="post" th:action="@{/app/admin/users/removeRequest}">
-					                                <input type="hidden" th:value="${user.id}" name="id"/>
-					                                <button class="btn btn-secondary btn-rounded" type="submit">Remove request</button>
-					                            </form>
-					                        </div>
-					                    </div>
-					                    <div class="col-6">
-					                        <form action="/app/admin/users/notifyRequest" method="post">
-					                        	<button type="submit" class="btn btn-accent mb-2">Send</button>
-					                            <input type="hidden" name="userId" th:value="${user.id}" />
-					                            <textarea name="content" id="notifierContent" class="form-control" rows="5" placeholder="Write a response..."></textarea>
-					                            
-					                        </form>
-					                    </div>
-					                    <script>
-					                        CKEDITOR.replace('notifierContent', {
-					                            toolbar: [
-					                                { name: 'basicstyles', items: ['Bold', 'Italic'] },
-					                                { name: 'paragraph', items: ['Indent', 'Outdent'] }
-					                            ],
-					                            removePlugins: 'resize'
-					                        });
-					                    </script>
-					                </div>
-					            </div>
-					        </div>
-					    </div>
-					</td>
-					<script>
-					document.addEventListener('DOMContentLoaded', function() {
-					    const dropdownButtons = document.querySelectorAll('.dropdown-toggle');
+                      </td>
+                      <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                          const dropdownButtons = document.querySelectorAll('.dropdown-toggle');
+                          dropdownButtons.forEach(button => {
+                            button.addEventListener('click', function(event) {
+                              event.stopPropagation();
+                              const dropdownMenu = button.nextElementSibling;
+                              dropdownMenu.classList.toggle('show');
+                            });
+                          });
 
-					    dropdownButtons.forEach(button => {
-					        button.addEventListener('click', function(event) {
-					            event.stopPropagation();
-					            const dropdownMenu = button.nextElementSibling;
-					            dropdownMenu.classList.toggle('show');
-					        });
-					    });
+                          document.addEventListener('click', function(event) {
+                            const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+                            dropdownMenus.forEach(menu => {
+                              if (!menu.contains(event.target)) {
+                                menu.classList.remove('show');
+                              }
+                            });
+                          });
 
-					    document.addEventListener('click', function() {
-					        const dropdownMenus = document.querySelectorAll('.dropdown-menu');
-					        dropdownMenus.forEach(menu => {
-					            menu.classList.remove('show');
-					        });
-					    });
-					});
-					</script>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="card-footer p-8pt">
-              <ul class="pagination justify-content-start pagination-xsm m-0" id="pagination">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Page 1">
-                    <span>1</span>
-                  </a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Page 2">
-                    <span>2</span>
-                  </a>
-                </li>
-              </ul>
+                          document.addEventListener('click', function(event) {
+                            const dropdownButtons = document.querySelectorAll('.dropdown-toggle');
+                            dropdownButtons.forEach(button => {
+                              if (button.nextElementSibling.contains(event.target)) {
+                                event.stopPropagation();
+                              }
+                            });
+                          });
+                        });
+                      </script>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer p-8pt">
+                <ul class="pagination justify-content-start pagination-xsm m-0" id="pagination">
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Page 1">
+                      <span>1</span>
+                    </a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Page 2">
+                      <span>2</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -346,8 +322,6 @@
           showPage(1);
         });
       </script>
-      </div>
-      
     </div>
   </body>
 </html>

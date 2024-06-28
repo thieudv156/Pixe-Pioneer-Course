@@ -14,7 +14,8 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     List<Course> findByIsPublishedIsTrue();
-    List<Course> findByCategoryId(Integer categoryId);
+    @Query("SELECT c FROM Course c WHERE c.categoryId = :categoryId")
+    List<Course> findByCategoryId(@Param("categoryId") Integer categoryId);
     List<Course> findByTitleContainingIgnoreCase(String title);
     List<Course> findByInstructorId(Integer instructorId);
     List<Course> findByInstructorIdAndIsPublishedIsTrue(Integer instructorId);

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+  <head>
+    <title>Pixel Pioneer Course - Review General</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    <style>
+      .table-responsive {
+        position: relative;
+      }
+      
+      .request-dropdown {
+        display: none;
+        width: 50vw;
+        max-height: 70vh;
+        overflow-y: auto;
+        background-color: white;
+        border: 1px solid #ccc;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .dropdown-menu.show {
+        display: block;
+      }
+
+      .rating__item {
+        color: gold;
+        display: inline-block;
+      }
+
+      .warning-editor {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50%;
+        z-index: 10000;
+        background: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: none;
+        padding: 10px;
+      }
+      
+      .warning-editor {
+		    margin-top: 0.5vh;
+		    width: 25vw;
+		    text-align: center;
+		    flex-wrap: nowrap;
+		    position: static;
+		    flex-direction: column;
+		    align-items: center;
+		}
+		
+		.warning-editor button {
+		    margin-top: 0.5vh;
+		}
+		
+		.warning-editor textarea {
+		    width: 100%;
+		    height: 100%;
+		    resize: none;
+		}
+    </style>
+  </head>
+  <body>
+    <div class="content-wrapper" layout:fragment="contents">
+      <div class="container">
+        <div class="container page__container page-section">
+          <div class="page-separator">
+            <div class="page-separator__text">Reviews</div>
+          </div>
+          <div class="d-flex align-items-center navbar-height">
+            <form id="search-form" th:action="@{/app/admin/reviews}" method="post" class="search-form search-form--black mx-16pt pr-0 pl-16pt" style="color: white; width: 42vw;">
+              <input type="text" id="search-input" style="color: white;" name="query" class="form-control pl-0" placeholder="Search reviews (with user full name, category name or course name)">
+              <button type="submit" class="btn btn-dark btn-rounded" style="color: white;">Search</button>
+            </form>
+          </div>
+          <div class="table-responsive" style="width: 90vw;" data-toggle="lists" data-lists-sort-by="js-lists-values-employee-name" data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
+            <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
+              <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+            </div>
+            <div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
+              <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
+            </div>
+            <table class="table mb-0 thead-border-top-0 table-nowrap">
+              <thead>
+                <tr>
+                  <th><a style="font-size: 16px;">Role</a></th>
+                  <th><a style="font-size: 16px;">User (Name and Email)</a></th>
+                  <th><a style="font-size: 16px; color: crimson;">Content</a></th>
+                  <th><a style="font-size: 16px;">Course</a></th>
+                  <th><a style="font-size: 16px;">Course Category</a></th>
+                  <th><a style="font-size: 16px;">Ratings</a></th>
+                  <th><a style="font-size: 16px;">Review Date</a></th>
+                  <th><a style="font-size: 16px;">Action</a></th>
+                </tr>
+              </thead>
+              <tbody class="list" id="reviewsList">
+                <tr th:each="review : ${reviews}" class="selected" style="height: 0.4vh; font-size: 15px;">
+                  <td><strong th:text="${review.user.role.roleName.substring(5)}">Role</strong></td>
+                  <td>
+                    <p th:text="${review.user.fullName}">UserFullName</p>
+                    <p th:text="${review.user.email}">UserEmail</p>
+                  </td>
+                  <td><p th:text="${review.content}">Content</p></td>
+                  <td>
+                    <p th:text="${review.course.title}">Course</p>
+                    <div style="display: flex; flex-wrap: nowrap;">
+                      <p>Course ID:</p><p class="ml-1" th:text="${review.course.id}">CourseId</p>
+                    </div>
+                  </td>
+                  <td><p th:text="${review.course.category.name}">Course Category</p></td>
+                  <td>
+                    <div>
+                      <span class="rating__item" th:each="i : ${#numbers.sequence(1,review.rating)}"><span class="material-icons">star</span></span>
+                    </div>
+                  </td>
+                  <td><p th:text="${#temporals.format(review.createdAt, 'dd-MM-yyyy')}">ReviewDate</p></td>
+                  <td>
+                    <form id="delete" th:action="@{/app/admin/reviews/delete}" method="post" style="margin: 0; display:inline-block;">
+					    <input type="hidden" th:value="${review.id}" name="reviewId"/>
+					    <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+					</form>
+					<button class="btn btn-warning btn-rounded" th:attr="onclick='showWarningEditor(' + ${review.id} + ')'">Send Warning</button>
+					
+					<script>
+					function showWarningEditor(reviewId) {
+					    Swal.fire({
+					        title: 'Your warning message for review ' + reviewId,
+					        html: `
+					            <textarea id="warningContent" name="warningContent" rows="5" style="width: 100%;"></textarea>
+					        `,
+					        icon: 'warning',
+					        showCancelButton: true,
+					        confirmButtonText: 'Send Warning',
+					        preConfirm: () => {
+					            return {
+					                warningContent: CKEDITOR.instances.warningContent.getData(),
+					                reviewId: reviewId
+					            };
+					        }
+					    }).then((result) => {
+					        if (result.isConfirmed) {
+					            var warningContent = result.value.warningContent;
+					            var reviewId = result.value.reviewId;
+					
+					            // Print the value to the console for debugging
+					            console.log("Warning Content:", warningContent);
+					            console.log("Review ID:", reviewId);
+					
+					            // Perform the AJAX request here
+					            var xhr = new XMLHttpRequest();
+					            xhr.open("POST", "/app/admin/reviews/warn", true);
+					            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+					
+					            xhr.onreadystatechange = function () {
+					                if (xhr.readyState === 4 && xhr.status === 200) {
+					                    Swal.fire('Sent!', 'Your warning message has been sent.', 'success');
+					                }
+					            };
+					
+					            var params = "reviewId=" + encodeURIComponent(reviewId) + "&warningContent=" + encodeURIComponent(warningContent);
+					            xhr.send(params);
+					        }
+					    });
+					
+					    // Initialize CKEditor after SweetAlert has rendered the textarea
+					    setTimeout(() => {
+					        CKEDITOR.replace('warningContent', {
+					            toolbar: [
+					                { name: 'basicstyles', items: ['Bold', 'Italic'] },
+					                { name: 'paragraph', items: ['Indent', 'Outdent'] }
+					            ],
+					            removePlugins: 'resize'
+					        });
+					    }, 100);
+					}
+					</script>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer p-8pt">
+            <ul class="pagination justify-content-start pagination-xsm m-0" id="pagination">
+            	<li class="page-item">
+                    <a class="page-link"
+                       href="#"
+                       aria-label="Page 1">
+                        <span>1</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                       href="#"
+                       aria-label="Page 2">
+                        <span>2</span>
+                    </a>
+                </li>
+            </ul>
+          </div>
+			<script>
+	                       	document.addEventListener('DOMContentLoaded', function() {
+	                            const users = document.querySelectorAll('#reviewsList tr');
+	                            const pagination = document.getElementById('pagination');
+	                            const itemsPerPage = 5;
+	                            let currentPage = 1;
+	                            const pageCount = Math.ceil(users.length / itemsPerPage);
+	
+	                            function showPage(page) {
+	                                currentPage = page;
+	                                const start = (page - 1) * itemsPerPage;
+	                                const end = start + itemsPerPage;
+	
+	                                users.forEach((user, index) => {
+	                                    user.style.display = (index >= start && index < end) ? '' : 'none';
+	                                });
+	
+	                                updatePagination();
+	                            }
+	
+	                            function updatePagination() {
+	                                pagination.innerHTML = '';
+	
+	                                const prevPageItem = document.createElement('li');
+	                                prevPageItem.className = 'page-item ' + (currentPage === 1 ? 'disabled' : '');
+	                                pagination.appendChild(prevPageItem);
+	
+	                                for (let i = 1; i <= pageCount; i++) {
+	                                    const pageItem = document.createElement('li');
+	                                    pageItem.className = 'page-item ' + (i === currentPage ? 'active' : '');
+	                                    pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+	                                    pagination.appendChild(pageItem);
+	                                }
+	
+	                                const nextPageItem = document.createElement('li');
+	                                nextPageItem.className = 'page-item ' + (currentPage === pageCount ? 'disabled' : '');
+	                                pagination.appendChild(nextPageItem);
+	                            }
+	
+	                            pagination.addEventListener('click', function(e) {
+	                                const page = e.target.getAttribute('data-page');
+	                                if (page) {
+	                                    showPage(parseInt(page));
+	                                }
+	                            });
+	
+	                            showPage(1);
+	                        });				
+                        </script>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('keyup', function() {
+          const query = searchInput.value;
+          fetch(`/app/admin/users/search?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+              renderReviews(data);
+            })
+            .catch(error => {
+              console.error('Error fetching reviews:', error);
+            });
+        });
+
+        const reviewsList = document.getElementById('reviewsList');
+        const pagination = document.getElementById('pagination');
+        const itemsPerPage = 2;  // Set items per page here
+        let currentPage = 1;
+        let reviews = [];
+
+        function renderReviews(data) {
+          reviews = data;
+          showPage(currentPage);
+          updatePagination(reviews.length);
+        }
+
+        function updatePagination(totalItems) {
+          const pageCount = Math.ceil(totalItems / itemsPerPage);
+          pagination.innerHTML = '';
+
+          const prevPageItem = document.createElement('li');
+          prevPageItem.className = 'page-item ' + (currentPage === 1 ? 'disabled' : '');
+          prevPageItem.innerHTML = `
+            <a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+              <span aria-hidden="true" class="material-icons">chevron_left</span>
+              <span>Prev</span>
+            </a>`;
+          pagination.appendChild(prevPageItem);
+
+          for (let i = 1; i <= pageCount; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.className = 'page-item ' + (i === currentPage ? 'active' : '');
+            pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+            pagination.appendChild(pageItem);
+          }
+
+          const nextPageItem = document.createElement('li');
+          nextPageItem.className = 'page-item ' + (currentPage === pageCount ? 'disabled' : '');
+          nextPageItem.innerHTML = `
+            <a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+              <span>Next</span>
+              <span aria-hidden="true" class="material-icons">chevron_right</span>
+            </a>`;
+          pagination.appendChild(nextPageItem);
+
+          pagination.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function(e) {
+              e.preventDefault();
+              const page = parseInt(e.target.getAttribute('data-page'));
+              if (!isNaN(page)) {
+                showPage(page);
+              }
+            });
+          });
+
+          updatePaginationState();
+        }
+
+        function showPage(page) {
+          currentPage = page;
+          const start = (page - 1) * itemsPerPage;
+          const end = start + itemsPerPage;
+
+          reviewsList.innerHTML = '';
+          reviews.slice(start, end).forEach(review => {
+            const reviewRow = document.createElement('tr');
+            reviewRow.className = 'selected';
+            reviewRow.style.height = '0.4vh';
+            reviewRow.style.fontSize = '15px';
+
+            const stars = Array(review.rating).fill('<span class="rating__item"><span class="material-icons">star</span></span>').join('');
+
+            reviewRow.innerHTML = `
+                <td><strong>${review.user.role.roleName.substring(5)}</strong></td>
+                <td>
+                    <p>${review.user.fullName}</p>
+                    <p>${review.user.email}</p>
+                </td>
+                <td><p>${review.content}</p></td>
+                <td>
+                    <p>${review.course.title}</p>
+                    <div style="display: flex; flex-wrap: nowrap;">
+                        <p>Course ID:</p><p class="ml-1">${review.course.id}</p>
+                    </div>
+                </td>
+                <td><p>${review.course.category.name}</p></td>
+                <td><div>${stars}</div></td>
+                <td><p>${new Date(review.createdAt).toLocaleDateString()}</p></td>
+                <td>
+                    <form id="delete" action="/app/admin/reviews/delete" method="post" style="margin: 0; display:inline-block;">
+                        <input type="hidden" name="reviewId" value="${review.id}" />
+                        <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+                    </form>
+                    <button class="btn btn-warning btn-rounded" onclick="showWarningEditor('${review.id}')">Send Warning</button>
+                    <div id="warning-editor-${review.id}" class="warning-editor">
+                      <form id="warning-form-${review.id}" action="/app/admin/reviews/warn" method="get">
+                        <textarea id="warningContent-${review.id}" name="warningContent"></textarea>
+                        <input type="hidden" name="reviewId" value="${review.id}">
+                        <button type="submit" class="btn btn-primary btn-rounded">Send</button>
+                      </form>
+                    </div>
+                </td>
+            `;
+            reviewsList.appendChild(reviewRow);
+            CKEDITOR.replace(`warningContent-${review.id}`, {
+              toolbar: [
+                  { name: 'basicstyles', items: ['Bold', 'Italic'] },
+                  { name: 'paragraph', items: ['Indent', 'Outdent'] }
+              ],
+              removePlugins: 'resize'
+            });
+          });
+
+          updatePaginationState();
+        }
+
+        function updatePaginationState() {
+          pagination.querySelectorAll('li').forEach(pageItem => {
+            const page = parseInt(pageItem.querySelector('a').getAttribute('data-page'));
+            if (pageItem.classList.contains('disabled') || pageItem.classList.contains('active')) {
+              pageItem.removeEventListener('click', showPage);
+            }
+          });
+        }
+
+        fetch('/app/admin/reviews') // Adjust the URL to match your data source
+            .then(response => response.json())
+            .then(data => {
+                renderReviews(data);
+            })
+            .catch(error => {
+                console.error('Error fetching reviews:', error);
+            });
+      });
+
+      function showWarningEditor(reviewId) {
+        const editor = document.getElementById(`warning-editor-${reviewId}`);
+        editor.style.display = editor.style.display === 'none' || editor.style.display === '' ? 'block' : 'none';
+      }
+    </script>
+  </body>
+</html>

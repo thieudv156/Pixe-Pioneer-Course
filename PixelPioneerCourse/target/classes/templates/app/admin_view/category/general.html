@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+  <head>
+    <title>Pixel Pioneer Course - Category General</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <style>
+    	.table-responsive {
+		    position: relative;
+		}
+		
+		.request-dropdown {
+		    display: none;
+		    width: 50vw;
+		    max-height: 70vh;
+		    overflow-y: auto;
+		    background-color: white;
+		    border: 1px solid #ccc;
+		    z-index: 1000;
+		    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		}
+		
+		.dropdown-menu.show {
+		    display: block;
+		}
+    </style>
+  </head>
+  <body>
+    <div class="content-wrapper" layout:fragment="contents">
+      <div class="container">
+      	<div class="">
+        <div class="container page__container page-section">
+          <div class="page-separator">
+            <div class="page-separator__text">Categories</div>
+          </div>
+          <div class="d-flex align-items-center navbar-height">
+            <form th:action="@{/app/admin/categories}" method="post" id="search-form" class="search-form search-form--black mx-16pt pr-0 pl-16pt" style="color: white;">
+              <input type="text" id="search-input" style="color: white;" name="query" class="form-control pl-0" placeholder="Search categories">
+              <button type="submit" class="btn btn-rounded btn-dark mr-2" style="color: white;">Search</button>
+            </form>
+            <a class="btn btn-accent btn-rounded ml-2" th:href="@{/app/admin/categories/create}">Create a new category</a>
+          </div>
+          <div class="">
+			  <div class="table-responsive" style="width: 90vw;" data-toggle="lists" data-lists-sort-by="js-lists-values-employee-name" data-lists-values='["js-lists-values-employee-name", "js-lists-values-employer-name", "js-lists-values-projects", "js-lists-values-activity", "js-lists-values-earnings"]'>
+			    <!-- Add conditionals for error and success messages -->
+			    <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
+			      <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+			    </div>
+			    <div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
+			      <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
+			    </div>
+			    <table class="table mb-0 thead-border-top-0 table-nowrap">
+			      <thead>
+			        <tr>
+			          <th>
+			            <h3>Category</h3>
+			          </th>
+			          <th>
+			            <h3>Action</h3>
+			          </th>
+			        </tr>
+			      </thead>
+			      <tbody class="list" id="categoryList">
+			        <!-- Display categories related to courses with only Rename button -->
+			        <tr th:each="category : ${searchedCategories}" class="selected" style="height: 0.4vh;">
+			          <td>
+			            <p th:text="${category.name}" style="font-size: large;">Category</p>
+			          </td>
+			          <td>
+			            <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+			              <a class="btn btn-rounded btn-accent" th:href="@{/app/admin/categories}">Return to General</a>
+			            </div>
+			          </td>
+			        </tr>
+			        <tr th:each="category : ${relatedToCourseCategories}" class="selected" style="height: 0.4vh;">
+			          <td>
+			            <p th:text="${category.name}" style="font-size: large;">Category</p>
+			          </td>
+			          <td>
+			            <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+			              <form th:action="@{/app/admin/categories/rename}" style="margin: 0;">
+			                <input type="hidden" name="categoryId" th:value="${category.id}" />
+			                <button type="submit" class="btn btn-secondary btn-rounded">Rename</button>
+			              </form>
+			            </div>
+			          </td>
+			        </tr>
+			        <!-- Display categories not related to courses with Rename and Delete buttons -->
+			        <tr th:each="category : ${notRelatedToCourseCategories}" class="selected" style="height: 0.4vh;">
+			          <td>
+			            <div style="display: flex; flex-wrap: nowrap;">
+			            	<p th:text="${category.name}" class="mr-1" style="font-size: large;">Category</p>
+			            	<span class="badge badge-pill badge-accent" style="height: 15px; width: 80px;">Has no courses</span>
+			            </div>
+			          </td>
+			          <td>
+			            <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+			              <form th:action="@{/app/admin/categories/rename}" style="margin: 0;">
+			                <input type="hidden" name="categoryId" th:value="${category.id}" />
+			                <button type="submit" class="btn btn-secondary btn-rounded">Rename</button>
+			              </form>
+			              <form th:action="@{/app/admin/categories/delete}" method="post" style="margin: 0;">
+			                <input type="hidden" name="categoryId" th:value="${category.id}" />
+			                <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+			              </form>
+			            </div>
+			          </td>
+			        </tr>
+			      </tbody>
+			    </table>
+			  </div>
+			  <div class="card-footer p-8pt">
+			    <ul class="pagination justify-content-start pagination-xsm m-0" id="pagination">
+			      <li class="page-item">
+			        <a class="page-link" href="#" aria-label="Page 1">
+			          <span>1</span>
+			        </a>
+			      </li>
+			      <li class="page-item">
+			        <a class="page-link" href="#" aria-label="Page 2">
+			          <span>2</span>
+			        </a>
+			      </li>
+			    </ul>
+			  </div>
+			</div>
+        </div>
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const searchInput = document.getElementById('search-input');
+          searchInput.addEventListener('keyup', function() {
+            const query = searchInput.value;
+            fetch(`/app/admin/categories/search?query=${query}`)
+              .then(response => response.json())
+              .then(data => {
+                const categoryList = document.getElementById('categoryList');
+                categoryList.innerHTML = '';
+                data.forEach(user => {
+                  const userRow = document.createElement('tr');
+                  userRow.innerHTML = `
+                    <td><strong>${user.id}</strong></td>
+                    <td><p>${user.fullName}</p></td>
+                    <td><p>${user.username}</p></td>
+                    <td><p>${user.email}</p></td>
+                    <td><p>${user.phone}</p></td>
+                    <td><p><span class="${user.activeStatus ? 'badge bg-success' : 'badge bg-danger'}" style="height: 3vh; color: white;">${user.activeStatus ? 'Active' : 'Inactive'}</span></p></td>
+                    <td><p>${new Date(user.createdAt).toLocaleDateString()}</p></td>
+                    <td><p>${user.provider}</p></td>
+                    <td>
+                      <div style="display: flex; flex-wrap: nowrap; gap: 10px;">
+                        ${user.role && user.role.roleName !== 'ROLE_ADMIN' ? `
+                          <form id="deactivate" action="/app/admin/users/deactivate" method="post" style="margin: 0;">
+                            <input type="hidden" name="uid" value="${user.id}" />
+                            <button type="submit" class="btn btn-secondary btn-rounded">${user.activeStatus ? 'Deactivate' : 'Activate'}</button>
+                          </form>
+                          <form id="update" action="/app/admin/users/update" method="post" style="margin: 0;">
+                            <input type="hidden" name="id" value="${user.id}" />
+                            <button type="submit" class="btn btn-primary btn-rounded">Modify</button>
+                          </form>
+                          <form id="delete" action="/app/admin/users/delete" method="post" style="margin: 0;">
+                            <input type="hidden" name="uid" value="${user.id}" />
+                            <button type="submit" class="btn btn-dark btn-rounded">Delete</button>
+                          </form>
+                        ` : ''}
+                      </div>
+                    </td>
+                  `;
+                  categoryList.appendChild(userRow);
+                });
+              })
+              .catch(error => {
+                console.error('Error fetching user data:', error);
+              });
+          });
+
+          const roles = document.querySelectorAll('#categoryList tr');
+          const pagination = document.getElementById('pagination');
+          const itemsPerPage = 10;
+          let currentPage = 1;
+          const pageCount = Math.ceil(roles.length / itemsPerPage);
+
+          function showPage(page) {
+            currentPage = page;
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            roles.forEach((role, index) => {
+              role.style.display = (index >= start && index < end) ? '' : 'none';
+            });
+            updatePagination();
+          }
+
+          function updatePagination() {
+            pagination.innerHTML = '';
+            const prevPageItem = document.createElement('li');
+            prevPageItem.className = 'page-item ' + (currentPage === 1 ? 'disabled' : '');
+            prevPageItem.innerHTML = `
+              <a class="page-link" href="#" aria-label="Previous" data-page="${currentPage - 1}">
+                <span aria-hidden="true" class="material-icons">chevron_left</span>
+                <span>Prev</span>
+              </a>`;
+            pagination.appendChild(prevPageItem);
+
+            for (let i = 1; i <= pageCount; i++) {
+              const pageItem = document.createElement('li');
+              pageItem.className = 'page-item ' + (i === currentPage ? 'active' : '');
+              pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+              pagination.appendChild(pageItem);
+            }
+
+            const nextPageItem = document.createElement('li');
+            nextPageItem.className = 'page-item ' + (currentPage === pageCount ? 'disabled' : '');
+            nextPageItem.innerHTML = `
+              <a class="page-link" href="#" aria-label="Next" data-page="${currentPage + 1}">
+                <span>Next</span>
+                <span aria-hidden="true" class="material-icons">chevron_right</span>
+              </a>`;
+            pagination.appendChild(nextPageItem);
+          }
+
+          pagination.addEventListener('click', function(e) {
+            const page = e.target.getAttribute('data-page');
+            if (page) {
+              showPage(parseInt(page));
+            }
+          });
+
+          showPage(1);
+        });
+      </script>
+      </div>
+    </div>
+  </body>
+</html>

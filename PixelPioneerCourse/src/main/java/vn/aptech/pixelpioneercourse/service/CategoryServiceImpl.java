@@ -38,6 +38,14 @@ public class CategoryServiceImpl implements CategoryService{
             throw new RuntimeException("Category is null");
         }
     }
+    
+    public Category findByName(String name) {
+    	return categoryRepository.findByName(name);
+    }
+    
+    public List<Category> findByQuery(String query) {
+    	return categoryRepository.findByNameIgnoreCase(query);
+    }
 
     public boolean save(CategoryCreateDto dto){
         if (dto == null) {

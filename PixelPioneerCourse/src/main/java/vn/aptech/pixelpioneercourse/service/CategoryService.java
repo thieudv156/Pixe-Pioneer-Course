@@ -9,6 +9,8 @@ import java.util.List;
 public interface CategoryService {
     List<Category> findAll();
     Category findById(int id);
+    Category findByName(String name);
+    List<Category> findByQuery(String query);
     boolean save(CategoryCreateDto dto);
     boolean update(int id, CategoryCreateDto dto);
     boolean delete(int id);

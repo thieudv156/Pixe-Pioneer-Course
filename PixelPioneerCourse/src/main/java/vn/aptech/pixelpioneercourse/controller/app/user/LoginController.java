@@ -40,7 +40,7 @@ public class LoginController {
             if (session.getAttribute("isUser") != null) {
                 return "redirect:/";
             } else if (session.getAttribute("isAdmin") != null) {
-                return "redirect:/app/admin";
+                return "redirect:/app/adminDirector";
             } else if (session.getAttribute("isInstructor") != null) {
                 return "redirect:/app/course";
             }
@@ -91,7 +91,7 @@ public class LoginController {
                         session.setAttribute("isUser", null);
                         session.setAttribute("isInstructor", null);
                         session.setAttribute("showFilteredRequestUsers", false);
-                        return "redirect:/app/admin/users";
+                        return "redirect:/app/adminDirector";
                     } else if (u.getRole().getRoleName().equals("ROLE_INSTRUCTOR") && session.getAttribute("isInstructor") == null) {
                     	session.setAttribute("user", u);
                     	session.setAttribute("userId", u.getId());
@@ -127,7 +127,7 @@ public class LoginController {
                 session.setAttribute("enrollment", e);
                 session.setAttribute("isUser", null);
                 session.setAttribute("isInstructor", null);
-                return "redirect:/app/admin/users";
+                return "redirect:/app/adminDirector";
             } else if (u.getRole().getRoleName().equals("ROLE_INSTRUCTOR") && session.getAttribute("isInstructor") == null) {
             	session.setAttribute("user", u);
             	session.setAttribute("userId", u.getId());

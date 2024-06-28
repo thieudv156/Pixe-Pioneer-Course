@@ -14,7 +14,7 @@
 	    </div>
 	    <div class="pt-32pt pt-sm-64pt pb-32pt">
                     <div class="container page__container">
-                        <form id="registrationForm" method="post" action="/app/register">
+                        <form id="registrationForm" method="post" th:action="@{/app/register}">
 						    <div class="form-group">
 						        <label class="form-label" for="username">Username:</label>
 						        <input name="username" id="username" type="text" class="form-control" placeholder="Your username" required minlength="4" maxlength="50">

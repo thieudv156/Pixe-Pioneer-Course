@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>Pixel Pioneer Course - Category Create</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+	<div class="content-wrapper" layout:fragment="contents">
+
+	    <div class="container">
+	        
+	    </div>
+	    <div th:if="${ErrorCondition}" class="alert alert-danger" role="alert">
+				    <span style="color: red; font-weight: bold;" th:text="${ErrorError}"></span>
+				</div>
+				<div th:if="${SuccessCondition}" class="alert alert-primary" role="alert">
+				    <span style="color: green; font-weight: bold;" th:text="${SuccessSuccess}"></span>
+				</div>
+                <div class="container page__container page-section">
+                	<form th:action="@{/app/admin/categories/create}" method="post" id="updateForm" name="updateForm">
+					    <div class="col-11 d-flex align-items-center">
+					        <div class="flex" style="max-width: 100%">
+					            <label class="form-label" for="rolename">Category Name</label>
+					            <input type="text"
+					                   class="form-control form-control-rounded"
+					                   placeholder="Enter category name"
+					                   required
+					                   id="categoryname"
+					                   name="categoryname">
+					        </div>
+					    </div>
+					    <!-- Submit Button -->
+					    <div class="col-11 d-flex align-items-center mt-2">
+					        <button type="submit" class="btn btn-primary btn-rounded">Create</button>
+					    </div>
+					</form>
+
+                </div>
+	</div>
+</body>
+</html>
