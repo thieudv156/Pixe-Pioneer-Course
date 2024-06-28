@@ -98,4 +98,9 @@ public class User {
 
     @Column(nullable = true, unique = false)
     private String requestInstructor;
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", username='" + username + "', email='" + email + "', fullName='" + fullName + "', activeStatus=" + activeStatus + ", createdAt=" + createdAt + "}";
+    }
 }
