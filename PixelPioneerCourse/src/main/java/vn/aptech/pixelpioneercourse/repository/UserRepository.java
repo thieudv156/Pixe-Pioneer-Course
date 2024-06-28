@@ -29,4 +29,15 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<UserInformation> findAllInstructor();
 
     List<User> findAllByActiveStatusIsTrue();
+
+
+    @Query("SELECT DISTINCT u FROM User u JOIN u.progresses p JOIN p.subLesson sl JOIN sl.lesson l JOIN l.course c WHERE c.instructor.id = :instructorId AND u.createdAt = :today")
+    List<User> findNewEnrollmentsByInstructorId(@Param("instructorId") Integer instructorId, @Param("today") LocalDate today);
+
+    @Query("SELECT DISTINCT u FROM User u JOIN u.courseCompletes cc JOIN cc.course c WHERE c.instructor.id = :instructorId AND DATE(cc.completedDate) = :today")
+    List<User> findCompletedCoursesByInstructorId(@Param("instructorId") Integer instructorId, @Param("today") LocalDate today);
+
+    @Query("SELECT DISTINCT u FROM User u JOIN u.progresses p JOIN p.subLesson sl JOIN sl.lesson l JOIN l.course c WHERE c.instructor.id = :instructorId")
+    List<User> findAllEnrollmentsByInstructorId(@Param("instructorId") Integer instructorId);
+
 }

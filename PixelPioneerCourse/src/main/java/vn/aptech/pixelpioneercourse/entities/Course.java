@@ -7,8 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
+import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -34,7 +37,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"id", "username", "password", "reviews", "discussions", "courses", "enrollments", "tests", "provider", "grantedAuthorities", "authorities", "progresses", "courseCompletes","phone","email","activeStatus","createdAt","requestInstructor"})
+    @JsonIgnoreProperties({"id", "username", "password", "reviews", "discussions", "courses", "enrollments", "tests", "provider", "grantedAuthorities", "authorities", "progresses", "courseCompletes", "phone", "email", "activeStatus", "createdAt", "requestInstructor"})
     @ToString.Exclude
     private User instructor;
 
@@ -51,13 +54,13 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnoreProperties("course")
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("course")
     @Setter
     @ToString.Exclude
-    private List<Lesson> lessons;
+    private List<Lesson> lessons = new ArrayList<>();
 
     @OneToOne(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("course")
@@ -67,7 +70,7 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("course")
     @ToString.Exclude
-    private List<CourseComplete> courseCompletes;
+    private List<CourseComplete> courseCompletes = new ArrayList<>();
 
     public String getImageUrl() {
         if (this.frontPageImage != null) {

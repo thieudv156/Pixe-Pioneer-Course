@@ -248,4 +248,12 @@ public class CourseServiceImpl implements CourseService{
         return courseRepository.findTop8ByCategoryAndIsPublishedIsTrueOrderByCreatedAtDesc(category);
     }
 
+    public Integer getEnrollUserCount(Integer courseId) {
+        return courseRepository.countDistinctUsersByCourseId(courseId);
+    }
+
+    public Integer getCompleteUserCount(Integer courseId) {
+        return courseRepository.countDistinctUsersByCourseComplete(courseId);
+    }
+
 }

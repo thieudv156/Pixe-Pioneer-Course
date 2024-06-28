@@ -26,6 +26,7 @@ public interface  CourseService {
     Boolean startCourse(Integer courseId, Integer userId);
     boolean canAccessCourse(Integer userId, Integer courseId);
     List<Course> getEnrolledCourses(Integer userId);
-
+    Integer getEnrollUserCount(Integer courseId);
     List<Course> findTop8ByCategoryOrderByCreatedAtDesc(Category category);
+    Integer getCompleteUserCount(Integer courseId);
 }

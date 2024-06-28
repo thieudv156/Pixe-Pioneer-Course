@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Instructor Dashboard</title>
+    <style>
+        .fa-star, .fa-star-o{
+            color: #FFD700; /* Yellow color */
+        }
+    </style>
+</head>
+<body>
+<div class="mdk-header-layout__content page-content" layout:fragment="contents">
+    <div class="pt-32pt">
+        <div class="container page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+            <div class="flex d-flex flex-column flex-sm-row align-items-center mb-md-0">
+                <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                    <h2 class="mb-0">Instructor Dashboard</h2>
+                    <ol class="breadcrumb p-0 m-0">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">
+                            Dashboard
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-section">
+        <div class="container page__container">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card border-1 border-left-3 border-left-accent text-center mb-lg-0">
+                        <div class="card-body">
+                            <h4 class="h2 mb-0" th:text="${newEnrollUsers}"></h4>
+                            <div>New Enroll Students Today</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card text-center mb-lg-0">
+                        <div class="card-body">
+                            <h4 class="h2 mb-0" th:text="${newCompletedUsers}"></h4>
+                            <div>Students Complete Course Today</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card text-center mb-lg-0">
+                        <div class="card-body">
+                            <h4 class="h2 mb-0" th:text="${allEnrollUser}"></h4>
+                            <div>Total Enroll Users</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container page__container page-section">
+
+        <div class="page-separator">
+            <div class="page-separator__text">Courses</div>
+        </div>
+        <div class="card mb-0">
+            <div class="table-responsive"
+                 data-toggle="lists"
+                 data-lists-sort-by="js-lists-values-date"
+                 data-lists-sort-desc="true"
+                 data-lists-values='["js-lists-values-name", "js-lists-values-company", "js-lists-values-phone", "js-lists-values-date"]'>
+
+                <table class="table mb-0 thead-border-top-0 table-nowrap">
+                    <thead>
+                    <tr>
+                        <th>
+                            <a href="javascript:void(0)"
+                               class="sort"
+                               data-sort="js-lists-values-name">Name</a>
+                        </th>
+
+                        <th style="width: 50px;" class="text-center">
+                            <a href="javascript:void(0)"
+                               class="sort"
+                               data-sort="js-lists-values-enroll">Total Students</a>
+                        </th>
+
+                        <th style="width: 50px;" class="text-center">
+                            <a href="javascript:void(0)"
+                               class="sort"
+                               data-sort="js-lists-values-complete">Completed Students</a>
+                        </th>
+
+                        <th style="width: 50px;" class="text-center">
+                            <a href="javascript:void(0)"
+                               class="sort"
+                               data-sort="js-lists-values-review">Ratings</a>
+                        </th>
+
+                        <th style="width: 120px;" class="text-center">
+                            <a href="javascript:void(0)"
+                               class="sort"
+                               data-sort="js-lists-values-date">Created Date</a>
+                        </th>
+                        <th style="width: 30px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="list"
+                           id="contacts">
+
+                    <tr th:each="courseView : ${courseViews}">
+                        <td>
+                            <div class="media flex-nowrap align-items-center" style="white-space: nowrap;">
+                                <div class="media-body">
+                                    <div class="d-flex">
+                                        <a th:href="@{/course/information/{courseId}(courseId=${courseView.course.id})}">
+                                            <h3 class="mb-0" th:text="${courseView.course.title}"></h3>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <small class="js-lists-values-enroll text-70 text-center" th:text="${courseView.enrollCount}"></small>
+                        </td>
+                        <td class="text-center">
+                            <small class="js-lists-values-complete text-70 text-center" th:text="${courseView.completeCount}"></small>
+                        </td>
+                        <td class="text-center">
+                            <small class="js-lists-values-review text-70 text-center" th:if="${courseView.avgReview.isNaN()}" th:text="${courseView.avgReview}"></small>
+                            <small class="js-lists-values-review text-70 text-center" th:if="${!courseView.avgReview.isNaN()}">
+                                <span th:each="star : ${#numbers.sequence(1, 5)}">
+                                    <i class="fa" th:classappend="${star <= courseView.avgReview} ? 'fa-star' : 'fa-star-o'"></i>
+                                </span>
+                            </small>
+                        </td>
+                        <td class="text-center">
+                            <small class="js-lists-values-date text-70 text-center" th:text="${courseView.course.createdAt}"></small>
+                        </td>
+                        <td class="text-center">
+                            <a th:href="@{/course/information/{courseId}(courseId=${courseView.course.id})}" class="btn btn-outline-accent">View</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

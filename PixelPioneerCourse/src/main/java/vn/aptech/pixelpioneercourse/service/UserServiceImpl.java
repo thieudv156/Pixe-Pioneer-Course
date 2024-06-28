@@ -30,6 +30,7 @@ import vn.aptech.pixelpioneercourse.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -480,6 +481,20 @@ public class UserServiceImpl implements UserService{
             phoneNumber = "0" + random.ints(9, 0, 10).mapToObj(Integer::toString).reduce("", (a, b) -> a + b);
         } while (!userRepository.findByPhone(phoneNumber).isEmpty());
         return phoneNumber;
+    }
+
+    public List<User> getNewEnrollmentsToday(Integer instructorId) {
+        LocalDate today = LocalDate.now();
+        return userRepository.findNewEnrollmentsByInstructorId(instructorId,today);
+    }
+
+    public List<User> getCompletedCoursesToday(Integer instructorId) {
+        LocalDate today = LocalDate.now();
+        return userRepository.findCompletedCoursesByInstructorId(instructorId, today);
+    }
+
+    public List<User> getAllEnrollmentsByInstructorId(Integer instructorId) {
+        return userRepository.findAllEnrollmentsByInstructorId(instructorId);
     }
 }
 

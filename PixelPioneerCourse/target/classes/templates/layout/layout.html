@@ -215,7 +215,6 @@
 <!-- // END Header Layout Content -->
 
 <!-- Footer -->
-<div class="container-footer">
 <div class="bg-white border-top-2 mt-auto">
     <div class="container page__container page-section d-flex flex-column">
         <p class="text-70 brand mb-24pt">
@@ -241,7 +240,6 @@
 </div>
     <!-- // END Footer -->
 
-</div>
 <!-- // END Header Layout -->
 <div class="mdk-drawer js-mdk-drawer" id="default-drawer">
     <div class="mdk-drawer__content">
@@ -532,6 +530,32 @@
 <script th:src="@{/public/vendor/select2/select2.min.js}"></script>
 <script th:src="@{/public/js/select2.js}"></script>
 <script src="//cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<!-- Preloader -->
+<script th:src="@{/public/js/preloader.js}"></script>
+
+<!-- Global Settings -->
+<script th:src="@{/public/js/settings.js}"></script>
+
+<!-- Moment.js -->
+<script th:src="@{/public/vendor/moment.min.js}"></script>
+<script th:src="@{/public/vendor/moment-range.js}"></script>
+
+<!-- Flatpickr -->
+<script th:src="@{/public/vendor/flatpickr/flatpickr.min.js}"></script>
+<script th:src="@{/public/js/flatpickr.js}"></script>
+
+<!-- Chart.js -->
+<script th:src="@{/public/vendor/Chart.min.js}"></script>
+<script th:src="@{/public/js/chartjs.js}"></script>
+
+<!-- List.js -->
+<script th:src="@{/public/vendor/list.min.js}"></script>
+<script th:src="@{/public/js/list.js}"></script>
+
+<!-- Tables -->
+<script th:src="@{/public/js/toggle-check-all.js}"></script>
+<script th:src="@{/public/js/check-selected-row.js}"></script>
+
 <th:block layout:fragment="script"></th:block>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

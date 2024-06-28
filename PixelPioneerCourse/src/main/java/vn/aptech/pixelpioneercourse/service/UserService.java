@@ -42,6 +42,9 @@ public interface UserService {
     String generateUsername(String fullName);
     String generateUniquePhoneNumber();
     User processOAuthPostLogin(String email, String fullname);
+    List<User> getNewEnrollmentsToday(Integer instructorId);
+    List<User> getCompletedCoursesToday(Integer instructorId);
+    List<User> getAllEnrollmentsByInstructorId(Integer instructorId);
 }
 
 
