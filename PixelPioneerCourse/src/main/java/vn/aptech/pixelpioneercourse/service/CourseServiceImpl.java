@@ -138,7 +138,7 @@ public class CourseServiceImpl implements CourseService{
             newCourse.setTitle("New Course");
             newCourse.setDescription("Description");
             newCourse.setInstructor(userService.findById(userId));
-            newCourse.setCategory(categoryService.findById(1));
+            newCourse.setCategory(categoryService.findAll().getFirst());
             courseRepository.save(newCourse);
             TestFormat testFormat = new TestFormat();
             testFormat.setCourse(newCourse);
@@ -159,9 +159,7 @@ public class CourseServiceImpl implements CourseService{
             User user = userOptional.get();
             Enrollment enrollment = enrollmentRepository.findFirstByUserOrderByEnrolledAtDesc(user);
             if (enrollment != null) {
-                if (enrollment.getSubscriptionEndDate() == null || enrollment.getSubscriptionEndDate().isAfter(LocalDateTime.now())) {
-                    return true; // User has an active subscription
-                }
+                return enrollment.getSubscriptionEndDate() == null || enrollment.getSubscriptionEndDate().isAfter(LocalDateTime.now()); // User has an active subscription
             }
         }
         return false; // User does not have an active subscription

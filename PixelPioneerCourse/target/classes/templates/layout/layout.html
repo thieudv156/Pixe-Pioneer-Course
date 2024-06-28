@@ -8,11 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Pixel Pioneer Course</title>
     <link rel="icon" th:href="@{/public/images/logo.jpg}"/>
-    
-
-    <!-- Prevent the demo from appearing in search engines -->
-    <meta name="robots" content="noindex">
-
 
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CRoboto:400,500%7CExo+2:600&display=swap"
           rel="stylesheet">
@@ -121,41 +116,17 @@
                         Courses
                     </a>
                     <div class="dropdown-menu">
-                        <a th:if="${session.isInstructor}" th:href="@{/app/course/instructor/courses/{userId}(userId=${session.userId})}" class="dropdown-item">Instructor Courses Dashboard</a>
                         <a th:href="@{/app/course/}" class="dropdown-item">Browse Courses</a>
                         <a th:href="@{/app/course/my-courses}" class="dropdown-item">My Courses</a>
                     </div>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" th:if="${session.isInstructor}">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
-                        Paths
+                        Instructors
                     </a>
                     <div class="dropdown-menu">
-                        <a th:href="@{/paths.html}" class="dropdown-item">Browse Paths</a>
-                        <a th:href="@{/student-path.html}" class="dropdown-item">Path Details</a>
-                        <a th:href="@{/student-path-assessment.html}" class="dropdown-item">Skill Assessment</a>
-                        <a th:href="@{/student-path-assessment-result.html}" class="dropdown-item">Skill
-                            Result
-                        </a>
-                        <a th:href="@{/student-paths.html}" class="dropdown-item">My Paths</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a th:href="@{/pricing.html}" class="nav-link">Pricing</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
-                        Teachers
-                    </a>
-                    <div class="dropdown-menu">
-                        <a th:href="@{/instructor-dashboard.html}" class="dropdown-item">Instructor Dashboard
-                        </a>
-                        <a th:href="@{/instructor-courses.html}" class="dropdown-item">Manage Courses</a>
-                        <a th:href="@{/instructor-quizzes.html}" class="dropdown-item">Manage Quizzes</a>
-                        <a th:href="@{/instructor-earnings.html}" class="dropdown-item">Earnings</a>
-                        <a th:href="@{/instructor-statement.html}" class="dropdown-item">Statement</a>
-                        <a th:href="@{/instructor-edit-course.html}" class="dropdown-item">Edit Course</a>
-                        <a th:href="@{/instructor-edit-quiz.html}" class="dropdown-item">Edit Quiz</a>
+                        <a th:href="@{/app/instructor}" class="dropdown-item">Instructor Dashboard</a>
+                        <a th:href="@{/app/course/instructor/courses/{userId}(userId=${session.userId})}" class="dropdown-item">Manage Courses</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown"
