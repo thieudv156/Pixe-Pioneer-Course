@@ -70,431 +70,369 @@
 </div>
 
 <!-- Header Layout -->
-<div class="mdk-header js-mdk-header mb-0">
-
+<div class="mdk-header-layout js-mdk-header-layout">
     <!-- Header -->
     <div id="header"
-         class="mdk-header mdk-header--bg-dark bg-dark js-mdk-header mb-0"
-         data-effects="parallax-background waterfall"
+         class="mdk-header js-mdk-header mb-0"
          data-fixed
-         data-condenses>
-        <div class="mdk-header__bg-front"
-             th:style="|background-image: url('&quot;' + @{/public/images/photodune-4161018-group-of-students-m.jpg} + '&quot;');|"></div>
+         data-effects="">
+        <div class="mdk-header__content">
 
+            <div class="navbar navbar-expand navbar-dark-pickled-bluewood will-fade-background"
+                 id="default-navbar"
+                 data-primary>
 
-    </div>
-    <div class="mdk-header__content justify-content-center">
+                <!-- Navbar toggler -->
+                <button class="navbar-toggler w-auto mr-16pt d-block rounded-0"
+                        type="button"
+                        data-toggle="sidebar">
+                    <span class="material-icons">short_text</span>
+                </button>
 
-        <div class="navbar navbar-expand navbar-dark-pickled-bluewood will-fade-background"
-             id="default-navbar"
-             data-primary>
-
-            <!-- Navbar toggler -->
-            <button class="navbar-toggler w-auto mr-16pt d-block rounded-0"
-                    type="button"
-                    data-toggle="sidebar">
-                <span class="material-icons">short_text</span>
-            </button>
-
-            <!-- Navbar Brand -->
-            <a th:href="@{/}" class="navbar-brand mr-16pt">
-                        <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
-                            <span class="avatar-title rounded bg-primary">
-                                <img th:src="@{/public/images/logo.jpg}"
-                                     alt="logo"
-                                     class="img-fluid"/>
+                <!-- Navbar Brand -->
+                <a th:href="@{/}" class="navbar-brand mr-16pt">
+                            <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
+                                <span class="avatar-title rounded bg-primary">
+                                    <img th:src="@{/public/images/logo.jpg}"
+                                         alt="logo"
+                                         class="img-fluid"/>
+                                </span>
                             </span>
-                        </span>
-            </a>
+                </a>
 
-            <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
-                <li class="nav-item active">
-                    <a th:href="@{/}" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
-                        Courses
-                    </a>
-                    <div class="dropdown-menu">
-                        <a th:href="@{/app/course/}" class="dropdown-item">Browse Courses</a>
-                        <a th:href="@{/app/course/my-courses}" class="dropdown-item">My Courses</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown" th:if="${session.isInstructor}">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
-                        Instructors
-                    </a>
-                    <div class="dropdown-menu">
-                        <a th:href="@{/app/instructor}" class="dropdown-item">Instructor Dashboard</a>
-                        <a th:href="@{/app/course/instructor/courses/{userId}(userId=${session.userId})}" class="dropdown-item">Manage Courses</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown"
-                    data-toggle="tooltip"
-                    data-title="Community"
-                    data-placement="bottom"
-                    data-boundary="window">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
-                        <i class="material-icons">people_outline</i>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a th:href="@{/teachers.html}" class="dropdown-item">Browse Teachers</a>
-                        <a th:href="@{/student-profile.html}" class="dropdown-item">Student Profile</a>
-                        <a th:href="@{/teacher-profile.html}" class="dropdown-item">Instructor Profile</a>
-                        <a th:href="@{/blog.html}" class="dropdown-item">Blog</a>
-                        <a th:href="@{/blog-post.html}" class="dropdown-item">Blog Post</a>
-                        <a th:href="@{/faq.html}" class="dropdown-item">FAQ</a>
-                        <a th:href="@{/help-center.html}" class="dropdown-item">Help Center</a>
-                        <a th:href="@{/discussions.html}" class="dropdown-item">Discussions</a>
-                        <a th:href="@{/discussion.html}" class="dropdown-item">Discussion Details</a>
-                        <a th:href="@{/discussions-ask.html}" class="dropdown-item">Ask Question</a>
-                    </div>
-                </li>
-            </ul>
+                <ul class="nav navbar-nav d-none d-sm-flex flex justify-content-start ml-8pt">
+                    <li class="nav-item active">
+                        <a th:href="@{/}" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
+                            Courses
+                        </a>
+                        <div class="dropdown-menu">
+                            <a th:href="@{/app/course/}" class="dropdown-item">Browse Courses</a>
+                            <a th:href="@{/app/course/my-courses}" class="dropdown-item">My Courses</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown" th:if="${session.isInstructor}">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
+                            Instructors
+                        </a>
+                        <div class="dropdown-menu">
+                            <a th:href="@{/app/instructor}" class="dropdown-item">Instructor Dashboard</a>
+                            <a th:href="@{/app/course/instructor/courses/{userId}(userId=${session.userId})}" class="dropdown-item">Manage Courses</a>
+                        </div>
+                    </li>
+                </ul>
 
-            <ul class="nav navbar-nav ml-auto mr-0">
-                <li class="nav-item" th:if="${session.user == null}">
-                    <a th:href="@{/app/login}" class="nav-link" data-toggle="tooltip" data-title="Login"
-                       data-placement="bottom" data-boundary="window">
-                        <i class="material-icons">lock_open</i>
-                    </a>
-                </li>
-                <li class="nav-item" th:if="${(session.enrollment==null || session.enrollment.subscriptionStatus == false) && session.user != null}">
-                    <a th:href="@{/app/enrollments}" class="btn btn-outline-white">Get Started</a>
-                </li>
-                <li class="nav-item" th:if="${session.user == null}">
-                    <a th:href="@{/app/register}" class="btn btn-outline-white">Register</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-<!-- // END Header -->
-
-<!-- Header Layout Content -->
-<div class="mdk-header-layout__content page-content ">
-    <div>
-        <!-- Success Message -->
-        <div th:if="${successMessage}" class="alert alert-success-custom alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class="d-flex flex-wrap align-items-start">
-                <div class="mr-8pt">
-                    <i class="material-icons">check_circle</i>
-                </div>
-                <div class="flex" style="min-width: 180px">
-                    <small>
-                        <strong>Success - </strong> <span th:text="${successMessage}"></span>
-                    </small>
-                </div>
-            </div>
-        </div>
-        <!-- Error Message -->
-        <div th:if="${errorMessage}" class="alert bg-accent text-white border-0 alert-dismissible fade show"
-             role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class="d-flex flex-wrap align-items-start">
-                <div class="mr-8pt">
-                    <i class="material-icons">error</i>
-                </div>
-                <div class="flex" style="min-width: 180px">
-                    <small>
-                        <strong>Error - </strong> <span th:text="${errorMessage}"></span>
-                    </small>
-                </div>
+                <ul class="nav navbar-nav ml-auto mr-0">
+                    <li class="nav-item" th:if="${session.user == null}">
+                        <a th:href="@{/app/login}" class="nav-link" data-toggle="tooltip" data-title="Login"
+                           data-placement="bottom" data-boundary="window">
+                            <i class="material-icons">lock_open</i>
+                        </a>
+                    </li>
+                    <li class="nav-item" th:if="${(session.enrollment==null || session.enrollment.subscriptionStatus == false) && session.user != null}">
+                        <a th:href="@{/app/enrollments}" class="btn btn-outline-white">Get Started</a>
+                    </li>
+                    <li class="nav-item" th:if="${session.userId == null}">
+                        <a th:href="@{/app/register}" class="btn btn-outline-white">Register</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    <div class="container-fluid" layout:fragment="contents">
-        <!--                    Insert contents-->
-    </div>
-</div>
-<!-- // END Header Layout Content -->
+    <!-- // END Header -->
 
-<!-- Footer -->
-<div class="bg-white border-top-2 mt-auto">
-    <div class="container page__container page-section d-flex flex-column">
-        <p class="text-70 brand mb-24pt">
-            <a th:href="@{/}" class="text-70 text-underline mr-8pt small">
-            <img th:src="@{/public/images/logo.jpg}" class="brand-icon" width="30" alt="Luma"></a>
-            Pixel Pioneer Course
-        </p>
-        <p>Pixel Pioneer Course is a beautifully crafted user interface for modern education platforms,
-            encompassing a range of functionalities including Courses & Tutorials, Video Lessons, Student and Teacher
-            Dashboards, and Curriculum Management.
-            It provides a comprehensive and user-friendly experience for both learners and educators, enhancing the
-            efficiency and effectiveness of online education.
-        </p>
-        <p class="mb-8pt d-flex">
-            <a href="" class="text-70 text-underline mr-8pt small">Terms</a>
-            <a href="" class="text-70 text-underline small">Privacy policy</a>
-        </p>
+    <!-- Header Layout Content -->
+    <div class="mdk-header-layout__content page-content ">
         <div>
-            <p class="text-50 small mt-n1 mb-0">© 2024 Pixel Pioneer Course</p>
-
+            <!-- Success Message -->
+            <div th:if="${successMessage}" class="alert alert-success-custom alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="d-flex flex-wrap align-items-start">
+                    <div class="mr-8pt">
+                        <i class="material-icons">check_circle</i>
+                    </div>
+                    <div class="flex" style="min-width: 180px">
+                        <small>
+                            <strong>Success - </strong> <span th:text="${successMessage}"></span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <!-- Error Message -->
+            <div th:if="${errorMessage}" class="alert bg-accent text-white border-0 alert-dismissible fade show"
+                 role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="d-flex flex-wrap align-items-start">
+                    <div class="mr-8pt">
+                        <i class="material-icons">error</i>
+                    </div>
+                    <div class="flex" style="min-width: 180px">
+                        <small>
+                            <strong>Error - </strong> <span th:text="${errorMessage}"></span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" layout:fragment="contents">
+            <!--                    Insert contents-->
         </div>
     </div>
-</div>
-    <!-- // END Footer -->
+    <!-- // END Header Layout Content -->
 
-<!-- // END Header Layout -->
-<div class="mdk-drawer js-mdk-drawer" id="default-drawer">
-    <div class="mdk-drawer__content">
-        <div class="sidebar sidebar-dark-pickled-bluewood sidebar-left" data-perfect-scrollbar>
+    <!-- Footer -->
+    <div class="bg-white border-top-2 mt-auto">
+        <div class="container page__container page-section d-flex flex-column">
+            <p class="text-70 brand mb-24pt">
+                <a th:href="@{/}" class="text-70 text-underline mr-8pt small">
+                <img th:src="@{/public/images/logo.jpg}" class="brand-icon" width="30" alt="Luma"></a>
+                Pixel Pioneer Course
+            </p>
+            <p>Pixel Pioneer Course is a beautifully crafted user interface for modern education platforms,
+                encompassing a range of functionalities including Courses & Tutorials, Video Lessons, Student and Teacher
+                Dashboards, and Curriculum Management.
+                It provides a comprehensive and user-friendly experience for both learners and educators, enhancing the
+                efficiency and effectiveness of online education.
+            </p>
+            <p class="mb-8pt d-flex">
+                <a href="" class="text-70 text-underline mr-8pt small">Terms</a>
+                <a href="" class="text-70 text-underline small">Privacy policy</a>
+            </p>
+            <div>
+                <p class="text-50 small mt-n1 mb-0">© 2024 Pixel Pioneer Course</p>
 
-            <!-- Sidebar Content -->
-            <!-- <div class="d-flex align-items-center navbar-height">
-                <form th:action="@{/}" class="search-form search-form--black mx-16pt pr-0 pl-16pt">
-                    <input type="text" class="form-control pl-0" placeholder="Search">
-                    <button class="btn" type="submit">
-                        <i class="material-icons">search</i>
-                    </button>
-                </form>
-            </div>  -->
+            </div>
+        </div>
+    </div>
+        <!-- // END Footer -->
 
-            <a th:href="@{/}" class="sidebar-brand ">
-                        <span class="avatar avatar-xl sidebar-brand-icon h-auto">
-                            <span class="avatar-title rounded bg-primary">
-                                <img th:src="@{/public/images/logo.jpg}" class="img-fluid"
-                                     alt="logo"/>
+    <!-- // END Header Layout -->
+    <div class="mdk-drawer js-mdk-drawer" id="default-drawer">
+        <div class="mdk-drawer__content">
+            <div class="sidebar sidebar-dark-pickled-bluewood sidebar-left" data-perfect-scrollbar>
+                <a th:href="@{/}" class="sidebar-brand ">
+                            <span class="avatar avatar-xl sidebar-brand-icon h-auto">
+                                <span class="avatar-title rounded bg-primary">
+                                    <img th:src="@{/public/images/logo.jpg}" class="img-fluid"
+                                         alt="logo"/>
+                                </span>
                             </span>
-                        </span>
-                <span style="text-align: center;">Pixel Pioneer Course</span>
-            </a>
+                    <span style="text-align: center;">Pixel Pioneer Course</span>
+                </a>
 
-            <div class="sidebar-heading" th:if="${session.isUser}">Student</div>
-            <ul class="sidebar-menu" th:if="${session.isUser}">
-                <li class="sidebar-menu-item active">
-                    <a class="sidebar-menu-button" th:href="@{/app/users/profile/{id}(id=${session.userId})}">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">face</span>
-                        <span class="sidebar-menu-text">Profile</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/app/course/}">
-                                <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">local_library
-                                </span>
-                        <span class="sidebar-menu-text">Browse Courses</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/}">
-                                <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box
-                                </span>
-                        <span class="sidebar-menu-text">User Dashboard</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/app/enrollments/user-history-enrollment}">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">layers</span>
-                        <span class="sidebar-menu-text">Enrollment</span>
-                    </a>
-                </li>
-                
-            </ul>
+                <div class="sidebar-heading" th:if="${session.isUser}">Student</div>
+                <ul class="sidebar-menu" th:if="${session.isUser}">
+                    <li class="sidebar-menu-item active">
+                        <a class="sidebar-menu-button" th:href="@{/app/users/profile/{id}(id=${session.userId})}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">face</span>
+                            <span class="sidebar-menu-text">Profile</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" th:href="@{/app/course/}">
+                                    <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">local_library
+                                    </span>
+                            <span class="sidebar-menu-text">Browse Courses</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" th:href="@{/}">
+                                    <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box
+                                    </span>
+                            <span class="sidebar-menu-text">User Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" th:href="@{/app/enrollments/user-history-enrollment}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">layers</span>
+                            <span class="sidebar-menu-text">Enrollment</span>
+                        </a>
+                    </li>
 
-            <div class="sidebar-heading" th:if="${session.isInstructor}">Instructor</div>
-            <ul class="sidebar-menu" th:if="${session.isInstructor}">
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/instructor-dashboard.html}">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">school</span>
-                        <span class="sidebar-menu-text">Instructor Dashboard</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{'/app/course' + ${session.userId}}" >
-                                <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">import_contacts
-                                </span>
-                        <span class="sidebar-menu-text">Manage Courses</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/app/enrollments/user-history-enrollment}">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">help</span>
-                        <span class="sidebar-menu-text">Enrollment Management</span>
-                    </a>
-                </li>
-<!--                <li class="sidebar-menu-item">-->
-<!--                    <a class="sidebar-menu-button" th:href="@{/instructor-earnings.html}">-->
-<!--                                <span class="material-icons sidebar-menu-icon sidebar-menu-icon&#45;&#45;left">trending_up-->
-<!--                                </span>-->
-<!--                        <span class="sidebar-menu-text">Earnings</span>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li class="sidebar-menu-item">-->
-<!--                    <a class="sidebar-menu-button" th:href="@{/instructor-statement.html}">-->
-<!--                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon&#45;&#45;left">receipt</span>-->
-<!--                        <span class="sidebar-menu-text">Statement</span>-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--                <li class="sidebar-menu-item">-->
-<!--                    <a class="sidebar-menu-button" th:href="@{/instructor-edit-course.html}">-->
-<!--                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon&#45;&#45;left">post_add</span>-->
-<!--                        <span class="sidebar-menu-text">Edit Course</span>-->
-<!--                    </a>-->
-<!--                </li>-->
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button" th:href="@{/logout}">
-                                <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">format_shapes
-                                </span>
-                        <span class="sidebar-menu-text">Logout</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="sidebar-heading" th:if="${session.isAdmin}">Admin - Management</div>
-            <ul class="sidebar-menu" th:if="${session.isAdmin}">
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button"
-                       data-toggle="collapse"
-                       href="#admin_dashboard">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box</span>
-                        Dashboard
-                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                    </a>
-                    <ul class="sidebar-submenu collapse sm-indent"
-                        id="admin_dashboard">
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/app/admin/dashboard}">
-                                <span class="sidebar-menu-text">View Dashboard</span>
-                            </a>
-                        </li>
-                        
-                    </ul>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button"
-                       data-toggle="collapse"
-                       href="#user_menu">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box</span>
-                        User
-                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                    </a>
-                    <ul class="sidebar-submenu collapse sm-indent"
-                        id="user_menu">
-		                <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/app/admin/users}">
-                                <span class="sidebar-menu-text">General</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button"
-                       data-toggle="collapse"
-                       href="#category_menu">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">folder</span>
-                        Category
-                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                    </a>
-                    <ul class="sidebar-submenu collapse sm-indent"
-                        id="category_menu">
-		                <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/app/admin/categories}">
-                                <span class="sidebar-menu-text">General</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button"
-                       data-toggle="collapse"
-                       href="#review_menu">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">rate_review</span>
-                        Review
-                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                    </a>
-                    <ul class="sidebar-submenu collapse sm-indent"
-                        id="review_menu">
-		                <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/app/admin/reviews}">
-                                <span class="sidebar-menu-text">General</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button"
-                       data-toggle="collapse"
-                       href="#discussion_menu">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">chat</span>
-                        Discussion
-                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                    </a>
-                    <ul class="sidebar-submenu collapse sm-indent"
-                        id="discussion_menu">
-		                <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/app/admin/discussion}">
-                                <span class="sidebar-menu-text">General</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button"
-                       data-toggle="collapse"
-                       href="#enrollment_menu">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">work</span>
-                        Manage Enrollment
-                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                    </a>
-                    <ul class="sidebar-submenu collapse sm-indent"
-                        id="enrollment_menu">
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/admin/enrollments}">
-                                <span class="sidebar-menu-text">View Enrollment</span>
-                            </a>
-                        </li>
-<!--                        <li class="sidebar-menu-item">-->
-<!--                            <a class="sidebar-menu-button" th:href="@{/app/admin/role/create}">-->
-<!--                                <span class="sidebar-menu-text">Create</span>-->
-<!--                            </a>-->
-<!--                        </li>-->
-                    </ul>
-                </li>
-            </ul>
+                </ul>
 
-            <div class="sidebar-heading" th:if="${session.user != null}">Components</div>
-            <ul class="sidebar-menu" th:if="${session.user != null}">
-                <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-button"
-                       data-toggle="collapse"
-                       href="#components_menu">
-                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">tune</span>
-                        Settings
-                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
-                    </a>
-                    <ul class="sidebar-submenu collapse sm-indent"
-                        id="components_menu">
-                        <li class="sidebar-menu-item">
-                        	<a class="sidebar-menu-button" th:href="@{/app/users/profile/{id}(id=${session.userId})}">
-		                        <span class="sidebar-menu-text">My Profile</span>
-		                    </a>
-                        </li>
-		                <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/app/users/profile/edit-my-profile}">
-                                <span class="sidebar-menu-text">Edit Profile</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/app/reset-password}">
-                                <span class="sidebar-menu-text">Reset Password</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" th:href="@{/logout}">
-                                <span class="sidebar-menu-text">Logout</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="sidebar-heading" th:if="${session.user == null}" style="text-align: center;">Please login/register to gain access to our applications.</div>
+                <div class="sidebar-heading" th:if="${session.isInstructor}">Instructor</div>
+                <ul class="sidebar-menu" th:if="${session.isInstructor}">
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" th:href="@{/instructor-dashboard.html}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">school</span>
+                            <span class="sidebar-menu-text">Instructor Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" th:href="@{'/app/course' + ${session.userId}}" >
+                                    <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">import_contacts
+                                    </span>
+                            <span class="sidebar-menu-text">Manage Courses</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" th:href="@{/app/enrollments/user-history-enrollment}">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">help</span>
+                            <span class="sidebar-menu-text">Enrollment Management</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button" th:href="@{/logout}">
+                                    <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">format_shapes
+                                    </span>
+                            <span class="sidebar-menu-text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="sidebar-heading" th:if="${session.isAdmin}">Admin - Management</div>
+                <ul class="sidebar-menu" th:if="${session.isAdmin}">
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button"
+                           data-toggle="collapse"
+                           href="#admin_dashboard">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box</span>
+                            Dashboard
+                            <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                        </a>
+                        <ul class="sidebar-submenu collapse sm-indent"
+                            id="admin_dashboard">
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/app/admin/dashboard}">
+                                    <span class="sidebar-menu-text">View Dashboard</span>
+                                </a>
+                            </li>
 
-            <!-- // END Sidebar Content -->
+                        </ul>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button"
+                           data-toggle="collapse"
+                           href="#user_menu">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">account_box</span>
+                            User
+                            <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                        </a>
+                        <ul class="sidebar-submenu collapse sm-indent"
+                            id="user_menu">
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/app/admin/users}">
+                                    <span class="sidebar-menu-text">General</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button"
+                           data-toggle="collapse"
+                           href="#category_menu">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">folder</span>
+                            Category
+                            <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                        </a>
+                        <ul class="sidebar-submenu collapse sm-indent"
+                            id="category_menu">
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/app/admin/categories}">
+                                    <span class="sidebar-menu-text">General</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button"
+                           data-toggle="collapse"
+                           href="#review_menu">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">rate_review</span>
+                            Review
+                            <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                        </a>
+                        <ul class="sidebar-submenu collapse sm-indent"
+                            id="review_menu">
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/app/admin/reviews}">
+                                    <span class="sidebar-menu-text">General</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button"
+                           data-toggle="collapse"
+                           href="#discussion_menu">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">chat</span>
+                            Discussion
+                            <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                        </a>
+                        <ul class="sidebar-submenu collapse sm-indent"
+                            id="discussion_menu">
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/app/admin/discussion}">
+                                    <span class="sidebar-menu-text">General</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button"
+                           data-toggle="collapse"
+                           href="#enrollment_menu">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">work</span>
+                            Manage Enrollment
+                            <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                        </a>
+                        <ul class="sidebar-submenu collapse sm-indent"
+                            id="enrollment_menu">
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/admin/enrollments}">
+                                    <span class="sidebar-menu-text">View Enrollment</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
 
+                <div class="sidebar-heading" th:if="${session.user != null}">Components</div>
+                <ul class="sidebar-menu" th:if="${session.user != null}">
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button"
+                           data-toggle="collapse"
+                           href="#components_menu">
+                            <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">tune</span>
+                            Settings
+                            <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                        </a>
+                        <ul class="sidebar-submenu collapse sm-indent"
+                            id="components_menu">
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/app/users/profile/{id}(id=${session.userId})}">
+                                    <span class="sidebar-menu-text">My Profile</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/app/users/profile/edit-my-profile}">
+                                    <span class="sidebar-menu-text">Edit Profile</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/app/reset-password}">
+                                    <span class="sidebar-menu-text">Reset Password</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" th:href="@{/logout}">
+                                    <span class="sidebar-menu-text">Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="sidebar-heading" th:if="${session.user == null}" style="text-align: center;">Please login/register to gain access to our applications.</div>
+
+                <!-- // END Sidebar Content -->
+
+            </div>
         </div>
     </div>
 </div>

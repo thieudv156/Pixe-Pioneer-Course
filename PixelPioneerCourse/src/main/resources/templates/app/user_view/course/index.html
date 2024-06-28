@@ -73,20 +73,27 @@
                 </div>
 
                 <!-- Pagination Controls -->
-                <div th:if="${courses==null}" th:text="No published courses"></div>
-                <div th:if="${courses!=null}" class="d-flex justify-content-center mt-4">
-                    <ul class="pagination">
+
+                <div th:if="${courses != null}" class="mb-32pt d-flex justify-content-start mt-4">
+                    <ul class="pagination justify-content-start pagination-xsm m-0">
+                        <!-- Previous Page Link -->
                         <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{'?page=' + (${currentPage} - 1)}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
+                            <a class="page-link" th:href="@{'/app/course?page=' + (${currentPage} - 1)}" aria-label="Previous">
+                                <span aria-hidden="true" class="material-icons">chevron_left</span>
+                                <span>Prev</span>
                             </a>
                         </li>
+
+                        <!-- Page Numbers -->
                         <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{'?page=' + ${i}}" th:text="${i}">1</a>
+                            <a class="page-link" th:href="@{'/app/course?page=' + ${i}}" th:aria-label="'Page ' + ${i}" th:text="${i}">1</a>
                         </li>
+
+                        <!-- Next Page Link -->
                         <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                            <a class="page-link" th:href="@{'?page=' + (${currentPage} + 1)}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
+                            <a class="page-link" th:href="@{'/app/course?page=' + (${currentPage} + 1)}" aria-label="Next">
+                                <span>Next</span>
+                                <span aria-hidden="true" class="material-icons">chevron_right</span>
                             </a>
                         </li>
                     </ul>
@@ -105,7 +112,11 @@
                         <button class="btn" type="submit"><i class="material-icons">search</i></button>
                     </form>
                 </div>
-
+                <form class="search-form navbar-search d-none d-md-flex mr-16pt ml-16pt sidebar-heading"
+                      th:action="@{/app/course/search}" method="get">
+                    <button class="btn" type="submit"><i class="material-icons">search</i></button>
+                    <input type="text" class="form-control" placeholder="Search ..." name="search" th:value="${searchQuery}">
+                </form>
                 <div class="sidebar-heading">Category</div>
                 <ul class="sidebar-menu">
                     <li th:each="category : ${categories}" class="sidebar-menu-item">

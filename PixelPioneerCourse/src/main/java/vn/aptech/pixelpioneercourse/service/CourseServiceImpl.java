@@ -227,12 +227,10 @@ public class CourseServiceImpl implements CourseService{
 
     //Find course by title
     public List<Course> findByTitle(String title){
-        try{
-            return courseRepository.findByTitleContainingIgnoreCase(title);
+        if(title == null) {
+            return findAllPublishedCourses();
         }
-        catch (Exception e){
-            throw new RuntimeException("Course name not found!");
-        }
+        return courseRepository.findByTitleContainingIgnoreCase(title);
     }
 
     public Boolean startCourse(Integer courseId, Integer userId) {

@@ -149,6 +149,44 @@ public class AppCourseController {
         return "app/user_view/course/index";
     }
 
+    @GetMapping("/search")
+    public String searchCourses(Model model,
+                                @RequestParam(value = "page", defaultValue = "1") int page,
+                                @RequestParam(value = "search", required = false) String search) {
+        int pageSize = 12; // Number of courses per page
+
+        // Use the repository method to search by title
+        List<Course> courseList = courseService.findByTitle(search);
+        RestTemplate restTemplate = new RestTemplate();
+        Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
+        List<Category> categoryList = Arrays.asList(categories);
+
+        int totalCourses = courseList.size();
+        int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+        // Ensure the page number is within the valid range
+        if (page < 1) {
+            page = 1;
+        } else if (page > totalPages) {
+            page = totalPages;
+        }
+
+        int start = (page - 1) * pageSize;
+        if (start < 0) {
+            start = 0;
+        }
+        int end = Math.min(start + pageSize, totalCourses);
+        List<Course> courses = courseList.subList(start, end);
+        model.addAttribute("categories", categoryList);
+        model.addAttribute("courses", courses);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("imageApiUrl", imageApiUrl);
+        model.addAttribute("totalCourses", totalCourses);
+        model.addAttribute("searchQuery", search);
+        return "app/user_view/course/index";
+    }
+
     @GetMapping("/view/{id}")
     public String showCourseByIdAndLessonId(Model model,
                                             @PathVariable("id") Integer id,
