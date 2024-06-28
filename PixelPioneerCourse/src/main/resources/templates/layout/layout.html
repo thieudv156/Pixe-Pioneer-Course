@@ -386,6 +386,57 @@
                 <li class="sidebar-menu-item">
                     <a class="sidebar-menu-button"
                        data-toggle="collapse"
+                       href="#category_menu">
+                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">folder</span>
+                        Category
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                    </a>
+                    <ul class="sidebar-submenu collapse sm-indent"
+                        id="category_menu">
+		                <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/admin/categories}">
+                                <span class="sidebar-menu-text">General</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a class="sidebar-menu-button"
+                       data-toggle="collapse"
+                       href="#review_menu">
+                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">rate_review</span>
+                        Review
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                    </a>
+                    <ul class="sidebar-submenu collapse sm-indent"
+                        id="review_menu">
+		                <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/admin/reviews}">
+                                <span class="sidebar-menu-text">General</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a class="sidebar-menu-button"
+                       data-toggle="collapse"
+                       href="#discussion_menu">
+                        <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">chat</span>
+                        Discussion
+                        <span class="ml-auto sidebar-menu-toggle-icon"></span>
+                    </a>
+                    <ul class="sidebar-submenu collapse sm-indent"
+                        id="discussion_menu">
+		                <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" th:href="@{/app/admin/discussion}">
+                                <span class="sidebar-menu-text">General</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a class="sidebar-menu-button"
+                       data-toggle="collapse"
                        href="#enrollment_menu">
                         <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">work</span>
                         Manage Enrollment

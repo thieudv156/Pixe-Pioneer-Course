@@ -9,6 +9,7 @@ import java.util.List;
 public interface DiscussionService {
     List<Discussion> findAll();
     Discussion findById(Integer id);
+    List<Discussion> findByQuery(String query);
     Discussion createDiscussion(DiscussionCreateDto discussionCreateDto);
     Discussion updateDiscussion(Integer id, DiscussionCreateDto discussionDetails);
     void deleteById(Integer id);

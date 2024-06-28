@@ -48,18 +48,18 @@ public class RegisterController {
         	try {
 	        	int textPhone = Integer.parseInt(dto.getPhone());
 	        	if (dto.getPhone().length() < 9 || dto.getPhone().length() > 11) {
-	        		ra.addFlashAttribute("ErrorCondition", true);
-	        		ra.addFlashAttribute("ErrorError", "Phone should only contain 9 to 11 digits");
+	        		ra.addFlashAttribute("failRegisterationCondition", true);
+	        		ra.addFlashAttribute("failRegisteration", "Phone should only contain 9 to 11 digits");
 	        		return "redirect:/app/register";
 	        	}
 	        	if (dto.getUsername().contains(" ")) {
-	        		ra.addFlashAttribute("ErrorCondition", true);
-	        		ra.addFlashAttribute("ErrorError", "Username should not contain spaces");
+	        		ra.addFlashAttribute("failRegisterationCondition", true);
+	        		ra.addFlashAttribute("failRegisteration", "Username should not contain spaces");
 	        		return "redirect:/app/register";
 	        	}
 	        } catch (Exception e) {
-	        	ra.addFlashAttribute("ErrorCondition", true);
-	        	ra.addFlashAttribute("ErrorError", "Phone should contain only digits");
+	        	ra.addFlashAttribute("failRegisterationCondition", true);
+	        	ra.addFlashAttribute("failRegisteration", "Phone should contain only digits");
 	        	return "redirect:/app/register";
 	        }
             if (userService.create(dto)) {
@@ -67,13 +67,13 @@ public class RegisterController {
                 ra.addFlashAttribute("successMessage", "Successful registration, please log in to your account");
                 return "redirect:/app/login";
             } else {
-                ra.addFlashAttribute("failRegistrationCondition", true);
-                ra.addFlashAttribute("failRegistration", "Invalid information or account has already existed");
+                ra.addFlashAttribute("failRegisterationCondition", true);
+                ra.addFlashAttribute("failRegisteration", "Invalid information or there are accounts already exist with such information. Please try a different username/email/phone");
                 return "redirect:/app/register";
             }
         } catch (Exception e) {
-            ra.addFlashAttribute("failRegistrationCondition", true);
-            ra.addFlashAttribute("failRegistration", e.getMessage());
+            ra.addFlashAttribute("failRegisterationCondition", true);
+            ra.addFlashAttribute("failRegisteration", e.getMessage());
             return "redirect:/app/register";
         }
     }

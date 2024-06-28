@@ -34,6 +34,11 @@ public class DiscussionServiceImpl implements DiscussionService {
     public Discussion findById(Integer id) {
         return discussionRepository.findById(id).orElseThrow(()-> new RuntimeException("Discussion not found"));
     }
+    
+    @Override
+    public List<Discussion> findByQuery(String query) {
+    	return discussionRepository.findByCourseTitleOrUserFullName(query);
+    }
 
     @Override
     public Discussion createDiscussion(DiscussionCreateDto discussionCreateDto) {
@@ -59,7 +64,7 @@ public class DiscussionServiceImpl implements DiscussionService {
 
     @Override
     public void deleteById(Integer id) {
-        discussionRepository.deleteById(id);
+        discussionRepository.delete(findById(id));
     }
 
     @Override

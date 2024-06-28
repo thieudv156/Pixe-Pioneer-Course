@@ -14,4 +14,5 @@ public interface ReviewService {
     Review update(Integer id, ReviewCreateDto dto);
     void delete(Integer id);
     Review findById(Integer rid);
+    List<Review>findByQuery(String query);
 }

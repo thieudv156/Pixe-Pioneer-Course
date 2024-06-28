@@ -1,6 +1,7 @@
 package vn.aptech.pixelpioneercourse.controller.app.admin;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -9,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Role;
 import vn.aptech.pixelpioneercourse.entities.User;
+import vn.aptech.pixelpioneercourse.service.CategoryService;
 import vn.aptech.pixelpioneercourse.service.RoleService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
@@ -23,6 +26,9 @@ public class RestControllerforRealTimeData {
 	
 	@Autowired
 	private RoleService roleService;
+	
+	@Autowired
+	private CategoryService categoryService;
 
 	@GetMapping("/app/admin/users/search")
     public List<User> searchUsers(@RequestParam("query") String query, Model model) {
