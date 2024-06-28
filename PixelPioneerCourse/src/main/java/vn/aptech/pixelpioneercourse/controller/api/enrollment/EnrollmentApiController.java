@@ -1,5 +1,7 @@
 package vn.aptech.pixelpioneercourse.controller.api.enrollment;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
@@ -105,7 +107,10 @@ public class EnrollmentApiController {
             subscriptionInfo.add(Map.of("user_name", enrollInfo.getUser().getFullName()));
             subscriptionInfo.add(Map.of("subscription_state", enrollInfo.getSubscriptionStatus().toString()));
             subscriptionInfo.add(Map.of("subscription_package_name", enrollInfo.getSubscriptionType().toString()));
-            subscriptionInfo.add(Map.of("validity", Period.between(LocalDateTime.now().toLocalDate(), enrollInfo.getSubscriptionEndDate().toLocalDate()).toString()));
+            subscriptionInfo.add(Map.of(
+            		  "validity",
+            		  Long.toString(Duration.between(LocalDate.now().atStartOfDay(), enrollInfo.getSubscriptionEndDate().toLocalDate().atStartOfDay()).toDays()
+            		)));
 
             ObjectMapper objectMapper = new ObjectMapper(); // Create an ObjectMapper instance
             String json = objectMapper.writeValueAsString(subscriptionInfo); // Convert subscriptionInfo to JSON

@@ -22,14 +22,19 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.aptech.pixelpioneercourse.dto.CourseCreateDto;
+import vn.aptech.pixelpioneercourse.dto.DiscussionCreateDto;
 import vn.aptech.pixelpioneercourse.entities.*;
 import vn.aptech.pixelpioneercourse.service.CourseService;
+import vn.aptech.pixelpioneercourse.service.DiscussionService;
 import vn.aptech.pixelpioneercourse.service.ProgressService;
 import vn.aptech.pixelpioneercourse.service.ReviewService;
 import vn.aptech.pixelpioneercourse.service.SubLessonService;
 import vn.aptech.pixelpioneercourse.service.SubLessonServiceImpl;
 import vn.aptech.pixelpioneercourse.service.UserService;
+import vn.aptech.pixelpioneercourse.until.SensitiveWordFilter;
 
+import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,9 +53,10 @@ public class AppCourseController {
     private final SubLessonService subLessonService;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final DiscussionService discussionService;
 
     @Autowired
-    public AppCourseController(ModelMapper modelMapper, UserService uService, ReviewService reService, ObjectMapper objectMapper, ProgressService progressService, CourseService courseService, SubLessonService subLessonService) {
+    public AppCourseController(ModelMapper modelMapper, UserService uService, ReviewService reService, ObjectMapper objectMapper, ProgressService progressService, CourseService courseService, SubLessonService subLessonService, DiscussionService dService) {
         this.modelMapper = modelMapper;
         this.objectMapper = objectMapper;
         this.progressService = progressService;
@@ -58,6 +64,7 @@ public class AppCourseController {
         this.subLessonService = subLessonService;
         reviewService = reService;
         userService = uService;
+        discussionService = dService;
     }
 
     @PostConstruct
@@ -193,6 +200,7 @@ public class AppCourseController {
                                             @RequestParam(value = "lessonOrder", defaultValue = "1") Integer lessonOrder,
                                             @RequestParam(value = "subLessonId", required = false) Integer subLessonId,
                                             @SessionAttribute("userId") Integer userId) {
+        // Fetch course and lessons
         RestTemplate restTemplate = new RestTemplate();
         Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
         if (course.isEmpty()) {
@@ -206,27 +214,115 @@ public class AppCourseController {
             }
         }
 
-
+        // Fetch discussions
+        List<Discussion> discussions;
         if (subLessonId == null) {
             SubLesson currentSubLesson = progressService.getCurrentSubLessonByCourseId(id, userId);
+            discussions = discussionService.findBySubLessonId(currentSubLesson.getId());
             model.addAttribute("currentSubLesson", currentSubLesson);
             model.addAttribute("currentLesson", currentSubLesson.getLesson());
         } else {
-            Lesson currentLesson = lessons.stream().filter(lesson -> lesson.getOrderNumber().equals(lessonOrder)).toList().getFirst();
+            Lesson currentLesson = lessons.stream()
+                    .filter(lesson -> lesson.getOrderNumber().equals(lessonOrder))
+                    .findFirst()
+                    .orElse(null);
             SubLesson currentSubLesson = currentLesson.getSubLessons().stream()
                     .filter(subLesson -> subLesson.getId().equals(subLessonId))
                     .findFirst()
                     .orElse(null);
+            discussions = discussionService.findBySubLessonId(currentSubLesson.getId());
             model.addAttribute("currentLesson", currentLesson);
             model.addAttribute("currentSubLesson", currentSubLesson);
         }
-        Double currentProgress = progressService.getCurrentProgressByCourseId(id, userId);
-        model.addAttribute("currentProgress", currentProgress);
+
+        // Organize discussions into a map
+        Map<Integer, List<Discussion>> discussionMap = new HashMap<>();
+        for (Discussion discussion : discussions) {
+            Integer parentId = (discussion.getParent() == null) ? null : discussion.getParent().getId();
+            discussionMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(discussion);
+        }
+
+        model.addAttribute("discussionMap", discussionMap);
+        model.addAttribute("discussions", discussionMap.get(null)); // Top-level discussions
+        model.addAttribute("currentProgress", progressService.getCurrentProgressByCourseId(id, userId));
         model.addAttribute("subLessonHashMap", subLessonHashMap);
         model.addAttribute("lessons", lessons);
         model.addAttribute("course", course.get());
         model.addAttribute("pageTitle", "Course detail");
         return "app/user_view/course/course-view";
+    }
+    
+    @PostMapping("/view/comment")
+    public String createDiscussion(@RequestParam("sublessonId") String sublessonId, 
+                                   @RequestParam("userId") String userId, 
+                                   @RequestParam("courseId") String courseId, 
+                                   @RequestParam("content") String content, 
+                                   RedirectAttributes ra) {
+        try {
+            if (!SensitiveWordFilter.sensitiveWordsChecker(content)) {
+                ra.addFlashAttribute("ErrorCondition", true);
+                ra.addFlashAttribute("ErrorError", "Bad words detected.");
+                return "redirect:/app/course/view/" + URLEncoder.encode(courseId, "UTF-8") + 
+                       "?subLessonId=" + URLEncoder.encode(sublessonId, "UTF-8") + 
+                       "&lessonOrder=" + URLEncoder.encode(subLessonService.findById(Integer.parseInt(sublessonId)).getOrderNumber().toString(), "UTF-8");
+            }
+            DiscussionCreateDto newDiscussion = new DiscussionCreateDto();
+            newDiscussion.setUserId(Integer.parseInt(userId));
+            newDiscussion.setContent(content);
+            newDiscussion.setParentId(null);
+            newDiscussion.setSubLessonId(Integer.parseInt(sublessonId));
+            newDiscussion.setCreatedAt(LocalDateTime.now());
+            discussionService.createDiscussion(newDiscussion);
+            return "redirect:/app/course/view/" + URLEncoder.encode(courseId, "UTF-8") + 
+                   "?subLessonId=" + URLEncoder.encode(sublessonId, "UTF-8") + 
+                   "&lessonOrder=" + URLEncoder.encode(subLessonService.findById(Integer.parseInt(sublessonId)).getOrderNumber().toString(), "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/app/error/500";
+        }
+    }
+    
+    @PostMapping("/view/replyComment")
+    public String replyComment(@RequestParam("sublessonId") String sublessonId, @RequestParam("courseId") String courseId, @RequestParam("userId") String userId, @RequestParam("discussionId") String discussionId, @RequestParam("content") String content, RedirectAttributes ra) {
+    	try {
+    		if (!SensitiveWordFilter.sensitiveWordsChecker(content)) {
+    			ra.addFlashAttribute("ErrorCondition",true);
+    			ra.addFlashAttribute("ErrorError", "Bad words detected.");
+    			return "redirect:/app/course/view/" + URLEncoder.encode(courseId, "UTF-8") + 
+    	                   "?subLessonId=" + URLEncoder.encode(sublessonId, "UTF-8") + 
+    	                   "&lessonOrder=" + URLEncoder.encode(subLessonService.findById(Integer.parseInt(sublessonId)).getOrderNumber().toString(), "UTF-8");
+    		}
+    		DiscussionCreateDto newDiscussion = new DiscussionCreateDto();
+            newDiscussion.setUserId(Integer.parseInt(userId));
+            newDiscussion.setContent(content);
+            newDiscussion.setParentId(Integer.parseInt(discussionId));
+            newDiscussion.setSubLessonId(Integer.parseInt(sublessonId));
+            newDiscussion.setCreatedAt(LocalDateTime.now());
+            discussionService.createDiscussion(newDiscussion);
+            return "redirect:/app/course/view/" + URLEncoder.encode(courseId, "UTF-8") + 
+	                   "?subLessonId=" + URLEncoder.encode(sublessonId, "UTF-8") + 
+	                   "&lessonOrder=" + URLEncoder.encode(subLessonService.findById(Integer.parseInt(sublessonId)).getOrderNumber().toString(), "UTF-8");
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		return "redirect:/app/error/500";
+    	}
+    }
+    
+    @GetMapping("/view/deleteComment")
+    public String deleteDiscussion(@RequestParam("discussionId") String discussionId, @RequestParam("courseId") String courseId, @RequestParam("sublessonId") String sublessonId) {
+    	try {
+    		Discussion existedDiscussion = discussionService.findById(Integer.parseInt(discussionId));
+    		if (existedDiscussion.getParent() != null) {
+    			existedDiscussion.setParent(null);
+    		}
+    		discussionService.deleteById(existedDiscussion.getId());
+    		return "redirect:/app/course/view/" + URLEncoder.encode(courseId, "UTF-8") + 
+                    "?subLessonId=" + URLEncoder.encode(sublessonId, "UTF-8") + 
+                    "&lessonOrder=" + URLEncoder.encode(subLessonService.findById(Integer.parseInt(sublessonId)).getOrderNumber().toString(), "UTF-8");
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		return "redirect:/app/error/500";
+    	}
     }
 
     @GetMapping("/instructor/courses/{instructorId}")

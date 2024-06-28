@@ -57,7 +57,7 @@ public class Course {
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("course")
+//    @JsonIgnoreProperties("course")
     @Setter
     @ToString.Exclude
     private List<Lesson> lessons = new ArrayList<>();
