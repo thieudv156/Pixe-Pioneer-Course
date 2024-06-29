@@ -19,18 +19,24 @@ public class TestServiceImpl implements TestService {
     private final UserService userService;
     private final QuestionService questionService;
     private final CourseCompleteService courseCompleteService;
+    private final ProgressService progressService;
 
-    public TestServiceImpl(TestRepository testRepository, ModelMapper modelMapper, @Lazy TestFormatService testFormatService, UserService userService, @Lazy QuestionService questionService, CourseCompleteService courseCompleteService) {
+    public TestServiceImpl(TestRepository testRepository, ModelMapper modelMapper, @Lazy TestFormatService testFormatService, UserService userService, @Lazy QuestionService questionService, CourseCompleteService courseCompleteService, CourseService courseService, ProgressService progressService) {
         this.testRepository = testRepository;
         this.modelMapper = modelMapper;
         this.testFormatService = testFormatService;
         this.userService = userService;
         this.questionService = questionService;
         this.courseCompleteService = courseCompleteService;
+        this.progressService = progressService;
     }
 
     public TestDto createTestDto(Integer testFormatId, Integer userId) {
         try {
+            if(progressService.getCurrentProgressByCourseId(testFormatService.findById(testFormatId).getCourse().getId(),userId)!=100)
+            {
+                throw new RuntimeException("You must have 100% progress before doing the final test!");
+            }
             TestDto test = new TestDto();
             test.setTestFormatId(testFormatId);
             test.setUser(userService.findById(userId));
