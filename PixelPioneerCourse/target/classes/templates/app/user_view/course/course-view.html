@@ -104,7 +104,7 @@
                             <div class="card">
                                 <div class="list-group list-group-flush text-center">
                                     <div class="list-group-item">
-                                        <a th:href="@{/app/course/sub-lesson/{id}/finish-sub-lesson(id=${currentSubLesson.id})}" class="btn btn-outline-primary-purple"><strong>Mark as finish</strong></a>
+                                        <a th:href="@{/app/course/{courseId}/sub-lesson/{id}/finish-sub-lesson(courseId = ${course.id},id=${currentSubLesson.id})}" class="btn btn-outline-primary-purple"><strong>Mark as finish</strong></a>
                                     </div>
                                 </div>
                                 <div class="list-group list-group-flush text-center">

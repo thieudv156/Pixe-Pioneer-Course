@@ -210,57 +210,63 @@ public class AppCourseController {
                                             @PathVariable("id") Integer id,
                                             @RequestParam(value = "lessonOrder", defaultValue = "1") Integer lessonOrder,
                                             @RequestParam(value = "subLessonId", required = false) Integer subLessonId,
-                                            @SessionAttribute("userId") Integer userId) {
-        // Fetch course and lessons
-        RestTemplate restTemplate = new RestTemplate();
-        Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
-        if (course.isEmpty()) {
-            return "redirect:/app/course";
-        }
-        List<Lesson> lessons = course.get().getLessons();
-        HashMap<Integer, SubLesson> subLessonHashMap = new HashMap<>();
-        for (Lesson lesson : lessons) {
-            for (SubLesson subLesson : lesson.getSubLessons()) {
-                subLessonHashMap.put(subLesson.getId(), subLesson);
+                                            @SessionAttribute("userId") Integer userId,
+                                            RedirectAttributes redirectAttributes) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            Optional<Course> course = Optional.ofNullable(restTemplate.getForObject(courseApiUrl + "/" + id, Course.class));
+            if (course.isEmpty()) {
+                return "redirect:/app/course";
             }
-        }
 
-        // Fetch discussions
-        List<Discussion> discussions;
-        if (subLessonId == null) {
-            SubLesson currentSubLesson = progressService.getCurrentSubLessonByCourseId(id, userId);
-            discussions = discussionService.findBySubLessonId(currentSubLesson.getId());
-            model.addAttribute("currentSubLesson", currentSubLesson);
-            model.addAttribute("currentLesson", currentSubLesson.getLesson());
-        } else {
-            Lesson currentLesson = lessons.stream()
-                    .filter(lesson -> lesson.getOrderNumber().equals(lessonOrder))
-                    .findFirst()
-                    .orElse(null);
-            SubLesson currentSubLesson = currentLesson.getSubLessons().stream()
-                    .filter(subLesson -> subLesson.getId().equals(subLessonId))
-                    .findFirst()
-                    .orElse(null);
-            discussions = discussionService.findBySubLessonId(currentSubLesson.getId());
-            model.addAttribute("currentLesson", currentLesson);
-            model.addAttribute("currentSubLesson", currentSubLesson);
-        }
+            List<Lesson> lessons = course.get().getLessons();
+            HashMap<Integer, SubLesson> subLessonHashMap = new HashMap<>();
+            for (Lesson lesson : lessons) {
+                for (SubLesson subLesson : lesson.getSubLessons()) {
+                    subLessonHashMap.put(subLesson.getId(), subLesson);
+                }
+            }
 
-        // Organize discussions into a map
-        Map<Integer, List<Discussion>> discussionMap = new HashMap<>();
-        for (Discussion discussion : discussions) {
-            Integer parentId = (discussion.getParent() == null) ? null : discussion.getParent().getId();
-            discussionMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(discussion);
-        }
+            // Fetch discussions
+            List<Discussion> discussions;
+            if (subLessonId == null) {
+                SubLesson currentSubLesson = progressService.getCurrentSubLessonByCourseId(id, userId);
+                discussions = discussionService.findBySubLessonId(currentSubLesson.getId());
+                model.addAttribute("currentSubLesson", currentSubLesson);
+                model.addAttribute("currentLesson", currentSubLesson.getLesson());
+            } else {
+                Lesson currentLesson = lessons.stream()
+                        .filter(lesson -> lesson.getOrderNumber().equals(lessonOrder))
+                        .findFirst()
+                        .orElse(null);
+                SubLesson currentSubLesson = currentLesson.getSubLessons().stream()
+                        .filter(subLesson -> subLesson.getId().equals(subLessonId))
+                        .findFirst()
+                        .orElse(null);
+                discussions = discussionService.findBySubLessonId(currentSubLesson.getId());
+                model.addAttribute("currentLesson", currentLesson);
+                model.addAttribute("currentSubLesson", currentSubLesson);
+            }
 
-        model.addAttribute("discussionMap", discussionMap);
-        model.addAttribute("discussions", discussionMap.get(null)); // Top-level discussions
-        model.addAttribute("currentProgress", progressService.getCurrentProgressByCourseId(id, userId));
-        model.addAttribute("subLessonHashMap", subLessonHashMap);
-        model.addAttribute("lessons", lessons);
-        model.addAttribute("course", course.get());
-        model.addAttribute("pageTitle", "Course detail");
-        return "app/user_view/course/course-view";
+            // Organize discussions into a map
+            Map<Integer, List<Discussion>> discussionMap = new HashMap<>();
+            for (Discussion discussion : discussions) {
+                Integer parentId = (discussion.getParent() == null) ? null : discussion.getParent().getId();
+                discussionMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(discussion);
+            }
+
+            model.addAttribute("discussionMap", discussionMap);
+            model.addAttribute("discussions", discussionMap.get(null)); // Top-level discussions
+            model.addAttribute("currentProgress", progressService.getCurrentProgressByCourseId(id, userId));
+            model.addAttribute("subLessonHashMap", subLessonHashMap);
+            model.addAttribute("lessons", lessons);
+            model.addAttribute("course", course.get());
+            model.addAttribute("pageTitle", "Course detail");
+            return "app/user_view/course/course-view";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/app/course/view/" + id;
+        }
     }
     
     @PostMapping("/view/comment")
@@ -553,8 +559,7 @@ public class AppCourseController {
             return "app/user_view/course/course-preview";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            e.printStackTrace();
-            return "redirect:/app/error/500";
+            return "redirect:/app/course/preview/"+courseId;
         }
     }
 
@@ -678,8 +683,8 @@ public class AppCourseController {
         }
     }
 
-    @GetMapping("/sub-lesson/{subLessonId}/finish-sub-lesson")
-    public String finishSubLesson(@PathVariable("subLessonId") Integer subLessonId, @SessionAttribute("userId") Integer userId, RedirectAttributes redirectAttributes) {
+    @GetMapping("/{courseId}/sub-lesson/{subLessonId}/finish-sub-lesson")
+    public String finishSubLesson(@PathVariable("courseId") Integer courseId,@PathVariable("subLessonId") Integer subLessonId, @SessionAttribute("userId") Integer userId, RedirectAttributes redirectAttributes) {
 
         try {
             SubLesson subLesson = subLessonService.finishSubLesson(subLessonId, userId);
@@ -689,7 +694,7 @@ public class AppCourseController {
             return "redirect:/app/course/view/" + subLesson.getLesson().getCourse().getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/app/error/500";
+            return "redirect:/app/course/view/"+courseId;
         }
     }
 

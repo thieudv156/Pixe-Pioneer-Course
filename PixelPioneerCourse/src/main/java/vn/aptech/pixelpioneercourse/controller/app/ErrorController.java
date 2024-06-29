@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
     @RequestMapping("")
     public String handleError() {
-
         return "app/error/500";
     }
 

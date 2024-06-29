@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 import vn.aptech.pixelpioneercourse.dto.SubLessonCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.entities.Lesson;
+import vn.aptech.pixelpioneercourse.entities.Progress;
 import vn.aptech.pixelpioneercourse.entities.SubLesson;
+import vn.aptech.pixelpioneercourse.repository.ProgressRepository;
 import vn.aptech.pixelpioneercourse.repository.SubLessonRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubLessonServiceImpl implements SubLessonService {
@@ -16,12 +19,14 @@ public class SubLessonServiceImpl implements SubLessonService {
     final private ModelMapper modelMapper;
     final private LessonService lessonService;
     private final ProgressService progressService;
+    private final ProgressRepository progressRepository;
 
-    public SubLessonServiceImpl(SubLessonRepository subLessonRepository, ModelMapper modelMapper, LessonService lessonService, ProgressService progressService) {
+    public SubLessonServiceImpl(SubLessonRepository subLessonRepository, ModelMapper modelMapper, LessonService lessonService, ProgressService progressService, ProgressRepository progressRepository) {
         this.subLessonRepository = subLessonRepository;
         this.modelMapper = modelMapper;
         this.lessonService = lessonService;
         this.progressService = progressService;
+        this.progressRepository = progressRepository;
     }
 
     public SubLesson toSubLesson(SubLessonCreateDto dto) {
@@ -98,16 +103,31 @@ public class SubLessonServiceImpl implements SubLessonService {
     }
 
     public SubLesson finishSubLesson(Integer subLessonId, Integer userId) {
-    	try {
-    		SubLesson subLesson = subLessonRepository.findById(subLessonId).orElse(null);
-    		if (subLesson == null) {
-    			throw new RuntimeException("SubLesson is null");
-    		}
-    		progressService.finishSubLesson(subLessonId,userId);
-            return subLesson;
-    	} catch (Exception e) {
-    		throw new RuntimeException(e.getMessage());
-    	}
+        // Fetch the current sub-lesson
+        SubLesson subLesson = subLessonRepository.findById(subLessonId)
+                .orElseThrow(() -> new RuntimeException("SubLesson not found"));
+
+        // Get the course ID
+        Integer courseId = subLesson.getLesson().getCourse().getId();
+
+        // Fetch all progress entries for the user and course
+        List<Progress> progresses = progressRepository.findByCourseIdAndUserId(courseId, userId);
+
+        // Find the current progress for the sub-lesson
+        Progress currentProgress = progresses.stream()
+                .filter(progress -> progress.getSubLesson().getId().equals(subLessonId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Progress for the current sub-lesson not found"));
+
+        // Check all previous progress entries by their IDs
+        for (Progress progress : progresses) {
+            if (progress.getId() < currentProgress.getId() && !progress.getIsCompleted()) {
+                throw new RuntimeException("Previous sub-lesson is not finished");
+            }
+        }
+        // Mark the current sub-lesson as finished
+        progressService.finishSubLesson(subLessonId, userId);
+        return subLesson;
     }
 
     public void checkDeleteCondition(Integer subLessonId) {
