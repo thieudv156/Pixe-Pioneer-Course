@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.aptech.pixelpioneercourse.dto.ReviewCreateDto;
 import vn.aptech.pixelpioneercourse.entities.Review;
 import vn.aptech.pixelpioneercourse.service.ReviewService;
+import vn.aptech.pixelpioneercourse.until.SensitiveWordFilter;
 
 import java.util.List;
 
@@ -53,6 +54,9 @@ public class ReviewController {
 	@PostMapping("/uploadReview")
 	public ResponseEntity<?> uploadReview(@RequestBody ReviewCreateDto dto) {
 		try {
+			if (!SensitiveWordFilter.sensitiveWordsChecker(dto.getContent())) {
+	    		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+	    	}
 			return ResponseEntity.status(HttpStatus.OK).body(reviewService.create(dto));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -62,6 +66,9 @@ public class ReviewController {
 	@PutMapping("/editReview")
 	public ResponseEntity<?> editReview(@RequestParam("reviewId") Integer id, @RequestBody ReviewCreateDto dto) {
 		try {
+			if (!SensitiveWordFilter.sensitiveWordsChecker(dto.getContent())) {
+	    		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+	    	}
 			return ResponseEntity.status(HttpStatus.OK).body(reviewService.update(id, dto));
 		} catch (Exception e){
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

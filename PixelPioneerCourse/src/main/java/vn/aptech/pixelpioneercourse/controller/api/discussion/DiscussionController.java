@@ -10,6 +10,7 @@ import vn.aptech.pixelpioneercourse.entities.Discussion;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.aptech.pixelpioneercourse.service.DiscussionService;
+import vn.aptech.pixelpioneercourse.until.SensitiveWordFilter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,14 +62,19 @@ public class DiscussionController {
 
     @PostMapping
     public ResponseEntity<Discussion> createDiscussion(@Valid @RequestBody DiscussionCreateDto discussionCreateDto) {
-        System.out.println(discussionCreateDto);
+    	if (!SensitiveWordFilter.sensitiveWordsChecker(discussionCreateDto.getContent())) {
+    		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+    	}
         Discussion savedDiscussion = discussionService.createDiscussion(discussionCreateDto);
         return ResponseEntity.ok(savedDiscussion);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Discussion> updateDiscussion(@Valid @PathVariable Integer id, @RequestBody DiscussionCreateDto discussionCreateDto) {
-        Discussion existingDiscussion = discussionService.findById(id);
+    	if (!SensitiveWordFilter.sensitiveWordsChecker(discussionCreateDto.getContent())) {
+    		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(null);
+    	}
+    	Discussion existingDiscussion = discussionService.findById(id);
         if (existingDiscussion == null) {
             return ResponseEntity.notFound().build();
         }
