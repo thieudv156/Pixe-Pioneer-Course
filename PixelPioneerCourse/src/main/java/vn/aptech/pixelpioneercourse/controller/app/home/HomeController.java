@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import vn.aptech.pixelpioneercourse.entities.Category;
 import vn.aptech.pixelpioneercourse.entities.Course;
 import vn.aptech.pixelpioneercourse.service.CategoryService;
@@ -27,15 +28,18 @@ public class HomeController {
     private CategoryService categoryService;
 
     @GetMapping
-    public String index(HttpSession session, Model model) {
+    public String index(HttpSession session, Model model, @SessionAttribute("userId") Integer userId) {
         List<Category> categories = categoryService.findAll();
         Map<Category, List<Course>> categoryCourses = new HashMap<>();
 
         for (Category category : categories) {
             List<Course> courses = courseService.findTop8ByCategoryOrderByCreatedAtDesc(category);
+            List<Course> filteredCourses = courses.stream()
+                    .filter(course -> !course.getInstructor().getId().equals(userId))
+                    .toList();
             System.out.println(courses);
             if (!courses.isEmpty()) {
-                categoryCourses.put(category, courses);
+                categoryCourses.put(category, filteredCourses);
             }
         }
 

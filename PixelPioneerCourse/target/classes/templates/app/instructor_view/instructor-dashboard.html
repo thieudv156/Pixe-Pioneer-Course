@@ -70,7 +70,7 @@
                  data-toggle="lists"
                  data-lists-sort-by="js-lists-values-date"
                  data-lists-sort-desc="true"
-                 data-lists-values='["js-lists-values-name", "js-lists-values-company", "js-lists-values-phone", "js-lists-values-date"]'>
+                 data-lists-values='["js-lists-values-name", "js-lists-values-enroll", "js-lists-values-complete", "js-lists-values-review", "js-lists-values-date"]'>
 
                 <table class="table mb-0 thead-border-top-0 table-nowrap">
                     <thead>
@@ -104,7 +104,6 @@
                                class="sort"
                                data-sort="js-lists-values-date">Created Date</a>
                         </th>
-                        <th style="width: 30px;"></th>
                     </tr>
                     </thead>
                     <tbody class="list"
@@ -139,9 +138,6 @@
                         <td class="text-center">
                             <small class="js-lists-values-date text-70 text-center" th:text="${courseView.course.createdAt}"></small>
                         </td>
-                        <td class="text-center">
-                            <a th:href="@{/course/information/{courseId}(courseId=${courseView.course.id})}" class="btn btn-outline-accent">View</a>
-                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -149,5 +145,15 @@
         </div>
     </div>
 </div>
+<th:block layout:fragment="script">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var options = {
+                valueNames: ['js-lists-values-name', 'js-lists-values-enroll', 'js-lists-values-complete', 'js-lists-values-review', 'js-lists-values-date']
+            };
+            var contactList = new List('contacts', options);
+        });
+    </script>
+</th:block>
 </body>
 </html>

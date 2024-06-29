@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import vn.aptech.pixelpioneercourse.repository.CourseRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class Course {
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"id", "username", "password", "reviews", "discussions", "courses", "enrollments", "tests", "provider", "grantedAuthorities", "authorities", "progresses", "courseCompletes", "phone", "email", "activeStatus", "createdAt", "requestInstructor"})
+    @JsonIgnoreProperties({"username", "password", "reviews", "discussions", "courses", "enrollments", "tests", "provider", "grantedAuthorities", "authorities", "progresses", "courseCompletes", "phone", "email", "activeStatus", "createdAt", "requestInstructor"})
     @ToString.Exclude
     private User instructor;
 
@@ -45,7 +46,7 @@ public class Course {
     private Boolean isPublished = false;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDate createdAt = LocalDate.now();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")

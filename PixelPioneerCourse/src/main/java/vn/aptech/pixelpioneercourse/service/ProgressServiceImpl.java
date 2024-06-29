@@ -18,15 +18,17 @@ public class ProgressServiceImpl implements ProgressService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final SubLessonRepository subLessonRepository;
+    private final CourseCompleteRepository courseCompleteRepository;
 
     @Autowired
     public ProgressServiceImpl(ProgressRepository progressRepository,
                                CourseRepository courseRepository,
-                               UserRepository userRepository, SubLessonRepository subLessonRepository) {
+                               UserRepository userRepository, SubLessonRepository subLessonRepository, CourseCompleteRepository courseCompleteRepository) {
         this.progressRepository = progressRepository;
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.subLessonRepository = subLessonRepository;
+        this.courseCompleteRepository = courseCompleteRepository;
     }
     public List<Progress> createProgressByCourseId(Integer courseId, Integer userId) {
         List<Progress> progressList = new ArrayList<>();
@@ -82,10 +84,12 @@ public class ProgressServiceImpl implements ProgressService {
         if (totalSubLessons == 0) {
             return 0.0;
         }
-        BigDecimal progressPercentage = BigDecimal.valueOf((double) completedSubLessons / totalSubLessons * 100);
+        BigDecimal progressPercentage = BigDecimal.valueOf((double) completedSubLessons / totalSubLessons * 99);
         BigDecimal roundedValue = progressPercentage.divide(BigDecimal.valueOf(0.5), 0, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(0.5));
-
-
+        if(courseCompleteRepository.findByUserIdAndCourseId(userId,courseId)!=null)
+        {
+            return roundedValue.doubleValue()+1.0;
+        }
         return roundedValue.doubleValue();
     }
 

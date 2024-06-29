@@ -263,7 +263,7 @@
                 <div class="sidebar-heading" th:if="${session.isInstructor}">Instructor</div>
                 <ul class="sidebar-menu" th:if="${session.isInstructor}">
                     <li class="sidebar-menu-item">
-                        <a class="sidebar-menu-button" th:href="@{/instructor-dashboard.html}">
+                        <a class="sidebar-menu-button" th:href="@{/app/instructor}">
                             <span class="material-icons sidebar-menu-icon sidebar-menu-icon--left">school</span>
                             <span class="sidebar-menu-text">Instructor Dashboard</span>
                         </a>
@@ -474,7 +474,6 @@
 <!-- Preloader -->
 <script th:src="@{/public/js/preloader.js}"></script>
 
-<!-- Global Settings -->
 <script th:src="@{/public/js/settings.js}"></script>
 
 <!-- Moment.js -->

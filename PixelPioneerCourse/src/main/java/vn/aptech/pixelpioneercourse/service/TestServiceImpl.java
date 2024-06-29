@@ -33,9 +33,9 @@ public class TestServiceImpl implements TestService {
 
     public TestDto createTestDto(Integer testFormatId, Integer userId) {
         try {
-            if(progressService.getCurrentProgressByCourseId(testFormatService.findById(testFormatId).getCourse().getId(),userId)!=100)
+            if(progressService.getCurrentProgressByCourseId(testFormatService.findById(testFormatId).getCourse().getId(),userId)<99)
             {
-                throw new RuntimeException("You must have 100% progress before doing the final test!");
+                throw new RuntimeException("You must have finish all Sub-Lesson before doing the final test!");
             }
             TestDto test = new TestDto();
             test.setTestFormatId(testFormatId);

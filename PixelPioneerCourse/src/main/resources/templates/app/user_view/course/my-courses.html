@@ -6,6 +6,12 @@
         .card-course {
             margin-bottom: 30px;
         }
+        .progress-bar-completed {
+            background-color: #28a745; /* Bright green */
+            width: 100%;
+            text-align: center;
+            color: white;
+        }
     </style>
 </head>
 <body >
@@ -18,11 +24,6 @@
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-24pt" style="white-space: nowrap;">
                     <small class="flex text-muted text-headings text-uppercase mr-3 mb-2 mb-sm-0" th:text="'Displaying ' + ${courses.size()} + ' out of ' + ${totalCourses} + ' courses'"></small>
-                    <div class="w-auto ml-sm-auto table d-flex align-items-center mb-2 mb-sm-0">
-                        <small class="text-muted text-headings text-uppercase mr-3 d-none d-sm-block">Sort by</small>
-                        <a href="?sort=newest" class="sort small text-headings text-uppercase">Newest</a>
-                        <a href="?sort=popularity" class="sort small text-headings text-uppercase ml-2">Popularity</a>
-                    </div>
                     <a href="#" data-target="#library-drawer" data-toggle="sidebar" class="btn btn-sm btn-white ml-sm-16pt">
                         <i class="material-icons icon--left">tune</i> Filters
                     </a>
@@ -49,9 +50,15 @@
                                             <small class="text-50 font-weight-bold mb-4pt" th:text="${course.instructor.fullName}">Instructor Name</small>
                                         </div>
                                     </div>
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" th:style="'width: ' + ${courseProgressMap[course.id]} + '%'" th:aria-valuenow="${courseProgressMap[course.id]}" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress text-center">
+                                        <div th:if="${courseProgressMap[course.id]} < 100" class="progress-bar" role="progressbar"
+                                             th:style="'width: ' + ${courseProgressMap[course.id]} + '%'" th:aria-valuenow="${courseProgressMap[course.id]}"
+                                             aria-valuemin="0" aria-valuemax="100">
                                             <span th:text="${courseProgressMap[course.id]} + '%'">0%</span>
+                                        </div>
+                                        <div th:if="${courseProgressMap[course.id]} == 100" class="progress-bar progress-bar-completed" role="progressbar"
+                                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                            <small>Course Completed</small>
                                         </div>
                                     </div>
                                 </div>
@@ -61,24 +68,26 @@
                 </div>
 
                 <!-- Pagination Controls -->
-                <div th:if="${totalCourses == 0}" class="text-center">
-                    <a th:href="@{/app/course/}" class="btn btn-accent">
-                        <strong>Enroll Course Now</strong>
-                    </a>
-                </div>
-                <div th:if="${totalCourses > 0}" class="d-flex justify-content-center mt-4">
-                    <ul class="pagination">
+                <div th:if="${courses != null}" class="mb-32pt d-flex justify-content-start mt-4">
+                    <ul class="pagination justify-content-start pagination-xsm m-0">
+                        <!-- Previous Page Link -->
                         <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{'?page=' + (${currentPage} - 1)}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
+                            <a class="page-link" th:href="@{'/app/course/my-courses?page=' + (${currentPage} - 1)}" aria-label="Previous">
+                                <span aria-hidden="true" class="material-icons">chevron_left</span>
+                                <span>Prev</span>
                             </a>
                         </li>
+
+                        <!-- Page Numbers -->
                         <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{'?page=' + ${i}}" th:text="${i}">1</a>
+                            <a class="page-link" th:href="@{'/app/course/my-courses?page=' + ${i}}" th:aria-label="'Page ' + ${i}" th:text="${i}">1</a>
                         </li>
+
+                        <!-- Next Page Link -->
                         <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                            <a class="page-link" th:href="@{'?page=' + (${currentPage} + 1)}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
+                            <a class="page-link" th:href="@{'/app/course/my-courses?page=' + (${currentPage} + 1)}" aria-label="Next">
+                                <span>Next</span>
+                                <span aria-hidden="true" class="material-icons">chevron_right</span>
                             </a>
                         </li>
                     </ul>
@@ -86,18 +95,15 @@
             </div>
         </div>
     </div>
-</div>
     <!-- Sidebar Drawer -->
     <div class="mdk-drawer js-mdk-drawer" id="library-drawer" data-align="end">
         <div class="mdk-drawer__content top-navbar">
             <div class="sidebar sidebar-light sidebar-right py-16pt" data-perfect-scrollbar data-perfect-scrollbar-wheel-propagation="true">
-                <div class="d-flex align-items-center mb-24pt d-lg-none">
-                    <form action="index.html" class="search-form search-form--light mx-16pt pr-0 pl-16pt">
-                        <input type="text" class="form-control pl-0" placeholder="Search">
-                        <button class="btn" type="submit"><i class="material-icons">search</i></button>
-                    </form>
-                </div>
-
+                <form class="search-form navbar-search d-none d-md-flex mr-16pt ml-16pt sidebar-heading"
+                      th:action="@{/app/course/my-courses/search}" method="get">
+                    <button class="btn" type="submit"><i class="material-icons">search</i></button>
+                    <input type="text" class="form-control" placeholder="Search ..." name="search" th:value="${searchQuery}">
+                </form>
                 <div class="sidebar-heading">Category</div>
                 <ul class="sidebar-menu">
                     <li th:each="category : ${categories}" class="sidebar-menu-item">
@@ -113,6 +119,6 @@
             </div>
         </div>
     </div>
-
+</div>
 </body>
 </html>

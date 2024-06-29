@@ -26,7 +26,7 @@
                         <p class="result-message text-danger">Unfortunately, you did not pass the test. Your score is <span th:text="${submittedTest.score}"></span>.</p>
                     </div>
                     <a th:href="@{/}" class="btn btn-outline-accent-electric-violet">Return to Home Page</a>
-                    <a th:href="@{/app/test/start/{testFormatId}(testFormatId=${submittedTest.testFormat.id})}" class="btn btn-outline-accent">Take Another Test</a>
+                    <a th:href="@{/app/test/start/{testFormatId}/{courseId}(testFormatId=${submittedTest.testFormat.id},courseId=${submittedTest.testFormat.course.id})}" class="btn btn-outline-accent">Take Another Test</a>
                 </div>
             </div>
         </div>

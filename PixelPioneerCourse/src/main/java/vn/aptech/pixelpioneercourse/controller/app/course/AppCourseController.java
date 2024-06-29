@@ -76,7 +76,7 @@ public class AppCourseController {
 
 
     @GetMapping("/")
-    public String index(Model model, @RequestParam(value = "page", defaultValue = "1") int page) {
+    public String index(Model model, @RequestParam(value = "page", defaultValue = "1") int page,@SessionAttribute("userId") Integer userId) {
         int pageSize = 12; // Number of courses per page
         RestTemplate restTemplate = new RestTemplate();
         Course[] courseArray = restTemplate.getForObject(courseApiUrl, Course[].class);
@@ -103,8 +103,11 @@ public class AppCourseController {
         }
 
         List<Course> courses = courseList.subList(start, end);
+        List<Course> filteredCourses = courses.stream()
+                .filter(course -> !course.getInstructor().getId().equals(userId))
+                .toList();
         model.addAttribute("categories", categoryList);
-        model.addAttribute("courses", courses);
+        model.addAttribute("courses", filteredCourses);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("imageApiUrl", imageApiUrl);
@@ -116,7 +119,8 @@ public class AppCourseController {
     @GetMapping("/category")
     public String sortByCategory(Model model,
                                  @RequestParam(value = "page", defaultValue = "1") int page,
-                                 @RequestParam(value = "category", required = false) String category) {
+                                 @RequestParam(value = "category", required = false) String category,
+                                 @SessionAttribute("userId") Integer userId) {
         int pageSize = 12; // Number of courses per page
         RestTemplate restTemplate = new RestTemplate();
         Course[] courseArray = restTemplate.getForObject(courseApiUrl, Course[].class);
@@ -146,8 +150,11 @@ public class AppCourseController {
         }
         int end = Math.min(start + pageSize, totalCourses);
         List<Course> courses = courseList.subList(start, end);
+        List<Course> filteredCourses = courses.stream()
+                .filter(course -> !course.getInstructor().getId().equals(userId))
+                .toList();
         model.addAttribute("categories", categoryList);
-        model.addAttribute("courses", courses);
+        model.addAttribute("courses", filteredCourses);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("imageApiUrl", imageApiUrl);
@@ -159,7 +166,8 @@ public class AppCourseController {
     @GetMapping("/search")
     public String searchCourses(Model model,
                                 @RequestParam(value = "page", defaultValue = "1") int page,
-                                @RequestParam(value = "search", required = false) String search) {
+                                @RequestParam(value = "search", required = false) String search,
+                                @SessionAttribute("userId") Integer userId) {
         int pageSize = 12; // Number of courses per page
 
         // Use the repository method to search by title
@@ -184,8 +192,11 @@ public class AppCourseController {
         }
         int end = Math.min(start + pageSize, totalCourses);
         List<Course> courses = courseList.subList(start, end);
+        List<Course> filteredCourses = courses.stream()
+                .filter(course -> !course.getInstructor().getId().equals(userId))
+                .toList();
         model.addAttribute("categories", categoryList);
-        model.addAttribute("courses", courses);
+        model.addAttribute("courses", filteredCourses);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("imageApiUrl", imageApiUrl);
@@ -679,6 +690,70 @@ public class AppCourseController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/app/error/500";
+        }
+    }
+
+    @GetMapping("/my-courses/search")
+    public String searchMyCourses(Model model,
+                                  @RequestParam(value = "page", defaultValue = "1") int page,
+                                  @RequestParam(value = "search", required = false) String search,
+                                  @SessionAttribute("userId") Integer userId,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            int pageSize = 12; // Number of courses per page
+            RestTemplate restTemplate = new RestTemplate();
+            List<Course> courseList = courseService.getEnrolledCourses(userId);
+
+            // Filter courses by title if search query is provided
+            if (search != null && !search.isEmpty()) {
+                courseList = courseList.stream()
+                        .filter(course -> course.getTitle().toLowerCase().contains(search.toLowerCase()))
+                        .collect(Collectors.toList());
+            }
+
+            Category[] categories = restTemplate.getForObject(courseApiUrl + "/categories", Category[].class);
+            List<Category> categoryList = Arrays.asList(categories);
+
+            int totalCourses = courseList.size();
+            int totalPages = (int) Math.ceil((double) totalCourses / pageSize);
+
+            // Ensure the page number is within the valid range
+            if (page < 1) {
+                page = 1;
+            } else if (page > totalPages) {
+                page = totalPages;
+            }
+
+            int start = (page - 1) * pageSize;
+            int end = Math.min(start + pageSize, totalCourses);
+
+            // Ensure start index is not negative
+            if (start < 0) {
+                start = 0;
+            }
+
+            List<Course> courses = courseList.subList(start, end);
+
+            // Create a map to hold course progress
+            Map<Integer, Double> courseProgressMap = new HashMap<>();
+            for (Course course : courseList) {
+                // Assuming getCourseProgress is a method that retrieves the progress for a course
+                Double progress = progressService.getCurrentProgressByCourseId(course.getId(), userId);
+                courseProgressMap.put(course.getId(), progress);
+            }
+
+            model.addAttribute("categories", categoryList);
+            model.addAttribute("courses", courses);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("imageApiUrl", imageApiUrl);
+            model.addAttribute("totalCourses", totalCourses);
+            model.addAttribute("courseProgressMap", courseProgressMap);
+            model.addAttribute("searchQuery", search);
+            return "app/user_view/course/my-courses";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "app/error/500";
         }
     }
 }

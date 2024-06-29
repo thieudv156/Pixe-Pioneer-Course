@@ -13,6 +13,9 @@ import vn.aptech.pixelpioneercourse.service.CourseService;
 import vn.aptech.pixelpioneercourse.service.ReviewService;
 import vn.aptech.pixelpioneercourse.service.UserService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +43,12 @@ public class InstructorController {
 
         // Create a list of CourseView objects
         List<CourseView> courseViews = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         for (Course course : courseList) {
+            String formattedDate = course.getCreatedAt().format(formatter);
+            LocalDate localDate = LocalDate.parse(formattedDate, formatter);
+            // Set the createdAt to LocalDateTime at start of day (00:00:00)
+            course.setCreatedAt(localDate);
             CourseView courseView = new CourseView();
             courseView.setCourse(course);
             courseView.setCompleteCount(courseService.getCompleteUserCount(course.getId()));
