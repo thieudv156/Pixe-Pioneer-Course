@@ -113,6 +113,9 @@
                             <a th:href="@{/app/course/my-courses}" class="dropdown-item">My Courses</a>
                         </div>
                     </li>
+                    <li class="nav-item active">
+                        <a th:href="@{/about-us}" class="nav-link">About us</a>
+                    </li>
                     <li class="nav-item dropdown" th:if="${session.isInstructor}">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-caret="false">
                             Instructors
